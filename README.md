@@ -98,6 +98,8 @@ This section should list any major frameworks/libraries used to bootstrap your p
 * [![React][React.js]][React-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![Hibernate][Hibernate-shield]][Hibernate-url]
+* [![PHP][PHP-shield]][PHP-url]
+* [![Spring][Spring-shield]][Spring-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -238,3 +240,7 @@ Use this space to list resources you find helpful and would like to give credit 
 [Bootstrap-url]: https://getbootstrap.com
 [Hibernate-shield]: https://img.shields.io/static/v1?style=for-the-badge&message=Hibernate&color=59666C&logo=Hibernate&logoColor=FFFFFF&label=
 [Hibernate-url]: https://hibernate.org/
+[PHP-shield]: https://img.shields.io/static/v1?style=for-the-badge&message=PHP&color=777BB4&logo=PHP&logoColor=FFFFFF&label=
+[PHP-url]: https://www.php.net/
+[Spring-shield]: https://img.shields.io/static/v1?style=for-the-badge&message=Spring&color=6DB33F&logo=Spring&logoColor=FFFFFF&label=
+[Spring-url]: https://spring.io/
