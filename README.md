@@ -21,7 +21,7 @@
 <br />
 <div align="center">
   <a href=" ">
-    <img src="logo.png" alt="Logo" width="640" height="640">
+    <img src="logo.png" alt="Logo" width="500" height="500">
   </a>
 
   <h3 align="center">The Zoo Kay</h3>
