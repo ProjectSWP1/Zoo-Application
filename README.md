@@ -91,6 +91,8 @@ This section should list any major frameworks/libraries used to bootstrap your p
 * [![Hibernate][Hibernate-shield]][Hibernate-url]
 * [![PHP][PHP-shield]][PHP-url]
 * [![Spring][Spring-shield]][Spring-url]
+* [![NodeJS][Nodejs-shield]][Nodejs-url]
+* [![MySQL][mysql-shield]][mysql-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -187,3 +189,7 @@ Project Link: [https://github.com/ProjectSWP1/Zoo-Application](https://github.co
 [PHP-url]: https://www.php.net/
 [Spring-shield]: https://img.shields.io/static/v1?style=for-the-badge&message=Spring&color=6DB33F&logo=Spring&logoColor=FFFFFF&label=
 [Spring-url]: https://spring.io/
+[Nodejs-shield]: https://img.shields.io/static/v1?style=for-the-badge&message=Node.js&color=339933&logo=Node.js&logoColor=FFFFFF&label=
+[Nodejs-url]: https://nodejs.org/en
+[mysql-shield]: https://img.shields.io/static/v1?style=for-the-badge&message=MySQL&color=4479A1&logo=MySQL&logoColor=FFFFFF&label=
+[mysql-url]: https://www.mysql.com/
