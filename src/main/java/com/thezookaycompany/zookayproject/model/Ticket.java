@@ -1,12 +1,7 @@
 package com.thezookaycompany.zookayproject.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -24,16 +19,16 @@ public class Ticket {
     @Column(nullable = false)
     private LocalDate bookDate;
 
-    @OneToMany(mappedBy = "ticket")
-    private Set<Voucher> ticketVouchers;
+    @OneToOne(mappedBy = "ticket")
+    private Voucher ticketVouchers;
 
     @ManyToMany
     @JoinTable(
             name = "OrderDetails",
-            joinColumns = @JoinColumn(name = "ticketid"),
-            inverseJoinColumns = @JoinColumn(name = "order_id")
+            joinColumns = @JoinColumn(name = "TicketID"),
+            inverseJoinColumns = @JoinColumn(name = "OrderID")
     )
-    private Set<Orders> orderDetailOrderss;
+    private Set<Orders> orderDetail;
 
     public String getTicketId() {
         return ticketId;
@@ -59,20 +54,20 @@ public class Ticket {
         this.bookDate = bookDate;
     }
 
-    public Set<Voucher> getTicketVouchers() {
+    public Voucher getTicketVouchers() {
         return ticketVouchers;
     }
 
-    public void setTicketVouchers(final Set<Voucher> ticketVouchers) {
+    public void setTicketVouchers(final Voucher ticketVouchers) {
         this.ticketVouchers = ticketVouchers;
     }
 
-    public Set<Orders> getOrderDetailOrderss() {
-        return orderDetailOrderss;
+    public Set<Orders> getOrderDetail() {
+        return orderDetail;
     }
 
-    public void setOrderDetailOrderss(final Set<Orders> orderDetailOrderss) {
-        this.orderDetailOrderss = orderDetailOrderss;
+    public void setOrderDetail(final Set<Orders> orderDetail) {
+        this.orderDetail = orderDetail;
     }
 
 }

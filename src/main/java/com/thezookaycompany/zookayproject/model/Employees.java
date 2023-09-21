@@ -19,16 +19,7 @@ public class Employees {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer empId;
 
     @Column(nullable = false, length = 30)
@@ -47,15 +38,15 @@ public class Employees {
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "zoo_area_id", nullable = false)
+    @JoinColumn(name = "ZooAreaID", nullable = false)
     private ZooArea zooArea;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "managed_by_emp_id", nullable = false)
+    @JoinColumn(name = "managed_by_empid", nullable = false)
     private Employees managedByEmp;
 
     @OneToMany(mappedBy = "managedByEmp")
-    private Set<Employees> managedByEmpEmployeess;
+    private Set<Employees> managedByEmpEmployees;
 
     @OneToMany(mappedBy = "emp")
     private Set<TrainerSchedule> empTrainerSchedules;
@@ -124,12 +115,12 @@ public class Employees {
         this.managedByEmp = managedByEmp;
     }
 
-    public Set<Employees> getManagedByEmpEmployeess() {
-        return managedByEmpEmployeess;
+    public Set<Employees> getManagedByEmpEmployees() {
+        return managedByEmpEmployees;
     }
 
-    public void setManagedByEmpEmployeess(final Set<Employees> managedByEmpEmployeess) {
-        this.managedByEmpEmployeess = managedByEmpEmployeess;
+    public void setManagedByEmpEmployees(final Set<Employees> managedByEmpEmployees) {
+        this.managedByEmpEmployees = managedByEmpEmployees;
     }
 
     public Set<TrainerSchedule> getEmpTrainerSchedules() {

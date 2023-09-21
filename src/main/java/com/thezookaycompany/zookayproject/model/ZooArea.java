@@ -18,7 +18,7 @@ public class ZooArea {
     private String description;
 
     @OneToMany(mappedBy = "zooArea")
-    private Set<Employees> zooAreaEmployeess;
+    private Set<Employees> zooAreaEmployees;
 
     @OneToMany(mappedBy = "zooArea")
     private Set<Cage> zooAreaCages;
@@ -39,12 +39,12 @@ public class ZooArea {
         this.description = description;
     }
 
-    public Set<Employees> getZooAreaEmployeess() {
-        return zooAreaEmployeess;
+    public Set<Employees> getZooAreaEmployees() {
+        return zooAreaEmployees;
     }
 
-    public void setZooAreaEmployeess(final Set<Employees> zooAreaEmployeess) {
-        this.zooAreaEmployeess = zooAreaEmployeess;
+    public void setZooAreaEmployees(final Set<Employees> zooAreaEmployeess) {
+        this.zooAreaEmployees = zooAreaEmployeess;
     }
 
     public Set<Cage> getZooAreaCages() {

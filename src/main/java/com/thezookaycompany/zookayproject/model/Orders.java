@@ -17,16 +17,7 @@ public class Orders {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
     @Column(nullable = false, length = 200)
@@ -38,7 +29,7 @@ public class Orders {
     @OneToMany(mappedBy = "order")
     private Set<Payment> orderPayments;
 
-    @ManyToMany(mappedBy = "orderDetailOrderss")
+    @ManyToMany(mappedBy = "orderDetail")
     private Set<Ticket> orderDetailTickets;
 
     @OneToMany(mappedBy = "order")

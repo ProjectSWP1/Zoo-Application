@@ -16,16 +16,7 @@ public class AnimalFood {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer foodId;
 
     @Column(nullable = false, length = 20)

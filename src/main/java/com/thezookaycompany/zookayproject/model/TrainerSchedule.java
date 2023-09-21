@@ -16,27 +16,18 @@ public class TrainerSchedule {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer trainerScheduleId;
 
     @Column(nullable = false)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "species_id", nullable = false)
+    @JoinColumn(name = "SpeciesID", nullable = false)
     private AnimalSpecies species;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emp_id", nullable = false)
+    @JoinColumn(name = "EmpID", nullable = false)
     private Employees emp;
 
     public Integer getTrainerScheduleId() {

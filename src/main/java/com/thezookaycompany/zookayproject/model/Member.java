@@ -33,7 +33,7 @@ public class Member {
     private String gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "OrderID", nullable = false)
     private Orders order;
 
     @OneToMany(mappedBy = "phoneNumber")

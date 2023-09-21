@@ -18,16 +18,7 @@ public class Cage {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @SequenceGenerator(
-            name = "primary_sequence",
-            sequenceName = "primary_sequence",
-            allocationSize = 1,
-            initialValue = 10000
-    )
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "primary_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cageId;
 
     @Column(nullable = false, length = 200)
@@ -37,7 +28,7 @@ public class Cage {
     private Integer capacity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "zoo_area_id", nullable = false)
+    @JoinColumn(name = "ZooAreaID", nullable = false)
     private ZooArea zooArea;
 
     @OneToMany(mappedBy = "cage")

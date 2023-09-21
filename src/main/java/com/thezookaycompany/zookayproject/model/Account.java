@@ -25,7 +25,7 @@ public class Account {
     private Integer empId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phone_number_id", nullable = false)
+    @JoinColumn(name = "phoneNumber", nullable = false)
     private Member phoneNumber;
 
     public String getUsername() {
