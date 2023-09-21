@@ -10,7 +10,7 @@ import java.util.Set;
 public class Ticket {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 4)
+    @Column(name = "TicketID", nullable = false, updatable = false, length = 4)
     private String ticketId;
 
     @Column(nullable = false)

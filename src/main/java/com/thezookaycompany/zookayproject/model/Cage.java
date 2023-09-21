@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
+
 import java.util.Set;
 
 
@@ -19,7 +19,7 @@ public class Cage {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cageId;
+    private Integer cageID;
 
     @Column(nullable = false, length = 200)
     private String description;
@@ -34,12 +34,12 @@ public class Cage {
     @OneToMany(mappedBy = "cage")
     private Set<Animal> cageAnimals;
 
-    public Integer getCageId() {
-        return cageId;
+    public Integer getCageID() {
+        return cageID;
     }
 
-    public void setCageId(final Integer cageId) {
-        this.cageId = cageId;
+    public void setCageID(final Integer cageID) {
+        this.cageID = cageID;
     }
 
     public String getDescription() {

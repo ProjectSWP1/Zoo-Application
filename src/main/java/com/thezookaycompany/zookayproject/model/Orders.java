@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.SequenceGenerator;
+
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -18,7 +18,7 @@ public class Orders {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orderId;
+    private Integer orderID;
 
     @Column(nullable = false, length = 200)
     private String description;
@@ -35,12 +35,12 @@ public class Orders {
     @OneToMany(mappedBy = "order")
     private Set<Member> orderMembers;
 
-    public Integer getOrderId() {
-        return orderId;
+    public Integer getOrderID() {
+        return orderID;
     }
 
-    public void setOrderId(final Integer orderId) {
-        this.orderId = orderId;
+    public void setOrderID(final Integer orderId) {
+        this.orderID = orderId;
     }
 
     public String getDescription() {
