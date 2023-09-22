@@ -1,4 +1,4 @@
-package com.thezookaycompany.zookayproject.model;
+package com.thezookaycompany.zookayproject.model.entity;
 
 import jakarta.persistence.*;
 

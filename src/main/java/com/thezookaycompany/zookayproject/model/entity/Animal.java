@@ -1,7 +1,5 @@
-package com.thezookaycompany.zookayproject.model;
+package com.thezookaycompany.zookayproject.model.entity;
 
-import com.thezookaycompany.zookayproject.model.AnimalSpecies;
-import com.thezookaycompany.zookayproject.model.Cage;
 import jakarta.persistence.*;
 
 @Entity

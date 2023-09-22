@@ -1,4 +1,4 @@
-package com.thezookaycompany.zookayproject.model;
+package com.thezookaycompany.zookayproject.model.entity;
 
 import jakarta.persistence.*;
 
@@ -16,9 +16,6 @@ public class Account {
 
     @Column(nullable = false, unique = true, length = 30)
     private String email;
-
-    @Column(nullable = false)
-    private Integer empId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = false)
@@ -46,14 +43,6 @@ public class Account {
 
     public void setEmail(final String email) {
         this.email = email;
-    }
-
-    public Integer getEmpId() {
-        return empId;
-    }
-
-    public void setEmpId(final Integer empId) {
-        this.empId = empId;
     }
 
     public Member getPhoneNumber() {
