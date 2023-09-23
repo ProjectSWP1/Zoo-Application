@@ -17,6 +17,10 @@ public class Account {
     @Column(nullable = false, unique = true, length = 30)
     private String email;
 
+    public Account() {
+
+    }
+
     public Employees getEmailEmployees() {
         return emailEmployees;
     }

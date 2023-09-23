@@ -8,6 +8,7 @@ class ZookayprojectApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }
