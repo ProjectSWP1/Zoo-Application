@@ -33,19 +33,19 @@ public class Member {
     private String gender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "OrderID", nullable = false)
+    @JoinColumn(name = "OrderID", nullable = true)
     private Orders order;
-
-    @OneToMany(mappedBy = "phoneNumber")
-    private Set<Account> phoneNumberAccounts;
 
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(final String phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    @OneToMany(mappedBy = "phoneNumber")
+    private Set<Account> phoneNumberAccounts;
 
     public String getName() {
         return name;

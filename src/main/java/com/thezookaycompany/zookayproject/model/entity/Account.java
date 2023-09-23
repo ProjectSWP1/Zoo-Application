@@ -7,19 +7,50 @@ import jakarta.persistence.*;
 @Table(name =  "Account")
 public class Account {
 
-    @Id
     @Column(nullable = false, updatable = false, length = 30)
     private String username;
 
     @Column(nullable = false, length = 30)
     private String password;
 
+    @Id
     @Column(nullable = false, unique = true, length = 30)
     private String email;
+
+    public Employees getEmailEmployees() {
+        return emailEmployees;
+    }
+
+    public void setEmailEmployees(Employees emailEmployees) {
+        this.emailEmployees = emailEmployees;
+    }
+
+    @OneToOne(mappedBy = "email")
+    private Employees emailEmployees;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member phoneNumber;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "RoleID", nullable = false)
+    private Role role;
+
+    public Account(String username, String password, String email, Member phoneNumber, Role role) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public String getUsername() {
         return username;

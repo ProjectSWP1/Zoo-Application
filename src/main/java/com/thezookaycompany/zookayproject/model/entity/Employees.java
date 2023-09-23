@@ -24,8 +24,9 @@ public class Employees {
     @Column(nullable = false)
     private LocalDate doB;
 
-    @Column(nullable = false, length = 30)
-    private String email;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "email", nullable = false)
+    private Account email;
 
     @Column(nullable = false)
     private String address;
@@ -76,11 +77,11 @@ public class Employees {
         this.doB = doB;
     }
 
-    public String getEmail() {
+    public Account getEmail() {
         return email;
     }
 
-    public void setEmail(final String email) {
+    public void setEmail(final Account email) {
         this.email = email;
     }
 
