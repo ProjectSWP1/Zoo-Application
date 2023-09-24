@@ -8,7 +8,7 @@ public class Animal {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer animalId;
+    private int animalId;
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -17,16 +17,16 @@ public class Animal {
     private String description;
 
     @Column(nullable = false)
-    private Integer age;
+    private int age;
 
     @Column(nullable = false, length = 10)
     private String gender;
 
     @Column(nullable = false)
-    private Double weight;
+    private double weight;
 
     @Column(nullable = false)
-    private Double height;
+    private double height;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SpeciesID", nullable = false)
@@ -36,7 +36,7 @@ public class Animal {
     @JoinColumn(name = "CageID", nullable = false)
     private Cage cage;
 
-    public Integer getAnimalId() {
+    public int getAnimalId() {
         return animalId;
     }
 
@@ -60,7 +60,7 @@ public class Animal {
         this.description = description;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
@@ -76,7 +76,7 @@ public class Animal {
         this.gender = gender;
     }
 
-    public Double getWeight() {
+    public double getWeight() {
         return weight;
     }
 
@@ -84,7 +84,7 @@ public class Animal {
         this.weight = weight;
     }
 
-    public Double getHeight() {
+    public double getHeight() {
         return height;
     }
 

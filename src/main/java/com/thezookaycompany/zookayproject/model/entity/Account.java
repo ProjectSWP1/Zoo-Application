@@ -1,16 +1,21 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 
 @Entity
 @Table(name =  "Account")
-public class Account {
+public class Account implements UserDetails {
 
     @Column(nullable = false, updatable = false, length = 30)
     private String username;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @Id
@@ -60,8 +65,33 @@ public class Account {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public void setUsername(final String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(this.getRole());
     }
 
     public String getPassword() {

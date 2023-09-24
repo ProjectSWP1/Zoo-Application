@@ -27,7 +27,7 @@ public class Member {
     private String address;
 
     @Column(nullable = false)
-    private Integer age;
+    private int age;
 
     @Column(nullable = false, length = 10)
     private String gender;
@@ -35,6 +35,10 @@ public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OrderID", nullable = true)
     private Orders order;
+
+    public Member() {
+
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -46,6 +50,15 @@ public class Member {
 
     @OneToMany(mappedBy = "phoneNumber")
     private Set<Account> phoneNumberAccounts;
+
+    public Member(String phoneNumber, String name, String email, String address, int age, String gender) {
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.age = age;
+        this.gender = gender;
+    }
 
     public String getName() {
         return name;
@@ -71,11 +84,11 @@ public class Member {
         this.address = address;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(final Integer age) {
+    public void setAge(final int age) {
         this.age = age;
     }
 
