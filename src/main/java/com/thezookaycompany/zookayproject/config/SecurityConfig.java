@@ -24,7 +24,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/user").permitAll()
+                        .requestMatchers("/admin").hasRole("Admin")
+                )
                 .formLogin(Customizer.withDefaults()
                 )
                 .build();

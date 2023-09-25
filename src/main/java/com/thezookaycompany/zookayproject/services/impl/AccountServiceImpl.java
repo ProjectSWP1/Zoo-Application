@@ -5,7 +5,6 @@ import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.model.entity.Role;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;
@@ -14,8 +13,6 @@ import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -70,6 +67,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public LoginResponse loginAccount(LoginDto loginDto) {
+        // Check username or email that user input?
+        if(!loginDto.getEmail().contains("@")) {
+            String username = loginDto.getEmail();
+        }
         return null;
     }
 }
