@@ -11,13 +11,21 @@ import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
+import com.thezookaycompany.zookayproject.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.channels.ScatteringByteChannel;
 import java.util.List;
 
 @Service
+@Transactional
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
@@ -33,29 +41,32 @@ public class AccountServiceImpl implements AccountService {
     private MemberRepository memberRepository;
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Autowired
     private MemberServices memberServices;
 
 
     @Override
-    public String addAccount(AccountDto accountDto, MemberDto memberDto) {
-        //Check trùng mail
-        Account temp = accountRepository.findOneByEmail(accountDto.getEmail().trim());
-        if(temp != null) {
-            return "This account " + accountDto.getEmail() + " has been registered.";
-        }
+    public Account addAccount(AccountDto accountDto, MemberDto memberDto) {
         // Parse lại Email thành Username
         accountDto.setUsername(accountDto.getEmail().trim().split("@")[0]);
+        String encodedPassword = passwordEncoder.encode(accountDto.getPassword());
+        Role userRole = roleRepository.findByRoleName("Member").get();
+
         // Add member trước rồi mới add account
         memberServices.addMember(accountDto, memberDto);
         Account acc = new Account(
                 accountDto.getUsername(),
-                this.passwordEncoder.encode(accountDto.getPassword()),
+                encodedPassword,
                 accountDto.getEmail(),
                 memberRepository.findMemberByPhoneNumber(memberDto.getPhoneNumber()),
-                roleRepository.findByRoleName("Member")
+                userRole
         );
-        accountRepository.save(acc);
-        return "New account " + accountDto.getEmail() + " has been added";
+        return accountRepository.save(acc);
     }
 
     @Override
@@ -70,6 +81,23 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public LoginResponse loginAccount(LoginDto loginDto) {
-        return null;
+        String username = "";
+        if(loginDto.getEmail().contains("@")) {
+            username = loginDto.getEmail().trim().split("@")[0];
+        }
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, loginDto.getPassword())
+            );
+            // DEBUG: ko thể tìm thấy account
+            Account acc = accountRepository.findByUsername(username).get();
+            String token = tokenService.generateJwt(auth);
+
+            return new LoginResponse(acc, token);
+
+
+        } catch(AuthenticationException e) {
+            return new LoginResponse(null, "");
+        }
     }
 }
