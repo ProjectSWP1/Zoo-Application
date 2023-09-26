@@ -23,6 +23,28 @@ public class Account implements UserDetails {
     @Column(nullable = false, unique = true, length = 30)
     private String email;
 
+    @Column()
+    private String resetPwdToken;
+
+    @Column()
+    private String vertificationToken;
+
+    public String getResetPwdToken() {
+        return resetPwdToken;
+    }
+
+    public void setResetPwdToken(String resetPwdToken) {
+        this.resetPwdToken = resetPwdToken;
+    }
+
+    public String getVertificationToken() {
+        return vertificationToken;
+    }
+
+    public void setVertificationToken(String vertificationToken) {
+        this.vertificationToken = vertificationToken;
+    }
+
     public Account() {
 
     }
