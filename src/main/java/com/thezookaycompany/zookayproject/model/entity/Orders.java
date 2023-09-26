@@ -1,12 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -26,8 +20,8 @@ public class Orders {
     @Column(nullable = false)
     private LocalDate orderDate;
 
-    @OneToMany(mappedBy = "order")
-    private Set<Payment> orderPayments;
+    @OneToOne(mappedBy = "order")
+    private Payment orderPayments;
 
     @ManyToMany(mappedBy = "orderDetail")
     private Set<Ticket> orderDetailTickets;
@@ -59,11 +53,11 @@ public class Orders {
         this.orderDate = orderDate;
     }
 
-    public Set<Payment> getOrderPayments() {
+    public Payment getOrderPayments() {
         return orderPayments;
     }
 
-    public void setOrderPayments(final Set<Payment> orderPayments) {
+    public void setOrderPayments(final Payment orderPayments) {
         this.orderPayments = orderPayments;
     }
 
