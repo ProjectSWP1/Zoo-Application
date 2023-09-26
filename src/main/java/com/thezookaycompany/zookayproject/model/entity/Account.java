@@ -1,8 +1,10 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +13,6 @@ import java.util.Collections;
 @Entity
 @Table(name =  "Account")
 public class Account implements UserDetails {
-
     @Column(nullable = false, updatable = false, length = 30)
     private String username;
 
@@ -26,17 +27,10 @@ public class Account implements UserDetails {
 
     }
 
-    public Employees getEmailEmployees() {
-        return emailEmployees;
-    }
-
-    public void setEmailEmployees(Employees emailEmployees) {
-        this.emailEmployees = emailEmployees;
-    }
-
     @OneToOne(mappedBy = "email")
     private Employees emailEmployees;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member phoneNumber;
@@ -62,7 +56,7 @@ public class Account implements UserDetails {
     }
 
     public String getUsername() {
-        return username;
+        return (username.contains("@")) ? email : username;
     }
 
     @Override

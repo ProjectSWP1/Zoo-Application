@@ -1,27 +1,34 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
+import com.thezookaycompany.zookayproject.model.entity.Account;
+
 public class LoginResponse {
-    String message;
-    Boolean status;
 
-    public LoginResponse(String message, Boolean status) {
-        this.message = message;
-        this.status = status;
+    private Account account;
+    private String jwt;
+
+    public LoginResponse() {
+        super();
     }
 
-    public String getMessage() {
-        return message;
+    public LoginResponse(Account account, String jwt) {
+        this.account = account;
+        this.jwt = jwt;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public Account getAccount() {
+        return account;
     }
 
-    public Boolean getStatus() {
-        return status;
+    public void setAccount(Account account) {
+        this.account = account;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public String getJwt() {
+        return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 }

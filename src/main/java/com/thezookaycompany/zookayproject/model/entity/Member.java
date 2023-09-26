@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,6 +33,7 @@ public class Member {
     @Column(nullable = false, length = 10)
     private String gender;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "OrderID", nullable = true)
     private Orders order;

@@ -7,7 +7,7 @@ import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 
 public interface AccountService {
-    String addAccount(AccountDto accountDto, MemberDto memberDto);
+    Account addAccount(AccountDto accountDto, MemberDto memberDto);
 
     boolean assignRoleToAccount(Account account, String role_id);
 
