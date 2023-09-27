@@ -81,8 +81,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public LoginResponse loginAccount(LoginDto loginDto) {
-        String username = "";
-        if(loginDto.getEmail().contains("@")) {
+        String username = loginDto.getEmail();
+        if(username.contains("@")) {
             username = loginDto.getEmail().trim().split("@")[0];
         }
         try {

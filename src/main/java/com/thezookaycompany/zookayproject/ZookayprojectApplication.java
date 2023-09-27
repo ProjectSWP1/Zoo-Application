@@ -24,7 +24,6 @@ public class ZookayprojectApplication {
 	@Bean
 	CommandLineRunner run(RoleRepository roleRepository, AccountRepository accountRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
-			if(roleRepository.findByRoleName("Admin").isPresent()) return;
 			Role adminRole = roleRepository.save(new Role("AD", "Admin"));
 			roleRepository.save(new Role("MB", "Member"));
 			roleRepository.save(new Role("ZT", "Trainer"));

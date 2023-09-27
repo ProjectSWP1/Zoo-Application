@@ -7,20 +7,19 @@ import jakarta.persistence.*;
 public class Voucher {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "VoucherID", nullable = false, updatable = false, length = 30)
+    private String VoucherID;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "TicketID", nullable = false)
     private Ticket ticket;
 
-    public Long getId() {
-        return id;
+    public String getVoucherID() {
+        return VoucherID;
     }
 
-    public void setId(final Long id) {
-        this.id = id;
+    public void setVoucherID(String voucherID) {
+        VoucherID = voucherID;
     }
 
     public Ticket getTicket() {
