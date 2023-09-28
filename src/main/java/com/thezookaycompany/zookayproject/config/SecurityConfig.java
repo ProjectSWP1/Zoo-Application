@@ -47,15 +47,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/user/**").permitAll();
                     auth.requestMatchers("/register").permitAll();
+                    auth.requestMatchers("/forgotPwd").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("Admin");
                     auth.requestMatchers("/staff/**").hasAnyRole("Admin", "Staff");
                     auth.requestMatchers("/trainer/**").hasAnyRole("Admin", "Staff", "Trainer");
                     auth.anyRequest().authenticated();
-                })
+                });
         // Set 0auth2login
-                .oauth2Login(withDefaults());
+
         // Role Resource Setup and Form setup
         http
+
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwtConfigurer -> {
                             jwtAuthenticationConverter();

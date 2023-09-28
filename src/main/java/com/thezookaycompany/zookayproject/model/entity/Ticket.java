@@ -9,14 +9,21 @@ import java.util.Set;
 @Entity
 public class Ticket {
 
+//    private LocalDate localDate;
+//
+//    public Ticket(LocalDate localDate) {
+//
+//        this.localDate = localDate;
+//    }
+
     @Id
     @Column(name = "TicketID", nullable = false, updatable = false, length = 4)
     private String ticketId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name="TicketPrice")
     private Double ticketPrice;
 
-    @Column(nullable = false)
+    @Column(nullable = true, name="BookDate")
     private LocalDate bookDate;
 
     @OneToOne(mappedBy = "ticket")

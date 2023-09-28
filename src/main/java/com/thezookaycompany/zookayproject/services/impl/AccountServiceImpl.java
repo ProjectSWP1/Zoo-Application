@@ -21,7 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.channels.ScatteringByteChannel;
+import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 
 @Service
@@ -100,4 +100,49 @@ public class AccountServiceImpl implements AccountService {
             return new LoginResponse(null, "");
         }
     }
+
+    @Override
+    public void updateResetPwdToken(String token, String email) throws AccountNotFoundException {
+
+            // check account exist ?
+            Account account = accountRepository.findOneByEmail(email);
+
+            // nếu tồn tại thì set account new Token
+            if (account !=null){
+                account.setResetPwdToken(token);
+                accountRepository.save(account);
+            } else {
+                throw new AccountNotFoundException("Could not find any customer with email "+email);
+            }
+    }
+
+    @Override
+    public Account getAccByPwdToken(String resetPwdToken) {
+        return accountRepository.findByResetPwdToken(resetPwdToken);
+    }
+
+    @Override
+    public void updatePassword(Account account, String newPassword) {
+        //encode and save new password
+        String encodePwd = passwordEncoder.encode(newPassword);
+        account.setPassword(encodePwd);
+
+        //xóa token cũ ngăn người dùng sử dụng token để tự đổi mk
+        account.setResetPwdToken(null);
+
+        accountRepository.save(account);
+    }
+
+    @Override
+    public List<Account> getAllAccount() {
+        return accountRepository.getAll();
+    }
+
+
+    private void sendResetPwdEmail(Account account){
+
+    }
+
+
+
 }
