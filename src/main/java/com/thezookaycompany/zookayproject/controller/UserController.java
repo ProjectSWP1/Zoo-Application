@@ -3,10 +3,14 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 
 @RestController
 @CrossOrigin("*")
@@ -49,4 +53,24 @@ public class UserController {
     public OAuth2AuthenticationToken googleLogin(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
         return oAuth2AuthenticationToken;
     }
+    @Autowired
+    private  MemberRepository memberRepository;
+    @Autowired
+    private  MemberServices memberServices;
+    @GetMapping
+    public List<Member> getAllMember(){
+
+        return memberRepository.findAll();
+    }
+    @GetMapping("/member/{phoneNumber}")
+    public Member findMemberByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
+
+        return memberRepository.findMemberByPhoneNumber(phoneNumber);
+    }
+    @PutMapping("/member/{phoneNumber}")
+    public Member updateMember(@PathVariable("phoneNumber") String phoneNumber, @RequestBody Member member){
+        member.setPhoneNumber(phoneNumber);
+         return memberServices.updateMember(member);
+    }
+
 }

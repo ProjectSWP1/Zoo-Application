@@ -8,6 +8,8 @@ import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MemberServiceImpl implements MemberServices {
 
@@ -25,4 +27,18 @@ public class MemberServiceImpl implements MemberServices {
         );
         memberRepository.save(member);
     }
+
+    @Override
+    public List<Member> getAllMember() {
+        return memberRepository.findAll();
+    }
+    @Override
+    public Member updateMember(Member member) {
+        return memberRepository.save(member);
+    }
+
+
+
+
+
 }
