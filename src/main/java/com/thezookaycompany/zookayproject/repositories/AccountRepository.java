@@ -21,9 +21,11 @@ public interface AccountRepository extends JpaRepository<Account, String> {
     @Query("SELECT a FROM Account a WHERE a.email = :email")
     Account findOneByEmail(@Param("email") String email);
 
+    Account findAccountByEmail(String email);
+
     Optional<Account> findOneByEmailAndPassword(String email, String password);
 
     Account findByResetPwdToken (String token);
 
-    List<Account> getAll();
+
 }

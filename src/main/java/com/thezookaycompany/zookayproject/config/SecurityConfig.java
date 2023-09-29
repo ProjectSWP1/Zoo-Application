@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -26,8 +27,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -45,18 +44,26 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/home/**").permitAll();
                     auth.requestMatchers("/user/**").permitAll();
                     auth.requestMatchers("/register").permitAll();
-                    auth.requestMatchers("/forgotPwd").permitAll();
+                    auth.requestMatchers("/forgot/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("Admin");
                     auth.requestMatchers("/staff/**").hasAnyRole("Admin", "Staff");
                     auth.requestMatchers("/trainer/**").hasAnyRole("Admin", "Staff", "Trainer");
                     auth.anyRequest().authenticated();
                 });
-        // Set 0auth2login
 
         // Role Resource Setup and Form setup
         http
+                // TODO: Advanced configuration with Google Account
+//                .oauth2Login((login) -> login
+//                        .clientRegistrationRepository()
+//                        .loginPage("/login")
+//                        .authorizationEndpoint(authorizationEndpointConfig -> {
+//                    authorizationEndpointConfig.baseUri("/login/oauth2/authorization");
+//                        }
+//                ))
 
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwtConfigurer -> {

@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+
 import java.util.Set;
 
 
@@ -11,7 +12,7 @@ import java.util.Set;
 public class ZooArea {
 
     @Id
-    @Column(nullable = false, updatable = false, length = 5)
+    @Column(name = "ZooAreaID", nullable = false, updatable = false, length = 5)
     private String zooAreaId;
 
     @Column(nullable = false, length = 200)

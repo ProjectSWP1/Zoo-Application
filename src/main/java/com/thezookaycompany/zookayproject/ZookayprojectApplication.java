@@ -24,11 +24,10 @@ public class ZookayprojectApplication {
 	@Bean
 	CommandLineRunner run(RoleRepository roleRepository, AccountRepository accountRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
-			if(roleRepository.findByRoleName("Admin").isPresent()) return;
-			Role adminRole = roleRepository.save(new Role("AD", "Admin"));
-			roleRepository.save(new Role("MB", "Member"));
-			roleRepository.save(new Role("ZT", "Trainer"));
-			roleRepository.save(new Role("ST", "Staff"));
+//			Role adminRole = roleRepository.save(new Role("AD", "Admin"));
+//			roleRepository.save(new Role("MB", "Member"));
+//			roleRepository.save(new Role("ZT", "Trainer"));
+//			roleRepository.save(new Role("ST", "Staff"));
 
 			// Tạo account cho admin truy cập
 			Member member = new Member("0909090909", "admin", "admin@official.zookay.com", "empty", 1, "UNDEFINED");

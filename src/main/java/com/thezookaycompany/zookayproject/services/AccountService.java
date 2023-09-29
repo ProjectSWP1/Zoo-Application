@@ -22,5 +22,5 @@ public interface AccountService {
 
     void updatePassword(Account account, String newPassword);
 
-    List<Account> getAllAccount();
+
 }

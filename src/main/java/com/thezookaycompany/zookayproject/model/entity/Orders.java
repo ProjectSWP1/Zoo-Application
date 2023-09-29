@@ -3,6 +3,7 @@ package com.thezookaycompany.zookayproject.model.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -18,7 +19,8 @@ public class Orders {
     private String description;
 
     @Column(nullable = false)
-    private LocalDate orderDate;
+    @Temporal(TemporalType.DATE)
+    private Date orderDate;
 
     @OneToOne(mappedBy = "order")
     private Payment orderPayments;
@@ -45,11 +47,11 @@ public class Orders {
         this.description = description;
     }
 
-    public LocalDate getOrderDate() {
+    public Date getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(final LocalDate orderDate) {
+    public void setOrderDate(final Date orderDate) {
         this.orderDate = orderDate;
     }
 

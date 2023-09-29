@@ -3,6 +3,7 @@ package com.thezookaycompany.zookayproject.model.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
 
 
@@ -22,7 +23,8 @@ public class Employees {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private LocalDate doB;
+    @Temporal(TemporalType.DATE)
+    private Date doB;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "email", nullable = false)
@@ -36,7 +38,7 @@ public class Employees {
     private ZooArea zooArea;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "managed_by_empid", nullable = false)
+    @JoinColumn(name = "managed_by_empid", nullable = true)
     private Employees managedByEmp;
 
     @OneToMany(mappedBy = "managedByEmp")
@@ -69,11 +71,11 @@ public class Employees {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDate getDoB() {
+    public Date getDoB() {
         return doB;
     }
 
-    public void setDoB(final LocalDate doB) {
+    public void setDoB(final Date doB) {
         this.doB = doB;
     }
 

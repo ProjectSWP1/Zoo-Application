@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.util.List;
 
 @Service
 @Transactional
@@ -48,6 +47,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private MemberServices memberServices;
+
+
 
 
     @Override
@@ -81,8 +82,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public LoginResponse loginAccount(LoginDto loginDto) {
-        String username = "";
-        if(loginDto.getEmail().contains("@")) {
+        String username = loginDto.getEmail();
+        if(username.contains("@")) {
             username = loginDto.getEmail().trim().split("@")[0];
         }
         try {
@@ -105,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
     public void updateResetPwdToken(String token, String email) throws AccountNotFoundException {
 
             // check account exist ?
-            Account account = accountRepository.findOneByEmail(email);
+            Account account = accountRepository.findAccountByEmail(email);
 
             // nếu tồn tại thì set account new Token
             if (account !=null){
@@ -133,15 +134,8 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
-    @Override
-    public List<Account> getAllAccount() {
-        return accountRepository.getAll();
-    }
 
 
-    private void sendResetPwdEmail(Account account){
-
-    }
 
 
 

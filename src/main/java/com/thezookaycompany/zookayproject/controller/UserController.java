@@ -5,6 +5,7 @@ import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,4 +45,8 @@ public class UserController {
         return accountService.loginAccount(loginDto);
     }
 
+    @GetMapping("/login/oauth2")
+    public OAuth2AuthenticationToken googleLogin(OAuth2AuthenticationToken oAuth2AuthenticationToken) {
+        return oAuth2AuthenticationToken;
+    }
 }
