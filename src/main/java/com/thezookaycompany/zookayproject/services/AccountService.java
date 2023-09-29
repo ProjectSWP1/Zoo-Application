@@ -22,4 +22,7 @@ public interface AccountService {
 
     void updatePassword(Account account, String newPassword);
 
+    void updateVerifyToken (String token, String email) throws AccountNotFoundException;
+
+    void verifyAccount(String email, String otp);
 }

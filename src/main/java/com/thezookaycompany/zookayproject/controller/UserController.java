@@ -1,17 +1,18 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import javax.security.auth.login.AccountNotFoundException;
 
 @RestController
 @CrossOrigin("*")
@@ -20,6 +21,9 @@ public class UserController {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -53,4 +57,26 @@ public class UserController {
         return accountService.loginAccount(loginDto);
     }
 
+    @PostMapping("/send-email")
+    public String processSendMailWithToken(@RequestBody AccountDto accountDto){
+
+        //send mail with token
+        try {
+            emailService.sendVertificationEmail(accountDto);
+        } catch (AccountNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return "Please check your mail to get Vertification link";
+    }
+
+    @PutMapping("/verify")
+    public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
+        Account account = accountRepository.findAccountByEmail(email);
+        if(account !=null){
+            accountService.verifyAccount(account.getEmail(), otp);
+        } else {
+            throw new RuntimeException("Invalid OTP or OTP had expired");
+        }
+        return "Account verified successfully";
+    }
 }

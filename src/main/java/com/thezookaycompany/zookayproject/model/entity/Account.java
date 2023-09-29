@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -29,8 +30,24 @@ public class Account implements UserDetails {
     @Column()
     private String vertificationToken;
 
-    @Column(name="roleid")
+    private LocalDateTime otpGeneratedTime;
+    private boolean Active;
 
+    public boolean isActive() {
+        return Active;
+    }
+
+    public void setActive(boolean active) {
+        Active = active;
+    }
+
+    public LocalDateTime getOtpGeneratedTime() {
+        return otpGeneratedTime;
+    }
+
+    public void setOtpGeneratedTime(LocalDateTime otpGeneratedTime) {
+        this.otpGeneratedTime = otpGeneratedTime;
+    }
 
     public String getResetPwdToken() {
         return resetPwdToken;

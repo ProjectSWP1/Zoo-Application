@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -134,9 +136,35 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(account);
     }
 
+    @Override
+    public void updateVerifyToken(String token, String email) throws AccountNotFoundException {
 
+        // check account exist ?
+        Account account = accountRepository.findAccountByEmail(email);
 
+        // nếu tồn tại thì set verify Token
+        if (account !=null){
+            account.setVertificationToken(token);
+            account.setOtpGeneratedTime(LocalDateTime.now());
+            accountRepository.save(account);
+        } else {
+            throw new AccountNotFoundException("Could not find any customer with email "+email);
+        }
+    }
 
+    @Override
+    public void verifyAccount(String email, String otp) {
+
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Could not find any customer with email "+email));
+
+        // check otp trùng hoặc otp expired (5')
+        if(account.getVertificationToken().equals(otp) || Duration.between(account.getOtpGeneratedTime(),
+                LocalDateTime.now()).getSeconds()< (5 *60)){
+            account.setActive(true);
+            accountRepository.save(account);
+        }
+    }
 
 
 }
