@@ -7,12 +7,12 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.thezookaycompany.zookayproject.utils.RSAKeyProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,11 +27,18 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final RSAKeyProperties keys;
 
     public SecurityConfig(RSAKeyProperties keys) {
@@ -43,6 +50,7 @@ public class SecurityConfig {
         // URL Role based http configuration
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors((cors) -> cors.configurationSource(corsConfigurer()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/home/**").permitAll();
                     auth.requestMatchers("/user/**").permitAll();
@@ -56,6 +64,7 @@ public class SecurityConfig {
 
         // Role Resource Setup and Form setup
         http
+
                 // TODO: Advanced configuration with Google Account
 //                .oauth2Login((login) -> login
 //                        .clientRegistrationRepository()
@@ -64,6 +73,12 @@ public class SecurityConfig {
 //                    authorizationEndpointConfig.baseUri("/login/oauth2/authorization");
 //                        }
 //                ))
+
+
+                .oauth2Login((login) -> {
+                            login.successHandler(oAuth2LoginSuccessHandler);
+                        }
+                )
 
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwtConfigurer -> {
@@ -77,6 +92,18 @@ public class SecurityConfig {
 
 
         return http.build();
+    }
+    @Bean
+    CorsConfigurationSource corsConfigurer() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
+        return urlBasedCorsConfigurationSource;
+
     }
 
     @Bean
