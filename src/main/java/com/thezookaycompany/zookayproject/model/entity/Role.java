@@ -25,6 +25,10 @@ public class Role implements GrantedAuthority {
         RoleName = roleName;
     }
 
+    public Role(Account account) {
+        this.account = account;
+    }
+
     public Role() {
 
     }

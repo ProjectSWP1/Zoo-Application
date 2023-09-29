@@ -56,6 +56,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/user/**").permitAll();
                     auth.requestMatchers("/register").permitAll();
                     auth.requestMatchers("/forgot/**").permitAll();
+                    auth.requestMatchers("/staff/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("Admin");
                     auth.requestMatchers("/staff/**").hasAnyRole("Admin", "Staff");
                     auth.requestMatchers("/trainer/**").hasAnyRole("Admin", "Staff", "Trainer");

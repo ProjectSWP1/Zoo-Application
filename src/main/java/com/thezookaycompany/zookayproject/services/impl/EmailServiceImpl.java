@@ -62,7 +62,6 @@ public class EmailServiceImpl implements EmailService {
         String token = RandomTokenGenerator.generateRandomString(15);
         account.setVertificationToken(token);
         accountRepository.save(account);
-
     }
 
 }

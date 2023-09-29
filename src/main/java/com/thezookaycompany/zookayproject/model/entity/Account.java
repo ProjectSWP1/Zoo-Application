@@ -29,6 +29,9 @@ public class Account implements UserDetails {
     @Column()
     private String vertificationToken;
 
+    @Column(name="roleid")
+
+
     public String getResetPwdToken() {
         return resetPwdToken;
     }

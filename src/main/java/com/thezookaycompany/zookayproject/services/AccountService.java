@@ -22,5 +22,4 @@ public interface AccountService {
 
     void updatePassword(Account account, String newPassword);
 
-
 }
