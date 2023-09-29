@@ -8,9 +8,10 @@ import java.util.List;
 
 public interface MemberServices {
     void addMember(AccountDto accountDto, MemberDto memberDto);
-    Member updateMember(Member member);
-    List<Member> getAllMember();
 
+    Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember);
+    List<Member> getAllMember();
+    Member findMemberByPhoneNumber (String phoneNumber);
 
 
 }

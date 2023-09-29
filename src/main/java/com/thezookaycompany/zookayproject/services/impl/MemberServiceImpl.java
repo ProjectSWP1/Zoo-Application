@@ -32,9 +32,27 @@ public class MemberServiceImpl implements MemberServices {
     public List<Member> getAllMember() {
         return memberRepository.findAll();
     }
+
     @Override
-    public Member updateMember(Member member) {
-        return memberRepository.save(member);
+    public Member findMemberByPhoneNumber(String phoneNumber) {
+        return memberRepository.findMemberByPhoneNumber(phoneNumber);
+    }
+
+
+    @Override
+    public Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember) {
+        Member existingMember = findMemberByPhoneNumber(phoneNumber);
+        if (existingMember != null) {
+            // Cập nhật thông tin của thành viên có số điện thoại cụ thể
+            existingMember.setName(updatedMember.getName());
+            existingMember.setEmail(updatedMember.getEmail());
+            existingMember.setAddress(updatedMember.getAddress());
+            existingMember.setAge(updatedMember.getAge());
+            existingMember.setGender(updatedMember.getGender());
+            // Lưu thông tin cập nhật vào cơ sở dữ liệu
+            return memberRepository.save(existingMember);
+        }
+        return null; // Trả về null nếu không tìm thấy thành viên
     }
 
 

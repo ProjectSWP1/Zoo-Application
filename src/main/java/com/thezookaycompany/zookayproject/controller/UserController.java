@@ -7,6 +7,7 @@ import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -57,7 +58,8 @@ public class UserController {
     private  MemberRepository memberRepository;
     @Autowired
     private  MemberServices memberServices;
-    @GetMapping
+
+    @GetMapping("/member/all")
     public List<Member> getAllMember(){
 
         return memberRepository.findAll();
@@ -67,10 +69,16 @@ public class UserController {
 
         return memberRepository.findMemberByPhoneNumber(phoneNumber);
     }
-    @PutMapping("/member/{phoneNumber}")
-    public Member updateMember(@PathVariable("phoneNumber") String phoneNumber, @RequestBody Member member){
-        member.setPhoneNumber(phoneNumber);
-         return memberServices.updateMember(member);
+    @PutMapping("/update/{phoneNumber}")
+    public ResponseEntity<Member> updateMemberByPhoneNumber(
+            @PathVariable String phoneNumber,
+            @RequestBody Member updatedMember) {
+        Member updated = memberServices.updateMemberByPhoneNumber(phoneNumber,updatedMember);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
