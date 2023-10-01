@@ -30,12 +30,17 @@ public class Account implements UserDetails {
     @Column()
     private String vertificationToken;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "RoleID", nullable = false)
+    private Role role;
+
     private LocalDateTime otpGeneratedTime;
     private boolean Active;
 
     public boolean isActive() {
         return Active;
     }
+
 
     public void setActive(boolean active) {
         Active = active;
@@ -77,9 +82,7 @@ public class Account implements UserDetails {
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member phoneNumber;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "RoleID", nullable = false)
-    private Role role;
+
 
     public Account(String username, String password, String email, Member phoneNumber, Role role) {
         this.username = username;

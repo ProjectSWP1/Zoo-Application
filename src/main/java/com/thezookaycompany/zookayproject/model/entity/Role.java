@@ -3,6 +3,8 @@ package com.thezookaycompany.zookayproject.model.entity;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Set;
+
 @Entity
 public class Role implements GrantedAuthority {
 
@@ -17,17 +19,15 @@ public class Role implements GrantedAuthority {
     @Column(name = "RoleName", nullable = false)
     private String RoleName;
 
-    @OneToOne(mappedBy = "role")
-    private Account account;
+    @OneToMany(mappedBy = "Account")
+    private Set<Account> AccountRole;
 
     public Role(String roleID, String roleName) {
         RoleID = roleID;
         RoleName = roleName;
     }
 
-    public Role(Account account) {
-        this.account = account;
-    }
+
 
     public Role() {
 
