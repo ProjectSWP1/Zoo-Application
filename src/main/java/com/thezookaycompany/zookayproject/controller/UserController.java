@@ -3,6 +3,7 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
+import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
@@ -55,6 +56,11 @@ public class UserController {
     @PostMapping(path = "/login")
     public LoginResponse loginUser(@RequestBody LoginDto loginDto) {
         return accountService.loginAccount(loginDto);
+    }
+
+    @PostMapping("/register")
+    public Account registerUser(@RequestBody AccountDto accountDto, MemberDto memberDto) {
+        return accountService.addAccount(accountDto, memberDto);
     }
 
     @PostMapping("/send-email")
