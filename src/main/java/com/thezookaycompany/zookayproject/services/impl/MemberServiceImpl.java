@@ -3,7 +3,9 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Member;
+import com.thezookaycompany.zookayproject.model.entity.ZooArea;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
+import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ public class MemberServiceImpl implements MemberServices {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ZooAreaRepository zooAreRepository;
     @Override
     public void addMember(AccountDto accountDto, MemberDto memberDto) {
         Member member = new Member(
@@ -36,6 +40,21 @@ public class MemberServiceImpl implements MemberServices {
     @Override
     public Member findMemberByPhoneNumber(String phoneNumber) {
         return memberRepository.findMemberByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public ZooArea findZooAreaByZooAreaID(String zooAreaId) {
+        return zooAreRepository.findZooAreaByZooAreaId(zooAreaId);
+    }
+
+    @Override
+    public List<ZooArea> findAllZooArea() {
+        return zooAreRepository.findAll();
+    }
+
+    @Override
+    public ZooArea findZooAreaByZooAreaDes(String description) {
+        return zooAreRepository.findByDescriptionContainingIgnoreCase(description);
     }
 
 

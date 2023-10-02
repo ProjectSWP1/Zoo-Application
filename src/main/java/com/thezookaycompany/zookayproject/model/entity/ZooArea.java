@@ -15,7 +15,7 @@ public class ZooArea {
     @Column(name = "ZooAreaID", nullable = false, updatable = false, length = 5)
     private String zooAreaId;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "description",nullable = false, length = 200)
     private String description;
 
     @OneToMany(mappedBy = "zooArea")

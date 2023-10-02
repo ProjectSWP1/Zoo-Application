@@ -3,6 +3,7 @@ package com.thezookaycompany.zookayproject.services;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Member;
+import com.thezookaycompany.zookayproject.model.entity.ZooArea;
 
 import java.util.List;
 
@@ -12,6 +13,13 @@ public interface MemberServices {
     Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember);
     List<Member> getAllMember();
     Member findMemberByPhoneNumber (String phoneNumber);
+
+    ZooArea findZooAreaByZooAreaID (String zooAreaId);
+
+    List<ZooArea> findAllZooArea();
+
+    ZooArea findZooAreaByZooAreaDes ( String description);
+
 
 
 }
