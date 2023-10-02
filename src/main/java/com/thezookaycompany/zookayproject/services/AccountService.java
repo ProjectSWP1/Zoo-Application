@@ -25,4 +25,5 @@ public interface AccountService {
     void updateVerifyToken (String token, String email) throws AccountNotFoundException;
 
     void verifyAccount(String email, String otp);
+
 }

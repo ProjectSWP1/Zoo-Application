@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.controller;
 
 
+import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
@@ -29,5 +30,13 @@ public class StaffController {
     public List<Account> getALlTrainer (@RequestParam String roleID){
 
         return accountRepository.findAllByRole(roleID);
+    }
+
+    @PostMapping("/modify-trainer")
+    public String updateAccountRole (@RequestBody AccountDto accountDto, @RequestParam String newRole){
+        
+        accountRepository.updateAccountRole(accountDto.getEmail(),newRole);
+
+        return "Update successfully";
     }
 }
