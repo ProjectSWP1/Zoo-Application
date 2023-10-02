@@ -59,8 +59,8 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Account registerUser(@RequestBody AccountDto accountDto, MemberDto memberDto) {
-        return accountService.addAccount(accountDto, memberDto);
+    public Account registerUser(@RequestBody RequestWrapper requestWrapper) {
+        return accountService.addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto());
     }
 
     @PostMapping("/send-email")
