@@ -5,13 +5,9 @@ import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.services.AccountService;
-import com.thezookaycompany.zookayproject.services.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 
 import javax.security.auth.login.AccountNotFoundException;
 
@@ -85,4 +81,31 @@ public class UserController {
         }
         return "Account verified successfully";
     }
+    @Autowired
+    private  MemberRepository memberRepository;
+    @Autowired
+    private  MemberServices memberServices;
+
+    @GetMapping("/member/all")
+    public List<Member> getAllMember(){
+
+        return memberRepository.findAll();
+    }
+    @GetMapping("/member/{phoneNumber}")
+    public Member findMemberByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
+
+        return memberRepository.findMemberByPhoneNumber(phoneNumber);
+    }
+    @PutMapping("/update/{phoneNumber}")
+    public ResponseEntity<Member> updateMemberByPhoneNumber(
+            @PathVariable String phoneNumber,
+            @RequestBody Member updatedMember) {
+        Member updated = memberServices.updateMemberByPhoneNumber(phoneNumber,updatedMember);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
