@@ -14,10 +14,11 @@ import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.EmailService;
-import org.springframework.http.HttpStatus;
+import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
+import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+
 
 @RestController
 @CrossOrigin("*")
@@ -115,5 +116,23 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+    @Autowired
+    private ZooAreaRepository zooAreRepository;
+    @GetMapping("/zoo-area/{zooAreaId}")
+    ZooArea findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
+
+        return zooAreRepository.findZooAreaByZooAreaId(zooAreaId);
+
+    }
+//@GetMapping("/zoo-area/{zooAreaId}")
+//public String findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
+//    ZooArea zooArea = memberServices.findZooAreaByZooAreaID(zooAreaId);
+//
+//    if (zooArea != null) {
+//        return zooArea.getDescription();
+//    } else {
+//        return "Zoo Area not found";
+//    }
+//}
 
 }
