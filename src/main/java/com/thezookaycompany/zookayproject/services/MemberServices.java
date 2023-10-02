@@ -16,6 +16,10 @@ public interface MemberServices {
 
     ZooArea findZooAreaByZooAreaID (String zooAreaId);
 
+    List<ZooArea> findAllZooArea();
+
+    ZooArea findZooAreaByZooAreaDes ( String description);
+
 
 
 }

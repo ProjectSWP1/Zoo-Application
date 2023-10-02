@@ -47,6 +47,16 @@ public class MemberServiceImpl implements MemberServices {
         return zooAreRepository.findZooAreaByZooAreaId(zooAreaId);
     }
 
+    @Override
+    public List<ZooArea> findAllZooArea() {
+        return zooAreRepository.findAll();
+    }
+
+    @Override
+    public ZooArea findZooAreaByZooAreaDes(String description) {
+        return zooAreRepository.findByDescriptionContainingIgnoreCase(description);
+    }
+
 
     @Override
     public Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember) {

@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ZooAreaRepository extends JpaRepository<ZooArea , String > {
     ZooArea findZooAreaByZooAreaId (String zooAreaId);
+    ZooArea findByDescriptionContainingIgnoreCase (String description);
 }

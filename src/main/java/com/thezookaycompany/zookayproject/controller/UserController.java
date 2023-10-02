@@ -117,22 +117,25 @@ public class UserController {
         }
     }
     @Autowired
-    private ZooAreaRepository zooAreRepository;
-    @GetMapping("/zoo-area/{zooAreaId}")
+    private ZooAreaRepository zooAreaRepository;
+
+    @GetMapping("/zoo-area/id/{zooAreaId}")
     ZooArea findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
 
-        return zooAreRepository.findZooAreaByZooAreaId(zooAreaId);
+        return memberServices.findZooAreaByZooAreaID(zooAreaId);
 
     }
-//@GetMapping("/zoo-area/{zooAreaId}")
-//public String findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
-//    ZooArea zooArea = memberServices.findZooAreaByZooAreaID(zooAreaId);
-//
-//    if (zooArea != null) {
-//        return zooArea.getDescription();
-//    } else {
-//        return "Zoo Area not found";
-//    }
-//}
+    @GetMapping("/zoo-area/des/{description}")
+    ZooArea findZooAreaByZooAreaDes(@PathVariable("description") String description) {
+
+        return memberServices.findZooAreaByZooAreaDes(description);
+
+    }
+
+    @GetMapping("/zoo-area/all")
+    public List <ZooArea> findAllZooArea(){
+        return  memberServices.findAllZooArea();
+    }
+
 
 }
