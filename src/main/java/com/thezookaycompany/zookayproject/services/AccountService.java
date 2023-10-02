@@ -6,6 +6,9 @@ import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 
+import javax.security.auth.login.AccountNotFoundException;
+import java.util.List;
+
 public interface AccountService {
     Account addAccount(AccountDto accountDto, MemberDto memberDto);
 
@@ -13,5 +16,13 @@ public interface AccountService {
 
     LoginResponse loginAccount(LoginDto loginDto);
 
+    void updateResetPwdToken (String token, String email) throws AccountNotFoundException;
 
+    Account getAccByPwdToken(String resetPwdToken);
+
+    void updatePassword(Account account, String newPassword);
+
+    void updateVerifyToken (String token, String email) throws AccountNotFoundException;
+
+    void verifyAccount(String email, String otp);
 }
