@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
     @Column(name = "RoleName", nullable = false)
     private String RoleName;
 
-    @OneToMany(mappedBy = "Account")
+    @OneToMany(mappedBy = "role")
     private Set<Account> AccountRole;
 
     public Role(String roleID, String roleName) {

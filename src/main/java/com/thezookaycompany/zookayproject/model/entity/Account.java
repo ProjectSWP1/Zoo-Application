@@ -30,7 +30,7 @@ public class Account implements UserDetails {
     @Column()
     private String vertificationToken;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
 

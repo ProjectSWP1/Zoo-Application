@@ -27,6 +27,6 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     Account findByResetPwdToken (String token);
 
-    @Query("SELECT a FROM Account a where a.role = ?1")
-    List<Account> findByRoleID(String RoleID);
+    @Query("SELECT a FROM Account a inner join a.role r where r.RoleID = ?1")
+    List<Account> findAllByRole(@Param("role") String RoleID);
 }

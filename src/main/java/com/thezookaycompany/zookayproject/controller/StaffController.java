@@ -21,13 +21,13 @@ public class StaffController {
     private AccountService accountService;
 
     @GetMapping("/")
-    public String helloAdmin() {
+    public String helloStaff() {
         return "Staff access";
     }
 
     @GetMapping("/view-trainer")
     public List<Account> getALlTrainer (@RequestParam String roleID){
 
-        return accountRepository.findByRoleID(roleID);
+        return accountRepository.findAllByRole(roleID);
     }
 }
