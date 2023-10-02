@@ -8,8 +8,16 @@ import com.thezookaycompany.zookayproject.model.entity.Account;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
-
 import javax.security.auth.login.AccountNotFoundException;
+import com.thezookaycompany.zookayproject.model.entity.Member;
+import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.MemberServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.services.EmailService;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @CrossOrigin("*")
