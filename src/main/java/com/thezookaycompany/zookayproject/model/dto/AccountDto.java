@@ -10,6 +10,11 @@ public class AccountDto {
     public AccountDto() {
     }
 
+    public AccountDto(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     public AccountDto(String email) {
         this.email = email;
     }

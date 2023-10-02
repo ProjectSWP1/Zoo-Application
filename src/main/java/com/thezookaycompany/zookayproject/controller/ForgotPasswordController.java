@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
+import com.thezookaycompany.zookayproject.model.dto.PasswordDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
@@ -72,7 +73,7 @@ public class ForgotPasswordController {
     }
 
     @PutMapping("/reset_password")
-    public String setPwd(@RequestParam String token, @RequestBody String newPassword) {
+    public String setPwd(@RequestParam String token, @RequestBody PasswordDto passwordDto) {
         // từ token lấy từ mail
         // check xem token có tồn tại kh
         // nếu tồn tại thì sẽ truy ra đc account đang giữ token đó
@@ -81,11 +82,21 @@ public class ForgotPasswordController {
         if (account == null){
             throw new RuntimeException("Invalid Token");
         }
-        // nếu account tồn tại
+            // nếu account tồn tại
         else{
-            // update password, resetPwdToken để ngăn người dùng sử dụng lại link token cũ để đổi mk
+            // check newPwd và confirmPwd giống
+            String newPassword = passwordDto.getNewPassword();
+            String confirmPassword = passwordDto.getConfirmPassword();
+
+            if (!newPassword.equals(confirmPassword)){
+                throw new RuntimeException("Password not match!");
+            } else {
+                // update password, resetPwdToken để ngăn người dùng sử dụng lại link token cũ để đổi mk
                 accountService.updatePassword(account, newPassword);
+            }
         }
         return "You have changed password successfully";
     }
+
+
 }
