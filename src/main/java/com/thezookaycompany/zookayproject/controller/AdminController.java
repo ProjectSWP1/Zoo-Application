@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/admin")
 public class AdminController {
+
     @GetMapping("/")
-    public String helloAdmin() {
-        return "Admin access";
+    public String adminAccess() {
+        return "Admin accessed";
     }
+
+
 }

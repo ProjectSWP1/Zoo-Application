@@ -27,7 +27,7 @@ public class StaffController {
     }
 
     @GetMapping("/view-trainer")
-    public List<Account> getALlTrainer (@RequestParam String roleID){
+    public List<Account> getAllTrainer (@RequestParam String roleID){
 
         return accountRepository.findAllByRole(roleID);
     }

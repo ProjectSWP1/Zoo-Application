@@ -18,7 +18,7 @@ public class Member {
     @Column(nullable = false, updatable = false, length = 12)
     private String phoneNumber;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = true, length = 30)
     private String name;
 
     @Column(nullable = false, length = 30)

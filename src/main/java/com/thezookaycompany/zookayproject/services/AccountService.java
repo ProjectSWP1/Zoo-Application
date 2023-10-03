@@ -10,7 +10,7 @@ import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
 
 public interface AccountService {
-    Account addAccount(AccountDto accountDto, MemberDto memberDto);
+    String addAccount(AccountDto accountDto, MemberDto memberDto);
 
     boolean assignRoleToAccount(Account account, String role_id);
 

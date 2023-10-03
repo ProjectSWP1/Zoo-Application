@@ -1,14 +1,7 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -17,28 +10,28 @@ import java.util.Set;
 public class Cage {
 
     @Id
-    @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cageID;
+    @Column(nullable = false, updatable = false, length = 10)
+    private String cageID;
 
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String description;
 
     @Column(nullable = false)
     private Integer capacity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "ZooAreaID", nullable = false)
     private ZooArea zooArea;
 
     @OneToMany(mappedBy = "cage")
     private Set<Animal> cageAnimals;
 
-    public Integer getCageID() {
+    public String getCageID() {
         return cageID;
     }
 
-    public void setCageID(final Integer cageID) {
+    public void setCageID(final String cageID) {
         this.cageID = cageID;
     }
 
