@@ -31,11 +31,21 @@ public class CageServiceImpl implements CageService {
         if(!Pattern.matches(CAGE_ID_REGEX, cageDto.getCageID())) {
             throw new InvalidCageException("Invalid Cage ID format. It should match the pattern Axxxx.");
         }
-        // Create a new Cage entity
+        //Find cage
+        if(cageRepository.findById(cageDto.getCageID()).isPresent()) {
+            throw new InvalidCageException("This Cage ID has existed.");
+        }
+
+        ZooArea zooArea = zooAreaRepository.findById(cageDto.getZoo_AreaID()).orElse(null);
+        if(zooArea == null) {
+            throw new InvalidCageException("Zoo Area not found");
+        }
         Cage cage = new Cage();
+        // Create a new Cage entity
         cage.setCageID(cageDto.getCageID());
         cage.setDescription(cageDto.getDescription());
         cage.setCapacity(cageDto.getCapacity());
+        cage.setZooArea(zooArea);
 
         // Save the Cage entity in the repository
         return cageRepository.save(cage);
@@ -71,6 +81,6 @@ public class CageServiceImpl implements CageService {
 
         cageRepository.delete(cage);
 
-        return "Deleted cage id: " + cage.getCageID();
+        return cage.getCageID();
     }
 }
