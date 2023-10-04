@@ -1,2 +1,19 @@
-package com.thezookaycompany.zookayproject.repositories;public interface TicketRepository {
+package com.thezookaycompany.zookayproject.repositories;
+
+import com.thezookaycompany.zookayproject.model.entity.Ticket;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+@Repository
+@EnableJpaRepositories
+public interface TicketRepository extends JpaRepository<Ticket,String> {
+    Ticket findTicketByTicketId(String ticketId);
+    @Query("SELECT t FROM Ticket t ORDER BY t.ticketPrice ASC")
+    List<Ticket> findAllByTicketPriceAsc();
+
+    @Query("SELECT t FROM Ticket t ORDER BY t.ticketPrice DESC")
+    List<Ticket> findAllByTicketPriceDesc();
 }
