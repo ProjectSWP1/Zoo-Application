@@ -3,7 +3,7 @@ package com.thezookaycompany.zookayproject.model.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class  Animal {
+public class Animal {
 
     @Id
     @Column(nullable = false, updatable = false)
