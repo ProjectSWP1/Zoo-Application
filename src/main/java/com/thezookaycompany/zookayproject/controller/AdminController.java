@@ -2,7 +2,9 @@ package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.exception.InvalidTicketException;
 import com.thezookaycompany.zookayproject.model.dto.TicketDto;
+import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
+import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,18 @@ public class AdminController {
     private TicketRepository ticketRepository;
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @GetMapping("/")
     public String adminAccess() {
         return "Admin accessed";
     }
 
+    @GetMapping("/getAccount")
+    public List<Account> getAllAccount(){
+        return accountRepository.findAll();
+    }
 
     //Tìm Ticket dựa vào TicketID
     @GetMapping("/get-ticket/{ticketId}")

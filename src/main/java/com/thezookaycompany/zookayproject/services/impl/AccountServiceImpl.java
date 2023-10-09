@@ -102,6 +102,10 @@ public class AccountServiceImpl implements AccountService {
             );
             // DEBUG: ko thể tìm thấy account
             Account acc = accountRepository.findByUsername(username).get();
+            boolean active = acc.isActive();
+            if (!active){
+                return new LoginResponse(null, "");
+            }
             String token = tokenService.generateJwt(auth);
 
             return new LoginResponse(acc, token);

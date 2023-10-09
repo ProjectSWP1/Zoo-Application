@@ -81,8 +81,8 @@ public class UserController {
             throw new RuntimeException(e);
         }
         return emailTokenResponse;
-
     }
+
 
     @PutMapping("/verify")
     public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
