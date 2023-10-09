@@ -1,20 +1,25 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.model.dto.*;
+
+import com.thezookaycompany.zookayproject.model.dto.AccountDto;
+import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
+import com.thezookaycompany.zookayproject.model.dto.LoginDto;
+import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.entity.Account;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import com.thezookaycompany.zookayproject.repositories.MemberRepository;
-import javax.security.auth.login.AccountNotFoundException;
 import com.thezookaycompany.zookayproject.model.entity.Member;
+import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.repositories.MemberRepository;
+import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.services.EmailService;
-import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
-import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import org.springframework.web.bind.annotation.*;
+
+import javax.security.auth.login.AccountNotFoundException;
+import java.util.List;
 
 
 @RestController
@@ -60,8 +65,9 @@ public class UserController {
         return accountService.loginAccount(loginDto);
     }
 
+
     @PostMapping("/register")
-    public Account registerUser(@RequestBody RequestWrapper requestWrapper) {
+    public String registerUser(@RequestBody RequestWrapper requestWrapper) {
         return accountService.addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto());
     }
 
@@ -75,6 +81,7 @@ public class UserController {
             throw new RuntimeException(e);
         }
         return emailTokenResponse;
+
     }
 
     @PutMapping("/verify")
@@ -131,7 +138,7 @@ public class UserController {
 
     @GetMapping("/zoo-area/all")
     public List <ZooArea> findAllZooArea(){
-        return  memberServices.findAllZooArea();
+        return memberServices.findAllZooArea();
     }
 
 }

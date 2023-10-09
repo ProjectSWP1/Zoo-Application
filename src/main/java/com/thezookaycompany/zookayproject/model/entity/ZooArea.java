@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -21,6 +22,7 @@ public class ZooArea {
     @OneToMany(mappedBy = "zooArea")
     private Set<Employees> zooAreaEmployees;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "zooArea")
     private Set<Cage> zooAreaCages;
 

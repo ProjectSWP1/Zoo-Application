@@ -57,7 +57,11 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public Account addAccount(AccountDto accountDto, MemberDto memberDto) {
+    public String addAccount(AccountDto accountDto, MemberDto memberDto) {
+        Account temp = accountRepository.findAccountByEmail(accountDto.getEmail());
+        if (temp != null) {
+            return "This account has existed";
+        }
         // Parse lại Email thành Username
         accountDto.setUsername(accountDto.getEmail().trim().split("@")[0]);
         String encodedPassword = passwordEncoder.encode(accountDto.getPassword());
@@ -72,7 +76,8 @@ public class AccountServiceImpl implements AccountService {
                 memberRepository.findMemberByPhoneNumber(memberDto.getPhoneNumber()),
                 userRole
         );
-        return accountRepository.save(acc);
+        accountRepository.save(acc);
+        return "New account added";
     }
 
     @Override
