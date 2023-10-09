@@ -23,7 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.Date;
 
 @Service
 @Transactional
@@ -157,10 +160,10 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Could not find any customer with email "+email));
-
-        // check otp trùng hoặc otp expired (5')
+        //Period.between(account.getOtpGeneratedTime(),)
+        // check otp trùng hoặc otp expired (2')
         if(account.getVertificationToken().equals(otp) || Duration.between(account.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds()< (5 *60)){
+                LocalDateTime.now()).getSeconds()< (2 *60)){
             account.setActive(true);
             accountRepository.save(account);
         }

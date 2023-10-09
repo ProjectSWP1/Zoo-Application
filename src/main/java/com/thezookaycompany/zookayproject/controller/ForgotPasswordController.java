@@ -64,13 +64,6 @@ public class ForgotPasswordController {
         return "Check your email to set new Password";
     }
 
-    @PostMapping("/test-send-email")
-    public String sendEmail(@RequestBody AccountDto accountDto) throws MessagingException {
-        String resetPwdLink = "localhost:8080/forgot/reset_password?token=";
-        emailService.sendEmailResetPwd(accountDto,resetPwdLink);
-
-        return "Email sent successfully!";
-    }
 
     @PutMapping("/reset_password")
     public String setPwd(@RequestParam String token, @RequestBody PasswordDto passwordDto) {

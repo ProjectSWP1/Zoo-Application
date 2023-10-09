@@ -1,9 +1,6 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
-import com.thezookaycompany.zookayproject.model.dto.MemberDto;
+import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -64,20 +61,20 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public Account registerUser(@RequestBody AccountDto accountDto, MemberDto memberDto) {
-        return accountService.addAccount(accountDto, memberDto);
+    public Account registerUser(@RequestBody RequestWrapper requestWrapper) {
+        return accountService.addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto());
     }
 
     @PostMapping("/send-email")
-    public String processSendMailWithToken(@RequestBody AccountDto accountDto){
-
+    public EmailTokenResponse processSendMailWithToken(@RequestBody AccountDto accountDto){
+            EmailTokenResponse emailTokenResponse;
         //send mail with token
         try {
-            emailService.sendVertificationEmail(accountDto);
+            emailTokenResponse =emailService.sendVertificationEmail(accountDto);
         } catch (AccountNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return "Please check your mail to get Vertification link";
+        return emailTokenResponse;
     }
 
     @PutMapping("/verify")
@@ -136,6 +133,5 @@ public class UserController {
     public List <ZooArea> findAllZooArea(){
         return  memberServices.findAllZooArea();
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.services.impl;
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
+import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
@@ -57,7 +58,7 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public void sendVertificationEmail(AccountDto accountDto) throws AccountNotFoundException {
+    public EmailTokenResponse sendVertificationEmail(AccountDto accountDto) throws AccountNotFoundException {
         //create and save otp
         String otp = RandomTokenGenerator.generateRandomOTP();
         accountService.updateVerifyToken(otp,accountDto.getEmail());
@@ -66,15 +67,15 @@ public class EmailServiceImpl implements EmailService {
         simpleMailMessage.setTo(accountDto.getEmail());
         simpleMailMessage.setSubject("[ZooKay] Verify Your Email Address");
 
-        String link = "http://localhost:8080/user/verify?email="+accountDto.getEmail()+"&otp="+otp;
+       // String link = "http://localhost:8080/user/verify?email="+accountDto.getEmail()+"&otp="+otp;
 
         // ** SAU DEPLOY SẼ SỬA LẠI LINK VỚI FORMAT HTML **
         String content = "Hello,\n" +
                 "\n" +
                 "Thank you for registering an account with us. To complete the registration process and verify your email address, please follow the steps below:\n" +
                 "\n" +
-                "Here is your vertification link:\n"
-                + link +
+                "Here is your vertification OTP:\n"
+                + otp +
 
                 "\n" +
                 "Once you've verified your email address, you'll be able to access your account and start using our services.\n" +
@@ -88,6 +89,7 @@ public class EmailServiceImpl implements EmailService {
 
         simpleMailMessage.setText(content);
         javaMailSender.send(simpleMailMessage);
+        return new EmailTokenResponse(accountDto.getEmail(),otp);
     }
 
 }
