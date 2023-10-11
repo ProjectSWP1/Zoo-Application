@@ -1,5 +1,8 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +14,7 @@ import java.util.Set;
 
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@speciesId")
 public class AnimalSpecies {
 
     @Id
@@ -25,6 +29,7 @@ public class AnimalSpecies {
     private String groups;
 
     @OneToMany(mappedBy = "species")
+//    @JsonBackReference
     private Set<Animal> speciesAnimals;
 
     @OneToMany(mappedBy = "species")

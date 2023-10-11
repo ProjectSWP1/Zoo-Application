@@ -1,12 +1,15 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.Set;
 
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@cageID")
 public class Cage {
 
     @Id
@@ -19,7 +22,6 @@ public class Cage {
     @Column(nullable = false)
     private Integer capacity;
 
-    @JsonBackReference
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "ZooAreaID", nullable = false)
     private ZooArea zooArea;
