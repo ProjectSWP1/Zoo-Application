@@ -1,17 +1,24 @@
 package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.exception.InvalidCageException;
+import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
+import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
 import com.thezookaycompany.zookayproject.model.dto.CageDto;
+import com.thezookaycompany.zookayproject.model.entity.Animal;
+import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
 import com.thezookaycompany.zookayproject.model.entity.Cage;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
+import com.thezookaycompany.zookayproject.services.AnimalService;
 import com.thezookaycompany.zookayproject.services.CageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,6 +35,11 @@ public class ManageController {
 
     @Autowired
     private ZooAreaRepository zooAreaRepository;
+
+    @Autowired
+    private AnimalRepository animalRepository;
+    @Autowired
+    private AnimalService animalService;
 
     // TRUY XUẤT DỮ LIỆU: VIEW (get) //
     // Hàm này để truy xuất tìm Zoo Cage dựa trên Zoo Area
@@ -99,5 +111,102 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cage not found with ID: " + cageId);
         }
     }
+    @GetMapping("/get-animal")
+    public AnimalResponse getAllAnimals(){
+        return animalService.getAllAnimal();
+    }
+
+    @GetMapping("/get-animal/{animalId}")
+    Animal findAnimalByAnimalID(@PathVariable("animalId") Integer animalId) {
+
+        return animalService.findAnimalByAnimalID(animalId);
+
+    }
+
+    @GetMapping("/get-animal-species/{speciesId}")
+    AnimalSpecies findAnimalSpeciesByAnimalID(@PathVariable("speciesId") Integer speciesId) {
+
+        return animalService.findAnimalByAnimalSpeciesID(speciesId);
+
+    }
+
+    @PostMapping("/create-animal") //chua test duoc
+    public Animal createAnimal(@RequestBody AnimalDto animalDto) {
+        return animalService.createAnimal(animalDto);
+    }
+
+
+    @PutMapping("/update-animal") //chua test duoc
+    public ResponseEntity<String> updateAnimal(@RequestBody AnimalDto animalDto) {
+        String updateResponse = animalService.updateAnimal(animalDto);
+
+        if (updateResponse.startsWith("Animal updated successfully.")) {
+            return ResponseEntity.ok(updateResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
+        }
+    }
+    @DeleteMapping("/remove-animal/{animalId}")
+    public ResponseEntity<String> removeAnimal(@PathVariable Integer animalId) {
+        try {
+            String deletedAnimalId = animalService.removeAnimal(animalId);
+            return ResponseEntity.ok("Animal cage id: " + deletedAnimalId);
+        } catch (InvalidCageException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal not found with ID: " + animalId);
+        }
+    }
+    @PostMapping("/create-animal-species") //chua test duoc
+    public ResponseEntity<String> createAnimalSpecies(@RequestBody AnimalSpecies animalSpecies) {
+        String response = animalService.createAnimalSpecies(animalSpecies);
+        return ResponseEntity.ok(response);
+    }
+    @PutMapping("/update-animal-species") //chua test duoc
+    public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalDto animalDto) {
+        String updateResponse = animalService.updateAnimalSpecies(animalDto);
+
+        if (updateResponse.startsWith("Animal Species updated successfully.")) {
+            return ResponseEntity.ok(updateResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
+        }
+    }
+
+    @DeleteMapping("/remove-animal-species/{speciesId}")
+    public ResponseEntity<String> removeAnimalSpecies(@PathVariable Integer speciesId) {
+        try {
+            String deletedAnimalSpId = animalService.removeAnimalSpecies(speciesId);
+            return ResponseEntity.ok("Animal Species cage id: " + deletedAnimalSpId);
+        } catch (InvalidCageException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal Species not found with ID: " + speciesId);
+        }
+    }
+    @GetMapping("/get-animal/height-ascending")
+    public List<Animal> getAnimalsByHeightAscending() {
+        return animalRepository.findAllByHeightAsc();
+    }
+    @GetMapping("/get-animal/height-descending")
+    public List<Animal> getAnimalsByHeightDescending() {
+        return animalRepository.findAllByHeightDesc();
+    }
+    @GetMapping("/get-animal/weight-ascending")
+    public List<Animal> getAnimalsByWeightAscending() {
+        return animalRepository.findAllByWeightAsc();
+    }
+    @GetMapping("/get-animal/weight-descending")
+    public List<Animal> getAnimalsByWeightDescending() {
+        return animalRepository.findAllByWeightDesc();
+    }
+    @GetMapping("/get-animal/age-ascending")
+    public List<Animal> getAnimalsByAgeAscending() {
+        return animalRepository.findAllByAgeAsc();
+    }
+    @GetMapping("/get-animal/age-descending")
+    public List<Animal> getAnimalsByAgeDescending() {
+        return animalRepository.findAllByAgeDesc();
+    }
+
+
+
+
 
 }
