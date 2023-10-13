@@ -1,10 +1,10 @@
 package com.thezookaycompany.zookayproject.controller;
 
 
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
-import com.thezookaycompany.zookayproject.model.dto.LoginDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.param.PaymentIntentCreateParams;
+import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
@@ -139,6 +139,34 @@ public class UserController {
     @GetMapping("/zoo-area/all")
     public List <ZooArea> findAllZooArea(){
         return memberServices.findAllZooArea();
+    }
+
+
+    //PAYMENT---------------------------------------------------------------------------
+    @PostMapping("/create-payment-intent")
+    public PaymentResponse createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
+
+        // create payment intent to confirm
+        PaymentIntentCreateParams params =
+                PaymentIntentCreateParams.builder()
+                        // createPayment for product cost how much...
+                        // object orderDto chứa total amount order
+                        .setAmount((long) (ordersDto.getTotalOrder() * 1000L))
+                        .putMetadata("TotalTickets", ordersDto.getDescription())
+                        .setCurrency("vnd")
+                        // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+                        .setAutomaticPaymentMethods(
+                                PaymentIntentCreateParams.AutomaticPaymentMethods
+                                        .builder()
+                                        .setEnabled(true)
+                                        .build()
+                        )
+                        .build();
+
+        // Create a PaymentIntent with the order amount and currency
+        PaymentIntent paymentIntent = PaymentIntent.create(params);
+
+        return new PaymentResponse(paymentIntent.getId(),paymentIntent.getClientSecret());
     }
 
 }

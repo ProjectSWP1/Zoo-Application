@@ -8,6 +8,22 @@ public class OrdersDto {
 
     private Date orderDate;
 
+    private Double totalOrder;
+
+    public Double getTotalOrder() {
+        return totalOrder;
+    }
+
+    public OrdersDto(Integer orderID, Double totalOrder) {
+        this.orderID = orderID;
+        this.totalOrder = totalOrder;
+    }
+
+
+    public void setTotalOrder(Double totalOrder) {
+        this.totalOrder = totalOrder;
+    }
+
     public OrdersDto(){
 
     }
