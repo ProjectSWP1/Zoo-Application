@@ -12,7 +12,14 @@ import java.util.List;
 public interface AccountService {
     String addAccount(AccountDto accountDto, MemberDto memberDto);
 
-    boolean assignRoleToAccount(Account account, String role_id);
+    String deactivateAccount(String email);
+
+    String removeAccount(String email);
+
+    List<Account> getAllAccount();
+    List<Account> getAllInactiveAccount();
+
+    boolean assignRoleToAccount(AccountDto accountDto, String role_id);
 
     LoginResponse loginAccount(LoginDto loginDto);
 

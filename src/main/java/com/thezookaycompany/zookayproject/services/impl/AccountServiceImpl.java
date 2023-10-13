@@ -5,11 +5,14 @@ import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Role;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import com.thezookaycompany.zookayproject.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Period;
-import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -53,20 +56,35 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private MemberServices memberServices;
 
-
+    @Autowired
+    private EmployeesRepository employeesRepository;
 
 
     @Override
     public String addAccount(AccountDto accountDto, MemberDto memberDto) {
+        if(accountDto.getEmail().isEmpty() || accountDto.getEmail() == null) {
+            return "Email field is empty";
+        }
+        memberDto.setPhoneNumber(accountDto.getPhoneNumber());
+
+        if(accountDto.getPhoneNumber().isEmpty() || accountDto.getPhoneNumber() == null || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
+            return "Invalid phone number, please try again";
+        }
+
+        if(memberDto.getDob() == null || memberDto.getDob().isEmpty()) {
+            return "You cannot leave empty date of birth field";
+        }
+
         Account temp = accountRepository.findAccountByEmail(accountDto.getEmail());
         if (temp != null) {
-            return "This account has existed";
+            return "This account has already existed";
         }
+
         // Parse lại Email thành Username
         accountDto.setUsername(accountDto.getEmail().trim().split("@")[0]);
         String encodedPassword = passwordEncoder.encode(accountDto.getPassword());
         Role userRole = roleRepository.findByRoleName("Member").get();
-
+        // tao la hai cu be
         // Add member trước rồi mới add account
         memberServices.addMember(accountDto, memberDto);
         Account acc = new Account(
@@ -74,17 +92,71 @@ public class AccountServiceImpl implements AccountService {
                 encodedPassword,
                 accountDto.getEmail(),
                 memberRepository.findMemberByPhoneNumber(memberDto.getPhoneNumber()),
-                userRole
+                userRole,
+                false
         );
         accountRepository.save(acc);
-        return "New account added";
+        return "You have registered successfully. To verify your email, check your gmail box";
     }
 
     @Override
-    public boolean assignRoleToAccount(Account account, String role_id) {
-        if (account.getRole() != null) {
-            account.setRole(roleRepository.findRoleByRoleID(role_id));
-            accountRepository.save(account);
+    public String deactivateAccount(String email) {
+        Account acc = accountRepository.findById(email).orElse(null);
+        if(acc != null) {
+            acc.setActive(false);
+            accountRepository.save(acc);
+            return "The account " + email + " has been successfully deactivated";
+        }
+        return "Not found account with email " + email;
+    }
+
+    @Override
+    public String removeAccount(String email) {
+        if(email == null || !email.contains("@")) {
+            return "Failed to check this email or invalid input";
+        }
+        Account acc = accountRepository.findById(email).orElse(null);
+        if(acc != null) {
+            // Tìm thằng Employee và xóa trước rồi xóa Account vì ràng buộc
+            Employees employees = employeesRepository.findEmployeesByEmail(acc);
+            if(employees == null) {
+                return "Cannot remove account because some constraints in Employee";
+            }
+            employeesRepository.delete(employees);
+            accountRepository.deleteById(acc.getEmail());
+            return "Deleted account " + email + " successfully";
+        }
+        return "Failed to find account with email " + email;
+    }
+
+    @Override
+    public List<Account> getAllAccount() {
+        return accountRepository.findAll();
+    }
+
+    @Override
+    public List<Account> getAllInactiveAccount() {
+        return accountRepository.findAccountsByActiveIsFalse();
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "0[0-9]{9}";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(phoneNumber);
+
+        return matcher.matches();
+    }
+
+    @Override
+    public boolean assignRoleToAccount(AccountDto accountDto, String role_id) {
+        if(!roleRepository.existsById(role_id)) {
+            return false;
+        }
+        if(accountRepository.existsById(accountDto.getEmail())) {
+            Account acc = accountRepository.findById(accountDto.getEmail()).get();
+            acc.setRole(roleRepository.findById(role_id).get());
+            accountRepository.save(acc);
             return true;
         }
         return false;
@@ -100,7 +172,6 @@ public class AccountServiceImpl implements AccountService {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(username, loginDto.getPassword())
             );
-            // DEBUG: ko thể tìm thấy account
             Account acc = accountRepository.findByUsername(username).get();
             boolean active = acc.isActive();
             if (!active){
@@ -156,7 +227,7 @@ public class AccountServiceImpl implements AccountService {
 
         // nếu tồn tại thì set verify Token
         if (account !=null){
-            account.setVertificationToken(token);
+            account.setVerificationToken(token);
             account.setOtpGeneratedTime(LocalDateTime.now());
             accountRepository.save(account);
         } else {
@@ -171,13 +242,10 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new RuntimeException("Could not find any customer with email "+email));
         //Period.between(account.getOtpGeneratedTime(),)
         // check otp trùng hoặc otp expired (2')
-        if(account.getVertificationToken().equals(otp) || Duration.between(account.getOtpGeneratedTime(),
+        if(account.getVerificationToken().equals(otp) || Duration.between(account.getOtpGeneratedTime(),
                 LocalDateTime.now()).getSeconds()< (2 *60)){
             account.setActive(true);
             accountRepository.save(account);
         }
     }
-
-
-
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @EnableJpaRepositories
-public interface ZooAreaRepository extends JpaRepository<ZooArea , String > {
+public interface ZooAreaRepository extends JpaRepository<ZooArea , String> {
     ZooArea findZooAreaByZooAreaId (String zooAreaId);
     ZooArea findByDescriptionContainingIgnoreCase (String description);
     ZooArea getZooAreaByZooAreaId(String id);

@@ -12,16 +12,8 @@ import java.util.Optional;
 @RequestMapping("/home")
 public class MainController {
 
-    @Autowired
-    private EmployeesRepository employeesRepository;
-
     @RequestMapping("/hello")
     public String home() {
         return "hello there";
-    }
-
-    @PostMapping("/test")
-    public Optional<Employees> getEmployees(@RequestBody Integer EmpID) {
-        return employeesRepository.findById(EmpID);
     }
 }

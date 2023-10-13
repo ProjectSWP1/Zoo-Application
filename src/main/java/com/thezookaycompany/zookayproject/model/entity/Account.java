@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -28,22 +27,22 @@ public class Account implements UserDetails {
     private String resetPwdToken;
 
     @Column()
-    private String vertificationToken;
+    private String verificationToken;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
 
     private LocalDateTime otpGeneratedTime;
-    private boolean Active;
+    private boolean active;
 
     public boolean isActive() {
-        return Active;
+        return active;
     }
 
 
     public void setActive(boolean active) {
-        Active = active;
+        this.active = active;
     }
 
     public LocalDateTime getOtpGeneratedTime() {
@@ -62,12 +61,12 @@ public class Account implements UserDetails {
         this.resetPwdToken = resetPwdToken;
     }
 
-    public String getVertificationToken() {
-        return vertificationToken;
+    public String getVerificationToken() {
+        return verificationToken;
     }
 
-    public void setVertificationToken(String vertificationToken) {
-        this.vertificationToken = vertificationToken;
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
     }
 
     public Account() {
@@ -90,6 +89,14 @@ public class Account implements UserDetails {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
+    }
+    public Account(String username, String password, String email, Member phoneNumber, Role role, boolean active) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.active = active;
+        this.phoneNumber = phoneNumber;
     }
 
     public Role getRole() {

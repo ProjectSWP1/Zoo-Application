@@ -16,6 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.sql.Date;
+import java.util.List;
+
 @SpringBootApplication
 public class ZookayprojectApplication {
 
@@ -41,11 +44,18 @@ public class ZookayprojectApplication {
 //			roleRepository.save(new Role("ST", "Staff"));
 
 			// Tạo account cho admin truy cập
-			Member member = new Member("0909090909", "admin", "admin@official.zookay.com", "empty", 1, "UNDEFINED");
-			memberRepository.save(member);
-			Account accAdmin = new Account("admin", passwordEncoder.encode("123123"), "admin@official.zookay.com", member, new Role("AD", "Admin"));
-
-			accountRepository.save(accAdmin);
+//			Member member = new Member("0909090909", "admin", "admin@official.zookay.com", "empty", 1, "UNDEFINED", Date.valueOf("1994-04-25"));
+//			memberRepository.save(member);
+//			Account accAdmin = new Account(
+//					"admin",
+//					passwordEncoder.encode("123123"),
+//					"admin@official.zookay.com",
+//					new Role("AD", "Admin"),
+//					true,
+//					member
+//			);
+//
+//			accountRepository.save(accAdmin);
 		};
 	}
 

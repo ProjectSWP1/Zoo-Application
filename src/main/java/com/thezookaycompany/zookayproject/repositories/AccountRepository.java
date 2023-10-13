@@ -39,4 +39,6 @@ public interface AccountRepository extends JpaRepository<Account, String> {
     @Query("UPDATE Account a SET a.role.RoleID = :newRoleID WHERE a.email = :email")
     void updateAccountRole(@Param("email") String email, @Param("newRoleID") String newRoleID);
 
+    List<Account> findAccountsByActiveIsFalse();
+
 }

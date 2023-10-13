@@ -1,14 +1,17 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@animalId")
 public class Animal {
 
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int animalId;
+    private Integer animalId;
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -28,15 +31,16 @@ public class Animal {
     @Column(nullable = false)
     private double height;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SpeciesID", nullable = false)
     private AnimalSpecies species;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CageID", nullable = false)
     private Cage cage;
 
-    public int getAnimalId() {
+
+    public Integer getAnimalId() {
         return animalId;
     }
 
@@ -106,6 +110,14 @@ public class Animal {
 
     public void setCage(final Cage cage) {
         this.cage = cage;
+    }
+
+    public String getCageID() {
+        return cage.getCageID();
+    }
+
+    public Integer getSpeciesID() {
+        return species.getSpeciesId();
     }
 
 }
