@@ -27,14 +27,14 @@
   <p align="center">
     This project has a lot of animals!
     <br />
-    <a href=" "><strong>Explore the docs »</strong></a>
+    <a href="https://docs.google.com/document/d/1A21MRgBKKfpAjtRJtAEEViYRl7eNvdMIo8tBW94bHmk/edit?usp=sharing"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href=" ">View Demo</a>
+    <a href="#about-the-project">View Demo</a>
     ·
-    <a href=" ">Report Bug</a>
+    <a href="https://github.com/ProjectSWP1/Zoo-Application/issues/new">Report Bug</a>
     ·
-    <a href=" ">Request Feature</a>
+    <a href="https://github.com/ProjectSWP1/Zoo-Application/issues">Request Feature</a>
   </p>
 </div>
 
@@ -75,8 +75,9 @@
 ![spring-security-sourcecode](https://github.com/ProjectSWP1/Zoo-Application/blob/master/screenshots/spring-security-sourcecode.png)
 ![reactjs-main-page-showcase](https://github.com/ProjectSWP1/Zoo-Application/blob/master/screenshots/reactjs-main-page-showcase.png)
 
-The Zoo Kay is a zoo project with a focus on showcasing a wide variety of monkeys. This README serves as a comprehensive guide to understand and contribute to the project.
-Moreover this project can be managed and maintained by Administrators and Staff.
+The Zoo Kay is a zoo project with a focus on showcasing a wide variety of animal species. Moreover, this web application is held for the Admin, Staff, and Zoo Trainer to manage their zoo more easily. Not only for management, but the guest can also book a ticket online to visit the zoo. The guest can also become a member by registering an account and then verifying the email. Every time they have bought a ticket or some events are going to be organized in the zoo, members can get free vouchers and so on...!
+
+Free to become a Member, and even you get a voucher to have a discount on buying a ticket! Amazing right?
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -121,8 +122,15 @@ Clone the repo
 
 - [x] Add Changelog
 - [x] Add back to top links
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Design Web pages project then upload to git
+- [x] Add "components" document to easily copy & paste sections of the readme
+- [x] Design Web pages project then upload to git
+- [x] Create management repositories for Admin
+- [x] Create management repositories for Staff
+- [x] Create register/login account
+- [x] Buy ticket function and prepare payment
+- [ ] Fully connect to FrontEnd Code (ReactJS)
+- [ ] Clean code
+- [ ] Deploy on Azure
 - [ ] Multi-language Support
     - [ ] English
     - [ ] Japanese
