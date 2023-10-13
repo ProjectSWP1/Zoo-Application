@@ -155,7 +155,7 @@ public class UserController {
     @GetMapping("/google")
     public Map<String, Object> getUserGoogleLogin(@AuthenticationPrincipal OAuth2User oAuth2User) {
         return oAuth2User.getAttributes();
-
+    }
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
     public PaymentResponse createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
