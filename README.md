@@ -71,9 +71,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-![spring-boot-sourcecode](https://github.com/ProjectSWP1/Zoo-Application/tree/master/screenshots/spring-boot-sourcecode.png)
-![spring-security-sourcecode](https://github.com/ProjectSWP1/Zoo-Application/tree/master/screenshots/spring-security-sourcecode.png)
-![reactjs-main-page-showcase](https://github.com/ProjectSWP1/Zoo-Application/tree/master/screenshots/reactjs-main-page-showcase.png)
+![spring-boot-sourcecode](https://github.com/ProjectSWP1/Zoo-Application/blob/master/screenshots/spring-boot-sourcecode.png)
+![spring-security-sourcecode](https://github.com/ProjectSWP1/Zoo-Application/blob/master/screenshots/spring-security-sourcecode.png)
+![reactjs-main-page-showcase](https://github.com/ProjectSWP1/Zoo-Application/blob/master/screenshots/reactjs-main-page-showcase.png)
 
 The Zoo Kay is a zoo project with a focus on showcasing a wide variety of monkeys. This README serves as a comprehensive guide to understand and contribute to the project.
 Moreover this project can be managed and maintained by Administrators and Staff.
