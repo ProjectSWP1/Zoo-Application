@@ -7,17 +7,19 @@ public class MemberDto {
     private String email;
     private String gender;
     private String name;
+    private String dob;
 
     public MemberDto() {
     }
 
-    public MemberDto(String phoneNumber, String address, int age, String email, String gender, String name) {
+    public MemberDto(String phoneNumber, String address, int age, String email, String gender, String name, String dob) {
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.age = age;
         this.email = email;
         this.gender = gender;
         this.name = name;
+        this.dob = dob;
     }
 
     public String getPhoneNumber() {
@@ -66,5 +68,13 @@ public class MemberDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
     }
 }

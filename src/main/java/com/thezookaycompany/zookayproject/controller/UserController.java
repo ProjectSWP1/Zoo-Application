@@ -1,8 +1,6 @@
 package com.thezookaycompany.zookayproject.controller;
 
-
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
 import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.entity.Account;
@@ -15,11 +13,15 @@ import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -50,6 +52,7 @@ public class UserController {
         return "User accessed";
     }
 
+    // TODO: Clean code > chuyển toàn bộ account repository sang account services
     @PostMapping("/findUser")
     public Account getUser(@RequestBody AccountDto accountDto) {
         return accountRepository.findOneByEmail(accountDto.getEmail());
@@ -65,24 +68,27 @@ public class UserController {
         return accountService.loginAccount(loginDto);
     }
 
-
     @PostMapping("/register")
-    public String registerUser(@RequestBody RequestWrapper requestWrapper) {
-        return accountService.addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto());
+    public ResponseEntity<?> registerUser(@RequestBody RequestWrapper requestWrapper) {
+        String response = accountService.addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto());
+        if(response.contains("success")) {
+            System.out.println("New account has been added");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        return ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/send-email")
-    public EmailTokenResponse processSendMailWithToken(@RequestBody AccountDto accountDto){
-            EmailTokenResponse emailTokenResponse;
+    public String processSendMailWithToken(@RequestBody AccountDto accountDto){
+
         //send mail with token
         try {
-            emailTokenResponse =emailService.sendVertificationEmail(accountDto);
+            emailService.sendVertificationEmail(accountDto);
         } catch (AccountNotFoundException e) {
             throw new RuntimeException(e);
         }
-        return emailTokenResponse;
+        return "Please check your mail to get Verification link";
     }
-
 
     @PutMapping("/verify")
     public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
@@ -139,6 +145,11 @@ public class UserController {
     @GetMapping("/zoo-area/all")
     public List <ZooArea> findAllZooArea(){
         return memberServices.findAllZooArea();
+    }
+
+    @GetMapping("/google")
+    public Map<String, Object> getUserGoogleLogin(@AuthenticationPrincipal OAuth2User oAuth2User) {
+        return oAuth2User.getAttributes();
     }
 
 }

@@ -1,8 +1,6 @@
 package com.thezookaycompany.zookayproject.repositories;
 
-import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import com.thezookaycompany.zookayproject.model.entity.Animal;
-import com.thezookaycompany.zookayproject.model.entity.Cage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +11,7 @@ import java.util.List;
 @Repository
 public interface AnimalRepository extends JpaRepository<Animal, Integer> {
 //    List<AnimalDto> findAnimalByCage(Cage cage);
+
     Animal findAnimalsByAnimalId(Integer animalId);
     @Query("SELECT a FROM Animal a JOIN FETCH a.species JOIN FETCH a.cage WHERE a.animalId = :animalId")
     Animal findAnimalWithSpeciesAndCage(@Param("animalId") Integer animalId);

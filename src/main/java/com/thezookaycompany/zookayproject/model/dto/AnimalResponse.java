@@ -1,30 +1,25 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
 import com.thezookaycompany.zookayproject.model.entity.Animal;
-import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
-import com.thezookaycompany.zookayproject.model.entity.Cage;
 
 import java.util.List;
 
 public class AnimalResponse {
-    private List<Animal> animals;
-
+    private List<Animal> animal;
 
     public AnimalResponse() {
         super();
     }
 
-    public List<Animal> getAnimals() {
-        return animals;
+    public AnimalResponse(List<Animal> animal) {
+        this.animal = animal;
     }
 
-    public void setAnimals(List<Animal> animals) {
-        this.animals = animals;
+    public List<Animal> getAnimal() {
+        return animal;
     }
 
-
-    public AnimalResponse(List<Animal> animals) {
-        this.animals = animals;
+    public void setAnimal(List<Animal> animal) {
+        this.animal = animal;
     }
-
 }

@@ -1,15 +1,9 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Set;
-
 
 @Entity
 public class AnimalFood {
@@ -26,7 +20,8 @@ public class AnimalFood {
     private String origin;
 
     @Column(nullable = false)
-    private LocalDate importDate;
+    @Temporal(TemporalType.DATE)
+    private Date importDate;
 
     @Column(nullable = false)
     private String description;
@@ -58,11 +53,11 @@ public class AnimalFood {
         this.origin = origin;
     }
 
-    public LocalDate getImportDate() {
+    public Date getImportDate() {
         return importDate;
     }
 
-    public void setImportDate(final LocalDate importDate) {
+    public void setImportDate(final Date importDate) {
         this.importDate = importDate;
     }
 

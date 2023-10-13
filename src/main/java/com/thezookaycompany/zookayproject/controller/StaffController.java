@@ -2,10 +2,14 @@ package com.thezookaycompany.zookayproject.controller;
 
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
+import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +23,7 @@ public class StaffController {
     private AccountRepository accountRepository;
 
     @Autowired
-    private AccountService accountService;
+    private ZooNewsService zooNewsService;
 
     @GetMapping("/")
     public String helloStaff() {
@@ -27,9 +31,8 @@ public class StaffController {
     }
 
     @GetMapping("/view-trainer")
-    public List<Account> getAllTrainer (@RequestParam String roleID){
-
-        return accountRepository.findAllByRole(roleID);
+    public List<Account> getAllTrainer (){
+        return accountRepository.findAllByRole("ZT");
     }
 
     @PostMapping("/modify-trainer")
@@ -38,5 +41,21 @@ public class StaffController {
         accountRepository.updateAccountRole(accountDto.getEmail(),newRole);
 
         return "Update successfully";
+    }
+
+    @PostMapping("/postnews")
+    public ResponseEntity<String> postNews(@RequestBody ZooNewsDto zooNewsDto) {
+        String updatedResponse = zooNewsService.postNews(zooNewsDto);
+
+        if(updatedResponse.contains("success")) {
+            return ResponseEntity.ok(updatedResponse);
+        } else {
+            return ResponseEntity.badRequest().body(updatedResponse);
+        }
+    }
+
+    @GetMapping("/getnews")
+    public List<ZooNews> getAllNews() {
+        return zooNewsService.getNews();
     }
 }

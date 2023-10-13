@@ -3,6 +3,7 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.thezookaycompany.zookayproject.exception.InvalidAnimalException;
 import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
+import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
 import com.thezookaycompany.zookayproject.model.entity.Animal;
 import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
 import com.thezookaycompany.zookayproject.model.entity.Cage;
@@ -14,34 +15,65 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 public class AnimalServiceImpl implements AnimalService {
+
+    private static final String CAGE_ID_REGEX = "A\\d{4}";
+
     @Autowired
     private AnimalRepository animalRepository;
     @Autowired
     private CageRepository cageRepository;
     @Autowired
     private AnimalSpeciesRepository animalSpeciesRepository;
-    @Override
-
-    public Animal findAnimalByAnimalGroup(String groups) {
-        return null;
-    }
 
     @Override
     public Animal findAnimalByAnimalID(Integer animalId) {
         return animalRepository.findAnimalsByAnimalId(animalId);
     }
     @Override //chua test duoc
-    public Animal createAnimal(AnimalDto animalDto) {
-        //Find Animal
-        if (animalRepository.findById(animalDto.getAnimalId()).isPresent()) {
-            throw new InvalidAnimalException("This Animal ID has existed.");
+    public String createAnimal(AnimalDto animalDto) {
+        // Check validate
+        if(animalDto.getAge() <= 0) {
+            return "The age cannot be empty or less than zero";
         }
+
+        if(animalDto.getWeight() <= 0.0) {
+            return "The weight field must be above 0";
+        }
+
+        if(animalDto.getHeight() <= 0.0) {
+            return "The height field must be above 0";
+        }
+
+        if(animalDto.getDescription() == null || animalDto.getDescription().isEmpty() || animalDto.getDescription().length() >= 256) {
+            return "The description cannot be empty or greater than 256 characters";
+        }
+
+        if(animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
+            return "The name cannot be empty or greater than 21 characters";
+        }
+
+        if(animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
+            return "The cage id field cannot be empty, please fill it by format Axxxx";
+        }
+
+        if(animalDto.getSpeciesId() == null) {
+            return "The species id field cannot be empty";
+        }
+
         //Create
-        Cage cage = cageRepository.getReferenceById(animalDto.getCageID());
-        AnimalSpecies animalSpecies = animalSpeciesRepository.getReferenceById(animalDto.getSpeciesId());
+        Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
+        if(cage == null) {
+            return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
+        }
+
+        AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
+        if(animalSpecies == null) {
+            return "The animal species " + animalDto.getSpeciesId() +  " cannot be found, please try other";
+        }
         Animal newAnimal = new Animal();
         newAnimal.setAnimalId(animalDto.getAnimalId());
         newAnimal.setAge(animalDto.getAge());
@@ -52,13 +84,56 @@ public class AnimalServiceImpl implements AnimalService {
         newAnimal.setWeight(animalDto.getWeight());
         newAnimal.setCage(cage);
         newAnimal.setSpecies(animalSpecies);
-        return animalRepository.save(newAnimal);
+        animalRepository.save(newAnimal);
+
+        return "New animal has been added successfully";
     }
 
 
 
-    @Override //chua test duoc
+    @Override
     public String updateAnimal(AnimalDto animalDto) {
+        if(animalDto.getAnimalId() == null) {
+            return "Animal ID is empty, failed to update";
+        }
+        if(animalDto.getAge() <= 0) {
+            return "The age cannot be empty or less than zero";
+        }
+
+        if(animalDto.getWeight() <= 0.0) {
+            return "The weight field must be above 0";
+        }
+
+        if(animalDto.getHeight() <= 0.0) {
+            return "The height field must be above 0";
+        }
+
+        if(animalDto.getDescription() == null || animalDto.getDescription().isEmpty() || animalDto.getDescription().length() >= 256) {
+            return "The description cannot be empty or greater than 256 characters";
+        }
+
+        if(animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
+            return "The name cannot be empty or greater than 21 characters";
+        }
+
+        if(animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
+            return "The cage id field cannot be empty, please fill it by format Axxxx";
+        }
+
+        if(animalDto.getSpeciesId() == null) {
+            return "The species id field cannot be empty";
+        }
+
+        //Create
+        Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
+        if(cage == null) {
+            return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
+        }
+
+        AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
+        if(animalSpecies == null) {
+            return "The animal species " + animalDto.getSpeciesId() +  " cannot be found, please try other";
+        }
         Animal existingAnimal = animalRepository.findById(animalDto.getAnimalId()).orElse(null);
         if (existingAnimal != null) {
             // Update the fields of the existing animal with the values from the DTO
@@ -69,9 +144,6 @@ public class AnimalServiceImpl implements AnimalService {
             existingAnimal.setName(animalDto.getName());
             existingAnimal.setWeight(animalDto.getWeight());
 
-            // Update the associated Cage and Species as needed (similar to your createAnimal method)
-            Cage cage = cageRepository.getReferenceById(animalDto.getCageID());
-            AnimalSpecies animalSpecies = animalSpeciesRepository.getReferenceById(animalDto.getSpeciesId());
             existingAnimal.setCage(cage);
             existingAnimal.setSpecies(animalSpecies);
 
@@ -83,8 +155,6 @@ public class AnimalServiceImpl implements AnimalService {
         } else {
             return "Animal not found with ID: " + animalDto.getAnimalId();
         }
-
-
     }
 
 
@@ -106,36 +176,55 @@ public class AnimalServiceImpl implements AnimalService {
         return animalRepository.findAnimalWithSpeciesAndCage(animalId);
     }
 
-
-
-    @Override //chua test duoc
-    public String createAnimalSpecies(AnimalSpecies animalSpecies) {
-
-        if (animalSpeciesRepository.findById(animalSpecies.getSpeciesId()).isPresent()) {
-            throw new InvalidAnimalException("This Animal Species ID has existed.");
+    @Override
+    public String createAnimalSpecies(AnimalSpeciesDto animalSpeciesDto) {
+        if( animalSpeciesDto.getGroups() == null || animalSpeciesDto.getGroups().isEmpty() || animalSpeciesDto.getGroups().length() > 100) {
+            return "Invalid data in group field";
         }
-        AnimalSpecies newAnimalSpecies = new AnimalSpecies();
-        newAnimalSpecies.setSpeciesId(animalSpecies.getSpeciesId());
-        newAnimalSpecies.setName(animalSpecies.getName());
-        newAnimalSpecies.setGroups(animalSpecies.getGroups());
-        animalSpeciesRepository.save(newAnimalSpecies);
+
+        if(animalSpeciesDto.getName() == null || animalSpeciesDto.getName().isEmpty() || animalSpeciesDto.getName().length() > 30) {
+            return "Invalid data in name field";
+        }
+        AnimalSpecies animalSpecies = new AnimalSpecies();
+        if(animalSpeciesDto.getSpeciesId() != null) {
+            AnimalSpecies temp = animalSpeciesRepository.findById(animalSpeciesDto.getSpeciesId()).orElse(null);
+            if(temp != null) {
+                return "This ID has already existed";
+            }
+            animalSpecies.setSpeciesId(animalSpeciesDto.getSpeciesId());
+        }
+        animalSpecies.setGroups(animalSpeciesDto.getGroups());
+        animalSpecies.setName(animalSpeciesDto.getName());
+
+        animalSpeciesRepository.save(animalSpecies);
+
         return "Animal Species created successfully.";
     }
 
-    @Override // chua test duoc
-    public String updateAnimalSpecies(AnimalDto animalDto) {
-        AnimalSpecies existingAnimalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
-        if (existingAnimalSpecies != null) {
-            // Update the fields of the existing animal species with the values from the DTO
-            existingAnimalSpecies.setName(animalDto.getSpeciesName());
-            existingAnimalSpecies.setGroups(animalDto.getGroups());
+    @Override
+    public String updateAnimalSpecies(AnimalSpeciesDto animalSpeciesDto) {
+        if(animalSpeciesDto.getSpeciesId() == null) {
+            return "Please input Species ID field";
+        }
+        if( animalSpeciesDto.getGroups() == null || animalSpeciesDto.getGroups().isEmpty() || animalSpeciesDto.getGroups().length() > 100) {
+            return "Invalid data in group field";
+        }
 
+        if(animalSpeciesDto.getName() == null || animalSpeciesDto.getName().isEmpty() || animalSpeciesDto.getName().length() > 30) {
+            return "Invalid data in name field";
+        }
+        AnimalSpecies existingAnimalSpecies = animalSpeciesRepository.findById(animalSpeciesDto.getSpeciesId()).orElse(null);
+        if (existingAnimalSpecies != null) {
+
+
+            existingAnimalSpecies.setName(animalSpeciesDto.getName());
+            existingAnimalSpecies.setGroups(animalSpeciesDto.getGroups());
             // Save the updated AnimalSpecies entity to the database
             animalSpeciesRepository.save(existingAnimalSpecies);
 
             return "Animal Species updated successfully";
         } else {
-            return "Animal Species not found with ID: " + animalDto.getSpeciesId();
+            return "Animal Species not found with ID: " + animalSpeciesDto.getSpeciesId();
         }
     }
 
@@ -148,7 +237,6 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public AnimalSpecies findAnimalByAnimalSpeciesID(Integer speciesId) {
-
         return animalSpeciesRepository.findAnimalSpeciesBySpeciesId(speciesId);
     }
 }

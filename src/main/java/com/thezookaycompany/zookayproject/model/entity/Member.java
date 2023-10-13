@@ -1,13 +1,9 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
+import java.util.Date;
 import java.util.Set;
 
 
@@ -27,8 +23,12 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "age")
     private int age;
+
+    @Column(nullable = true, name = "dob")
+    @Temporal(TemporalType.DATE)
+    private Date dob;
 
     @Column(nullable = false, length = 10)
     private String gender;
@@ -53,13 +53,14 @@ public class Member {
     @OneToMany(mappedBy = "phoneNumber")
     private Set<Account> phoneNumberAccounts;
 
-    public Member(String phoneNumber, String name, String email, String address, int age, String gender) {
+    public Member(String phoneNumber, String name, String email, String address, int age, String gender, Date dob) {
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.email = email;
         this.address = address;
         this.age = age;
         this.gender = gender;
+        this.dob = dob;
     }
 
     public String getName() {
@@ -118,4 +119,11 @@ public class Member {
         this.phoneNumberAccounts = phoneNumberAccounts;
     }
 
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
 }

@@ -1,7 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.*;
-import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -12,7 +11,7 @@ public class Animal {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int animalId;
+    private Integer animalId;
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -41,7 +40,7 @@ public class Animal {
     private Cage cage;
 
 
-    public int getAnimalId() {
+    public Integer getAnimalId() {
         return animalId;
     }
 
