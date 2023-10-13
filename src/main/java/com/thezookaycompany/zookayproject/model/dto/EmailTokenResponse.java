@@ -2,11 +2,13 @@ package com.thezookaycompany.zookayproject.model.dto;
 
 public class EmailTokenResponse {
     private String email;
-    private String otp;
+    private String otp_token;
 
-    public EmailTokenResponse(String email, String otp) {
+
+
+    public EmailTokenResponse(String email, String otp_token) {
         this.email = email;
-        this.otp = otp;
+        this.otp_token = otp_token;
     }
 
     public String getEmail() {
@@ -18,10 +20,10 @@ public class EmailTokenResponse {
     }
 
     public String getOtp() {
-        return otp;
+        return otp_token;
     }
 
-    public void setOtp(String otp) {
-        this.otp = otp;
+    public void setOtp(String otp_token) {
+        this.otp_token = otp_token;
     }
 }

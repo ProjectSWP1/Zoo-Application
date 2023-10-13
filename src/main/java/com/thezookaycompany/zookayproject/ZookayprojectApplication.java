@@ -1,11 +1,14 @@
 package com.thezookaycompany.zookayproject;
 
+import com.stripe.Stripe;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.Role;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +21,14 @@ import java.util.List;
 
 @SpringBootApplication
 public class ZookayprojectApplication {
+
+	@Value("${stripe.api.key}")
+	private String secretKey;
+
+	@PostConstruct
+	public void setup (){
+		Stripe.apiKey = secretKey;
+	}
 
 	public static void main(String[] args) {
 

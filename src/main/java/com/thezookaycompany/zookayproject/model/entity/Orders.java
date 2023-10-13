@@ -31,6 +31,15 @@ public class Orders {
     @OneToMany(mappedBy = "order")
     private Set<Member> orderMembers;
 
+
+    public Double calculateTotalPriceOrder() {
+        Double total = 0.0;
+        for (Ticket ticket : orderDetailTickets) {
+            total += ticket.getTicketPrice();
+        }
+        return total;
+    }
+
     public Integer getOrderID() {
         return orderID;
     }

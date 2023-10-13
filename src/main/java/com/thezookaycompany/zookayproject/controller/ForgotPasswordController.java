@@ -21,21 +21,10 @@ public class ForgotPasswordController {
     @Autowired
     private AccountService accountService;
 
-    @Autowired
-    private JavaMailSender javaMailSender;
 
     @Autowired
     private EmailService emailService;
 
-
-    @GetMapping("/forgotPwd")
-    public String forgotPwdForm (Model model){
-
-        model.addAttribute("formTitle","Forgot Password");
-
-        // return view name
-        return "forgotPwdForm";
-    }
 
     @PostMapping("/send-email")
     public String phaseForgotPwdForm(@RequestBody AccountDto accountDto){
