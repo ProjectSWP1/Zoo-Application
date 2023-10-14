@@ -115,7 +115,7 @@ public class ManageController {
             String deletedCageId = cageService.removeCage(cageId);
             return ResponseEntity.ok("Deleted cage id: " + deletedCageId);
         } catch (InvalidCageException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cage not found with ID: " + cageId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + cageId);
         }
     }
     @GetMapping("/get-animal")

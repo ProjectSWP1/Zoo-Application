@@ -2,8 +2,10 @@ package com.thezookaycompany.zookayproject.services.impl;
 
 import com.thezookaycompany.zookayproject.exception.InvalidCageException;
 import com.thezookaycompany.zookayproject.model.dto.CageDto;
+import com.thezookaycompany.zookayproject.model.entity.Animal;
 import com.thezookaycompany.zookayproject.model.entity.Cage;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.CageService;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
 import java.util.regex.Pattern;
 
 @Service
@@ -22,6 +25,9 @@ public class CageServiceImpl implements CageService {
 
     @Autowired
     private CageRepository cageRepository;
+
+    @Autowired
+    private AnimalRepository animalRepository;
 
     @Autowired
     private ZooAreaRepository zooAreaRepository;
@@ -78,7 +84,10 @@ public class CageServiceImpl implements CageService {
     @Override
     public String removeCage(String id) {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new InvalidCageException("Not found this Cage ID to delete."));
-
+        Set<Animal> animalCage = cage.getCageAnimals();
+        if(animalCage != null) {
+            return "This cage id" + id +  " has a lot of animals, please try to delete these animals and again.";
+        }
         cageRepository.delete(cage);
 
         return cage.getCageID();
