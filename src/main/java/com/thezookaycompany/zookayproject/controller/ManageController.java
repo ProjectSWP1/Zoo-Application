@@ -194,6 +194,11 @@ public class ManageController {
         }
     }
     // TODO: Clean code > chuyển toàn bộ animal repository sang animal services
+    @GetMapping("/get-all-animalSpecies")
+    public List<AnimalSpecies> getAllAnimalSpecies() {
+        return animalService.getAllAnimalSpecies();
+    }
+
     @GetMapping("/get-animal/height-ascending")
     public List<Animal> getAnimalsByHeightAscending() {
         return animalRepository.findAllByHeightAsc();

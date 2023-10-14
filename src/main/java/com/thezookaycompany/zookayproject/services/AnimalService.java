@@ -14,6 +14,7 @@ public interface AnimalService {
     String updateAnimal(AnimalDto animalDto);
     String removeAnimal(Integer id);
     AnimalResponse getAllAnimal();
+    List<AnimalSpecies> getAllAnimalSpecies();
     Animal findAnimalWithSpeciesAndCage(Integer animalId);
 
     String createAnimalSpecies(AnimalSpeciesDto animalSpeciesDto);
