@@ -12,7 +12,7 @@ import java.util.Set;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@zooAreaId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "zooAreaId")
 public class ZooArea {
 
     @Id

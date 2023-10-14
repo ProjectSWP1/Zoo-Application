@@ -14,7 +14,7 @@ import java.util.Set;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@speciesId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "speciesId")
 public class AnimalSpecies {
 
     @Id

@@ -84,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
         accountDto.setUsername(accountDto.getEmail().trim().split("@")[0]);
         String encodedPassword = passwordEncoder.encode(accountDto.getPassword());
         Role userRole = roleRepository.findByRoleName("Member").get();
-        // tao la hai cu be
+
         // Add member trước rồi mới add account
         memberServices.addMember(accountDto, memberDto);
         Account acc = new Account(

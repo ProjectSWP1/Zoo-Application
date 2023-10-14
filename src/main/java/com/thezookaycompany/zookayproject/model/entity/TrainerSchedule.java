@@ -13,7 +13,7 @@ import jakarta.persistence.ManyToOne;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@trainerScheduleId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "trainerScheduleId")
 public class TrainerSchedule {
 
     @Id

@@ -1,7 +1,7 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -9,7 +9,7 @@ import java.util.Set;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@cageID")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "cageID")
 public class Cage {
 
     @Id
