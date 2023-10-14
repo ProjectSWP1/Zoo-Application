@@ -42,6 +42,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<Employees> getTrainerEmployees() {
+        return employeesRepository.findAllZooTrainers();
+    }
+
+    @Override
     public List<Employees> getEmployeesManageZooArea(String zooAreaID) {
         ZooArea zooArea = zooAreaRepository.findById(zooAreaID).orElse(null);
         if(zooArea != null) {
@@ -52,6 +57,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return null;
     }
+
+
 
     @Override
     public List<Employees> getActiveEmployees() {

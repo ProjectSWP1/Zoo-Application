@@ -9,6 +9,9 @@ public interface EmployeeService {
     // Lấy toàn bộ Employee (kể cả đã nghỉ việc)
     List<Employees> getAllEmployees();
 
+    // Dành cho staff: Lấy employee đang là Zoo Trainer
+    List<Employees> getTrainerEmployees();
+
     // Lấy Employee đang quản lý Zoo Area ID
     List<Employees> getEmployeesManageZooArea(String zooAreaID);
 

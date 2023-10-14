@@ -4,9 +4,11 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class StaffController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     @Autowired
     private ZooNewsService zooNewsService;
@@ -41,6 +46,11 @@ public class StaffController {
         accountRepository.updateAccountRole(accountDto.getEmail(),newRole);
 
         return "Update successfully";
+    }
+
+    @GetMapping("/get-trainer-employees")
+    public List<Employees> getTrainerEmployees() {
+        return employeeService.getTrainerEmployees();
     }
 
     @PostMapping("/postnews")

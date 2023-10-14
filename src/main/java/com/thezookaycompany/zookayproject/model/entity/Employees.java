@@ -47,7 +47,7 @@ public class Employees {
     @Column(name = "active")
     private boolean active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ZooAreaID", nullable = false)
     private ZooArea zooArea;
 
