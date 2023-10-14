@@ -86,10 +86,10 @@ public class CageServiceImpl implements CageService {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new InvalidCageException("Not found this Cage ID to delete."));
         Set<Animal> animalCage = cage.getCageAnimals();
         if(animalCage != null) {
-            return "This cage id" + id +  " has a lot of animals, please try to delete these animals and again.";
+            return "This cage id " + id +  " has a lot of animals, please try to delete these animals and again.";
         }
         cageRepository.delete(cage);
 
-        return cage.getCageID();
+        return "Deleted cage id: " + cage.getCageID() + " successfully";
     }
 }

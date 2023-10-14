@@ -116,6 +116,9 @@ public class EmployeeServiceImpl implements EmployeeService {
                 return "Employees " + empID + " has already been disabled";
             }
             employees.setActive(false);
+            // Check employees đang có job Trainer Schedule không
+            // TODO: thằng nhân tự thêm vào đi
+
             employeesRepository.save(employees);
             return "Employees " + empID + " has been disabled";
         }

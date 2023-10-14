@@ -112,8 +112,12 @@ public class ManageController {
     @DeleteMapping("/remove-cage/{cageId}")
     public ResponseEntity<String> removeCage(@PathVariable String cageId) {
         try {
-            String deletedCageId = cageService.removeCage(cageId);
-            return ResponseEntity.ok("Deleted cage id: " + deletedCageId);
+            String response = cageService.removeCage(cageId);
+            if(response.contains("success")) {
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.badRequest().body(response);
+            }
         } catch (InvalidCageException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + cageId);
         }
