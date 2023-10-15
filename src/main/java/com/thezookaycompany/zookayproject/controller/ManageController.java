@@ -90,8 +90,14 @@ public class ManageController {
 
     // Hàm này để tạo thêm chuồng mới dựa vào Zoo Area
     @PostMapping("/create-cage")
-    public Cage createCage(@RequestBody CageDto cageDto) {
-        return cageService.createCage(cageDto);
+    public ResponseEntity<?> createCage(@RequestBody CageDto cageDto) {
+        Cage cage = null;
+        try {
+            cage = cageService.createCage(cageDto);
+        } catch (InvalidCageException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok("Added Cage " + cageDto.getCageID() + " successfully.");
     }
 
     // Update Cage: UPDATE //
@@ -165,6 +171,7 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal not found with ID: " + animalId);
         }
     }
+
     @PostMapping("/create-animal-species")
     public ResponseEntity<String> createAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String response = animalService.createAnimalSpecies(animalSpeciesDto);
