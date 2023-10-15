@@ -49,13 +49,15 @@ public class ManageController {
     private FeedingScheduleServices feedingScheduleServices;
 
     // TRUY XUẤT DỮ LIỆU: VIEW (get) //
-    // Hàm này để truy xuất tìm Zoo Cage dựa trên Zoo Area
+    // Hàm này để truy xuất tìm Zoo Cage dựa trên Zoo Area ID
     @GetMapping("/get-cage/{zooAreaId}")
     public List<Cage> getCagesByZooArea(@PathVariable String zooAreaId) {
 
         ZooArea zooArea = zooAreaRepository.getZooAreaByZooAreaId(zooAreaId);
         return cageRepository.findCagesByZooArea(zooArea);
     }
+
+    // Lấy tất cả cage dựa trên Zoo Area
 
     // Hàm này để lấy tất cả cage đang có
     @GetMapping("/get-cage")
