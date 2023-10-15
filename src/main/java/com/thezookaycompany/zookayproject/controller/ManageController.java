@@ -108,7 +108,7 @@ public class ManageController {
     public ResponseEntity<String> updateCage(@RequestBody CageDto cageDto) {
         String updateResponse = cageService.updateCage(cageDto);
 
-        if (updateResponse.startsWith("Cage updated successfully.")) {
+        if (updateResponse.contains("success")) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -145,7 +145,7 @@ public class ManageController {
         return animalService.findAnimalByAnimalSpeciesID(speciesId);
     }
 
-    @PostMapping("/create-animal") //chua test duoc
+    @PostMapping("/create-animal")
     public ResponseEntity<?> createAnimal(@RequestBody AnimalDto animalDto) {
         String response = animalService.createAnimal(animalDto);
         if(response.contains(SUCCESS_RESPONSE)) {
@@ -186,7 +186,7 @@ public class ManageController {
     public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String updateResponse = animalService.updateAnimalSpecies(animalSpeciesDto);
 
-        if (updateResponse.startsWith("Animal Species updated successfully.")) {
+        if (updateResponse.contains("success")) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
