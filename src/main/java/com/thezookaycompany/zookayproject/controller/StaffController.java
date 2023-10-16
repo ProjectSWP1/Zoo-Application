@@ -63,9 +63,4 @@ public class StaffController {
             return ResponseEntity.badRequest().body(updatedResponse);
         }
     }
-
-    @GetMapping("/getnews")
-    public List<ZooNews> getAllNews() {
-        return zooNewsService.getNews();
-    }
 }
