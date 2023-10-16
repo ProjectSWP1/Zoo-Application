@@ -1,15 +1,18 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.stripe.model.Coupon;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "orderID")
 public class Orders {
-
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +34,7 @@ public class Orders {
     @OneToMany(mappedBy = "order")
     private Set<Member> orderMembers;
 
-
-    public Double calculateTotalPriceOrder() {
+    public double calculateTotalPriceOrder() {
         Double total = 0.0;
         for (Ticket ticket : orderDetailTickets) {
             total += ticket.getTicketPrice();

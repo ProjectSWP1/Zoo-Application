@@ -10,6 +10,7 @@ import com.stripe.param.PaymentIntentCreateParams;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Member;
+import com.thezookaycompany.zookayproject.model.entity.Voucher;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
 import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
@@ -18,10 +19,14 @@ import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
+
+import com.thezookaycompany.zookayproject.services.VoucherService;
+
 import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -187,7 +192,14 @@ public class UserController {
 
         return new PaymentResponse(paymentIntent.getId(),paymentIntent.getClientSecret());
     }
-
+    //GET ALL VOUCHER
+    @Autowired
+    private VoucherService voucherService;
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @GetMapping("/get-all-voucher")
+    public List <Voucher> getAllVoucher(){
+        return voucherService.getAllVoucher();
+    }
     @GetMapping("/getnews")
     public List<ZooNews> getAllNews() {
         return zooNewsService.getNews();

@@ -1,5 +1,7 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "ticketId")
 public class Ticket {
 
 //    private LocalDate localDate;
@@ -30,8 +33,9 @@ public class Ticket {
     private Date bookDate;
 
 
-    @OneToOne(mappedBy = "ticket")
+    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     private Voucher ticketVouchers;
+
 
     @ManyToMany
     @JoinTable(
@@ -50,8 +54,13 @@ public class Ticket {
     }
 
     public Double getTicketPrice() {
-        return ticketPrice;
+        if (ticketVouchers != null && ticketVouchers.getCoupon() != 0) {
+            return ticketPrice * ticketVouchers.getCoupon();
+        } else {
+            return ticketPrice;
+        }
     }
+
 
     public void setTicketPrice(final Double ticketPrice) {
         this.ticketPrice = ticketPrice;
