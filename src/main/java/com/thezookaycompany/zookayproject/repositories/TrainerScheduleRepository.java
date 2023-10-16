@@ -1,17 +1,15 @@
 package com.thezookaycompany.zookayproject.repositories;
 
 import com.thezookaycompany.zookayproject.model.entity.TrainerSchedule;
-import com.thezookaycompany.zookayproject.model.entity.TrainerScheduleWeekDays;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface TrainerScheduleRepository extends JpaRepository<TrainerSchedule, Integer> {
 
-    // hàm trả về list thời gian làm việc trong tuần của 1 cái trainerSchedule
-    @Query("SELECT a FROM TrainerScheduleWeekDays a inner join a.trainerSchedule r where r.trainerScheduleId = ?1")
-    List<TrainerScheduleWeekDays> findTrainerScheduleById(@Param("trainerSchedule") String trainerScheduleId);
+    // hàm trả về thời gian làm việc của 1 cái trainerSchedule
+    @Query("SELECT a FROM TrainerSchedule a where a.emp.empId = ?1")
+    TrainerSchedule findTrainerScheduleById(int empId);
 
 }

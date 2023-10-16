@@ -25,6 +25,10 @@ public class ZooArea {
     @Column(name = "biome", nullable = false)
     private String biome;
 
+    public ZooArea() {
+
+    }
+
     public String getBiome() {
         return biome;
     }

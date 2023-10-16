@@ -36,16 +36,18 @@ public class Employees {
     public Employees() {
     }
 
-    public boolean isActive() {
+    @Column(name = "active")
+    private Boolean active;
+
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    @Column(name = "active")
-    private boolean active;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ZooAreaID", nullable = false)

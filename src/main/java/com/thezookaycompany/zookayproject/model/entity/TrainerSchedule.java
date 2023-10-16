@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -8,7 +9,7 @@ import java.util.Set;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@trainerScheduleId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "trainerScheduleId")
 public class TrainerSchedule {
 
     @Id
@@ -21,10 +22,12 @@ public class TrainerSchedule {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SpeciesID", nullable = false)
+    @JsonIgnore
     private AnimalSpecies species;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EmpID", nullable = false)
+    @JoinColumn(name = "empID", nullable = false)
+    @JsonIgnore
     private Employees emp;
 
     @OneToMany(mappedBy = "trainerSchedule")

@@ -4,6 +4,7 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.TrainerSchedule;
 import com.thezookaycompany.zookayproject.model.entity.TrainerScheduleWeekDays;
 import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
@@ -39,12 +40,10 @@ public class StaffController {
         return accountRepository.findAllByRole("ZT");
     }
 
-//    @PostMapping ("/view-trainer/schedule/{empId}")
-//    public List<TrainerScheduleWeekDays> findZooAreaByZooAreaDes(@PathVariable("empId") int empId) {
-//
-//        return
-//
-//    }
+    @GetMapping("/view-trainer/schedule")
+    public TrainerSchedule getTrainerSchedule(@RequestParam int empId) {
+        return trainerScheduleService.getTrainerSchedule(empId);
+    }
 
     @PostMapping("/modify-trainer")
     public String updateAccountRole (@RequestBody AccountDto accountDto, @RequestParam String newRole){
