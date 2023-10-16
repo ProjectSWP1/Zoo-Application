@@ -109,7 +109,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees.setZooArea(zooAreaRepository.getZooAreaByZooAreaId(employeesDto.getZoo_areaID()));
 
         acc.setActive(true);
-        System.out.println("The account " + employeesDto.getEmail() + "authorized as role '"+ acc.getRole() +"', you should modify it in Account management");
+        System.out.println("The account " + employeesDto.getEmail() + "authorized as role '"+ acc.getRole().getAuthority() +"', you should modify it in Account management");
 
         employeesRepository.save(employees);
         return "New employees " + employeesDto.getName() + " has been added successfully";

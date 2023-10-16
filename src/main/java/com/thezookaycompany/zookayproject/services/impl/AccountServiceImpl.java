@@ -158,8 +158,10 @@ public class AccountServiceImpl implements AccountService {
         if(accountRepository.existsById(accountDto.getEmail())) {
             Account acc = accountRepository.findById(accountDto.getEmail()).get();
             // Nếu employee ko có -> nghĩa chưa thêm employee trước khi assign role account này
-            if(!employeesRepository.existsEmployeesByEmailAndActiveIsTrue(acc)) {
-                return false;
+            if(!role_id.contains("MB")) {
+                if(!employeesRepository.existsEmployeesByEmailAndActiveIsTrue(acc)) {
+                    return false;
+                }
             }
             acc.setRole(roleRepository.findById(role_id).get());
             accountRepository.save(acc);
