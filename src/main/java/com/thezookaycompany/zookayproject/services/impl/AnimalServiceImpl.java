@@ -14,6 +14,7 @@ import com.thezookaycompany.zookayproject.services.AnimalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -239,4 +240,5 @@ public class AnimalServiceImpl implements AnimalService {
     public AnimalSpecies findAnimalByAnimalSpeciesID(Integer speciesId) {
         return animalSpeciesRepository.findAnimalSpeciesBySpeciesId(speciesId);
     }
+
 }
