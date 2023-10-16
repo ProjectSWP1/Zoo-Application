@@ -1,8 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -22,10 +20,11 @@ public class ZooArea {
     @Column(name = "description",nullable = false, length = 200)
     private String description;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "zooArea")
     private Set<Employees> zooAreaEmployees;
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(mappedBy = "zooArea")
     private Set<Cage> zooAreaCages;
 

@@ -12,13 +12,17 @@ import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.Voucher;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
+
 import com.thezookaycompany.zookayproject.services.VoucherService;
+
+import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +46,9 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private ZooNewsService zooNewsService;
 
     @Autowired
     private AccountRepository accountRepository;
@@ -193,5 +200,8 @@ public class UserController {
     public List <Voucher> getAllVoucher(){
         return voucherService.getAllVoucher();
     }
-
+    @GetMapping("/getnews")
+    public List<ZooNews> getAllNews() {
+        return zooNewsService.getNews();
+    }
 }

@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -27,6 +28,7 @@ public class Cage {
     private ZooArea zooArea;
 
     @OneToMany(mappedBy = "cage")
+    @JsonBackReference
     private Set<Animal> cageAnimals;
 
     public String getCageID() {

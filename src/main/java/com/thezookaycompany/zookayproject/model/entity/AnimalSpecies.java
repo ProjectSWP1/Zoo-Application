@@ -29,13 +29,15 @@ public class AnimalSpecies {
     private String groups;
 
     @OneToMany(mappedBy = "species")
-//    @JsonBackReference
+    @JsonBackReference
     private Set<Animal> speciesAnimals;
 
     @OneToMany(mappedBy = "species")
+    @JsonBackReference
     private Set<FeedingSchedule> speciesFeedingSchedules;
 
     @OneToMany(mappedBy = "species")
+    @JsonBackReference
     private Set<TrainerSchedule> speciesTrainerSchedules;
 
     public Integer getSpeciesId() {
