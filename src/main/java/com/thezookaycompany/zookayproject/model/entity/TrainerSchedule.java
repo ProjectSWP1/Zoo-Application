@@ -2,14 +2,9 @@ package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
+import java.util.Set;
 
 
 @Entity
@@ -17,20 +12,23 @@ import jakarta.persistence.ManyToOne;
 public class TrainerSchedule {
 
     @Id
-    @Column(nullable = false, updatable = false)
+    @Column(name = "trainerScheduleId",nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer trainerScheduleId;
 
     @Column(nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SpeciesID", nullable = false)
     private AnimalSpecies species;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "EmpID", nullable = false)
     private Employees emp;
+
+    @OneToMany(mappedBy = "trainerSchedule")
+    private Set<TrainerScheduleWeekDays> trainerScheduleWeekDaysSet;
 
     public Integer getTrainerScheduleId() {
         return trainerScheduleId;

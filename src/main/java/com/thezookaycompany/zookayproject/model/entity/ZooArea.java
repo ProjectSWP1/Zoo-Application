@@ -22,6 +22,25 @@ public class ZooArea {
     @Column(name = "description",nullable = false, length = 200)
     private String description;
 
+    @Column(name = "biome", nullable = false)
+    private String biome;
+
+    public String getBiome() {
+        return biome;
+    }
+
+    public void setBiome(String biome) {
+        this.biome = biome;
+    }
+
+    public ZooArea(String zooAreaId, String description, String biome, Set<Employees> zooAreaEmployees, Set<Cage> zooAreaCages) {
+        this.zooAreaId = zooAreaId;
+        this.description = description;
+        this.biome = biome;
+        this.zooAreaEmployees = zooAreaEmployees;
+        this.zooAreaCages = zooAreaCages;
+    }
+
     @OneToMany(mappedBy = "zooArea")
     private Set<Employees> zooAreaEmployees;
 

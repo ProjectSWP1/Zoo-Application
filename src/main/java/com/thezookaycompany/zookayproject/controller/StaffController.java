@@ -4,9 +4,10 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.TrainerScheduleWeekDays;
 import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.services.TrainerScheduleService;
 import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,9 @@ public class StaffController {
     @Autowired
     private ZooNewsService zooNewsService;
 
+    @Autowired
+    private TrainerScheduleService trainerScheduleService;
+
     @GetMapping("/")
     public String helloStaff() {
         return "Staff access";
@@ -34,6 +38,13 @@ public class StaffController {
     public List<Account> getAllTrainer (){
         return accountRepository.findAllByRole("ZT");
     }
+
+//    @PostMapping ("/view-trainer/schedule/{empId}")
+//    public List<TrainerScheduleWeekDays> findZooAreaByZooAreaDes(@PathVariable("empId") int empId) {
+//
+//        return
+//
+//    }
 
     @PostMapping("/modify-trainer")
     public String updateAccountRole (@RequestBody AccountDto accountDto, @RequestParam String newRole){
@@ -58,4 +69,6 @@ public class StaffController {
     public List<ZooNews> getAllNews() {
         return zooNewsService.getNews();
     }
+
+
 }
