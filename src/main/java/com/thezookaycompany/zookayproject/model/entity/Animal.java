@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class,property = "@animalId")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "animalId")
 public class Animal {
 
     @Id

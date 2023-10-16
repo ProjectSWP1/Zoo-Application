@@ -171,6 +171,13 @@ public class AnimalServiceImpl implements AnimalService {
         List<Animal> animalList = animalRepository.findAll();
         return new AnimalResponse(animalList);
     }
+
+    @Override
+    public List<AnimalSpecies> getAllAnimalSpecies() {
+        return animalSpeciesRepository.findAll();
+    }
+
+
     @Override
     public Animal findAnimalWithSpeciesAndCage(Integer animalId) {
         return animalRepository.findAnimalWithSpeciesAndCage(animalId);

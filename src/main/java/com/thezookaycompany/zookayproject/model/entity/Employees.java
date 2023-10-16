@@ -49,7 +49,7 @@ public class Employees {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ZooAreaID", nullable = false)
     private ZooArea zooArea;
 

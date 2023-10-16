@@ -135,7 +135,7 @@ public class AdminController {
 
     // Lấy tất cả Employees kể cả đã nghỉ việc (CD: active= 1 & active= 0)
 
-    @GetMapping("/getAllEmployess")
+    @GetMapping("/getAllEmployees")
     public List<Employees> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
@@ -169,7 +169,7 @@ public class AdminController {
         }
     }
 
-    // Deactive 1 employees
+    // Deactive 1 employee
     @PutMapping("/deactivateEmployees/{empID}")
     public ResponseEntity<String> deactivateEmployees(@PathVariable Integer empID) {
         String response = employeeService.deactivateEmployees(empID);

@@ -22,12 +22,12 @@ public class TrainerSchedule {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SpeciesID", nullable = false)
-    @JsonIgnore
+   // @JsonIgnore
     private AnimalSpecies species;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empID", nullable = false)
-    @JsonIgnore
+   // @JsonIgnore
     private Employees emp;
 
     @OneToMany(mappedBy = "trainerSchedule")

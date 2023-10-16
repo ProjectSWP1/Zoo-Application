@@ -49,13 +49,15 @@ public class ManageController {
     private FeedingScheduleServices feedingScheduleServices;
 
     // TRUY XUẤT DỮ LIỆU: VIEW (get) //
-    // Hàm này để truy xuất tìm Zoo Cage dựa trên Zoo Area
+    // Hàm này để truy xuất tìm Zoo Cage dựa trên Zoo Area ID
     @GetMapping("/get-cage/{zooAreaId}")
     public List<Cage> getCagesByZooArea(@PathVariable String zooAreaId) {
 
         ZooArea zooArea = zooAreaRepository.getZooAreaByZooAreaId(zooAreaId);
         return cageRepository.findCagesByZooArea(zooArea);
     }
+
+    // Lấy tất cả cage dựa trên Zoo Area
 
     // Hàm này để lấy tất cả cage đang có
     @GetMapping("/get-cage")
@@ -90,8 +92,14 @@ public class ManageController {
 
     // Hàm này để tạo thêm chuồng mới dựa vào Zoo Area
     @PostMapping("/create-cage")
-    public Cage createCage(@RequestBody CageDto cageDto) {
-        return cageService.createCage(cageDto);
+    public ResponseEntity<?> createCage(@RequestBody CageDto cageDto) {
+        Cage cage = null;
+        try {
+            cage = cageService.createCage(cageDto);
+        } catch (InvalidCageException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        return ResponseEntity.ok("Added Cage " + cageDto.getCageID() + " successfully.");
     }
 
     // Update Cage: UPDATE //
@@ -100,7 +108,7 @@ public class ManageController {
     public ResponseEntity<String> updateCage(@RequestBody CageDto cageDto) {
         String updateResponse = cageService.updateCage(cageDto);
 
-        if (updateResponse.startsWith("Cage updated successfully.")) {
+        if (updateResponse.contains("success")) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -112,10 +120,14 @@ public class ManageController {
     @DeleteMapping("/remove-cage/{cageId}")
     public ResponseEntity<String> removeCage(@PathVariable String cageId) {
         try {
-            String deletedCageId = cageService.removeCage(cageId);
-            return ResponseEntity.ok("Deleted cage id: " + deletedCageId);
+            String response = cageService.removeCage(cageId);
+            if(response.contains("success")) {
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.badRequest().body(response);
+            }
         } catch (InvalidCageException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cage not found with ID: " + cageId);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + cageId);
         }
     }
     @GetMapping("/get-animal")
@@ -133,7 +145,7 @@ public class ManageController {
         return animalService.findAnimalByAnimalSpeciesID(speciesId);
     }
 
-    @PostMapping("/create-animal") //chua test duoc
+    @PostMapping("/create-animal")
     public ResponseEntity<?> createAnimal(@RequestBody AnimalDto animalDto) {
         String response = animalService.createAnimal(animalDto);
         if(response.contains(SUCCESS_RESPONSE)) {
@@ -161,6 +173,7 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal not found with ID: " + animalId);
         }
     }
+
     @PostMapping("/create-animal-species")
     public ResponseEntity<String> createAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String response = animalService.createAnimalSpecies(animalSpeciesDto);
@@ -173,7 +186,7 @@ public class ManageController {
     public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String updateResponse = animalService.updateAnimalSpecies(animalSpeciesDto);
 
-        if (updateResponse.startsWith("Animal Species updated successfully.")) {
+        if (updateResponse.contains("successv")) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -190,6 +203,11 @@ public class ManageController {
         }
     }
     // TODO: Clean code > chuyển toàn bộ animal repository sang animal services
+    @GetMapping("/get-all-animalSpecies")
+    public List<AnimalSpecies> getAllAnimalSpecies() {
+        return animalService.getAllAnimalSpecies();
+    }
+
     @GetMapping("/get-animal/height-ascending")
     public List<Animal> getAnimalsByHeightAscending() {
         return animalRepository.findAllByHeightAsc();
