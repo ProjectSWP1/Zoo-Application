@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.repositories;
 
+import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
@@ -15,6 +16,8 @@ import java.util.List;
 public interface EmployeesRepository extends JpaRepository<Employees, Integer> {
 
     Employees findEmployeesByEmail(Account email);
+
+    boolean existsEmployeesByEmailAndActiveIsTrue(Account email);
 
     @Query("SELECT e FROM Employees e " +
             "INNER JOIN e.email a " +

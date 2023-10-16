@@ -39,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
+    private EmployeesRepository employeesRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
@@ -56,8 +59,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private MemberServices memberServices;
 
-    @Autowired
-    private EmployeesRepository employeesRepository;
 
 
     @Override
@@ -148,6 +149,7 @@ public class AccountServiceImpl implements AccountService {
         return matcher.matches();
     }
 
+    // Hàm assign role tới account (chỉ khi đã có thằng Employee active = 1)
     @Override
     public boolean assignRoleToAccount(AccountDto accountDto, String role_id) {
         if(!roleRepository.existsById(role_id)) {
@@ -155,6 +157,10 @@ public class AccountServiceImpl implements AccountService {
         }
         if(accountRepository.existsById(accountDto.getEmail())) {
             Account acc = accountRepository.findById(accountDto.getEmail()).get();
+            // Nếu employee ko có -> nghĩa chưa thêm employee trước khi assign role account này
+            if(!employeesRepository.existsEmployeesByEmailAndActiveIsTrue(acc)) {
+                return false;
+            }
             acc.setRole(roleRepository.findById(role_id).get());
             accountRepository.save(acc);
             return true;

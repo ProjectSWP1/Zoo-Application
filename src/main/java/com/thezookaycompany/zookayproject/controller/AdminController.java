@@ -54,7 +54,7 @@ public class AdminController {
         if(isSuccess) {
             return ResponseEntity.ok("The account successfully assigned to Role " + roleId+".");
         } else {
-            return ResponseEntity.badRequest().body("Something went wrong, please try again.");
+            return ResponseEntity.badRequest().body("Cannot assign this account to this role. Please check the Employee has this email account or not.");
         }
     }
 
