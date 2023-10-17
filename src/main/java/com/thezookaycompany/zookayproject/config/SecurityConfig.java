@@ -6,6 +6,9 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.security.UserServices;
+import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.utils.RSAKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +21,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +38,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -46,6 +51,7 @@ public class SecurityConfig {
 
     @Autowired
     private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+
     private final RSAKeyProperties keys;
 
     public SecurityConfig(RSAKeyProperties keys) {
@@ -56,7 +62,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // URL Role based http configuration
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/v1/oauth/login"))
                 .cors((cors) -> cors.configurationSource(corsConfigurer()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/home/**").permitAll();
@@ -75,7 +82,6 @@ public class SecurityConfig {
         http
                 .oauth2Login((login) -> {
                             login.successHandler(oAuth2LoginSuccessHandler);
-                            login.authorizationEndpoint(Customizer.withDefaults());
                         }
                 )
 
@@ -86,8 +92,9 @@ public class SecurityConfig {
                 );
         // Session by each
         http
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        // You can add remember password or forgot password here!
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .rememberMe(rememberMe -> rememberMe.alwaysRemember(true));
+        // You can add remember password or forgot password here
 
         http
                 .rememberMe(rememberMe -> rememberMe.alwaysRemember(true));
@@ -140,27 +147,5 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
-
-//    @Bean
-//    public ClientRegistrationRepository clientRegistrationRepository() {
-//        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
-//    }
-//
-//    private ClientRegistration googleClientRegistration() {
-//        return ClientRegistration.withRegistrationId("google")
-//                .clientId("google-client-id")
-//                .clientSecret("google-client-secret")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
-//                .scope("openid", "profile", "email", "address", "phone")
-//                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
-//                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
-//                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
-//                .userNameAttributeName(IdTokenClaimNames.SUB)
-//                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
-//                .clientName("Google")
-//                .build();
-//    }
 }
 

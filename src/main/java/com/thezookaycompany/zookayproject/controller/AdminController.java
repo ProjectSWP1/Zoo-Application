@@ -165,7 +165,7 @@ public class AdminController {
     public ResponseEntity<?> createEmployees(@RequestBody EmployeesDto employeesDto) {
         String response = employeeService.addEmployees(employeesDto);
 
-        if (response.contains("success")) {
+        if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

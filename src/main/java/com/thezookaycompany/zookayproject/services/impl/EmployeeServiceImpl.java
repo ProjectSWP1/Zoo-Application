@@ -49,15 +49,14 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employees> getEmployeesManageZooArea(String zooAreaID) {
         ZooArea zooArea = zooAreaRepository.findById(zooAreaID).orElse(null);
-        if(zooArea != null) {
+        if (zooArea != null) {
             List<Employees> employeesList = employeesRepository.findEmployeesByZooArea(zooArea);
-            if(employeesList != null) {
+            if (employeesList != null) {
                 return employeesList;
             }
         }
         return null;
     }
-
 
 
     @Override
@@ -67,20 +66,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public String addEmployees(EmployeesDto employeesDto) {
-        if(!isValid(employeesDto)) {
+        Set<Employees> employeesSet = new HashSet<>();
+        if (!isValid(employeesDto)) {
             return "Invalid data, please check the input again.";
         }
 
-        if(employeesRepository.findById(employeesDto.getManagedByEmpID()).isEmpty()) {
+        if (employeesRepository.findById(employeesDto.getManagedByEmpID()).isEmpty()) {
             return "Not found managed Employee ID";
         }
-
-        if(zooAreaRepository.findById(employeesDto.getZoo_areaID()).isEmpty()) {
+        employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
+        if (zooAreaRepository.findById(employeesDto.getZoo_areaID()).isEmpty()) {
             return "Not found zoo area id";
         }
-
-        Set<Employees> employeesSet = new HashSet<>();
-        employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
 
         Date doB;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -91,11 +88,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         Account acc = accountRepository.findOneByEmail(employeesDto.getEmail());
-        if(acc == null) {
+        if (acc == null) {
             return "The email does not exist in Account";
         }
 
-        if(employeesRepository.findEmployeesByEmail(acc) != null) {
+        if (employeesRepository.findEmployeesByEmail(acc) != null) {
             return "This email is being used by Employees " + acc.getEmail();
         }
 
@@ -109,7 +106,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees.setZooArea(zooAreaRepository.getZooAreaByZooAreaId(employeesDto.getZoo_areaID()));
 
         acc.setActive(true);
-        System.out.println("The account " + employeesDto.getEmail() + "authorized as role '"+ acc.getRole().getAuthority() +"', you should modify it in Account management");
+        System.out.println("The account " + employeesDto.getEmail() + "authorized as role '" + acc.getRole().getAuthority() + "', you should modify it in Account management");
 
         employeesRepository.save(employees);
         return "New employees " + employeesDto.getName() + " has been added successfully";
@@ -118,8 +115,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public String deactivateEmployees(Integer empID) {
         Employees employees = employeesRepository.findById(empID).orElse(null);
-        if(employees != null) {
-            if(!employees.isActive()) {
+        if (employees != null) {
+            if (!employees.isActive()) {
                 return "Employees " + empID + " has already been disabled";
             }
             employees.setActive(false);
@@ -135,20 +132,24 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public String updateEmployees(EmployeesDto employeesDto) {
         Employees employees = employeesRepository.findById(employeesDto.getEmpID()).orElse(null);
-        if(employees == null) {
+        if (employees == null) {
             return "No employee is found";
         }
 
-        if(!isValid(employeesDto)) {
+        if (!isValid(employeesDto)) {
             return "Invalid data to update, please check the input again";
         }
-        if(employeesRepository.findById(employeesDto.getManagedByEmpID()).isEmpty()) {
-            return "Not found managed Employee ID";
+        if (employeesDto.getManagedByEmpID() != null) {
+            if (employeesRepository.findById(employeesDto.getManagedByEmpID()).isEmpty()) {
+                return "Not found managed Employee ID";
+            }
+        }
+        if (employeesDto.getZoo_areaID() != null || employeesDto.getZoo_areaID().isEmpty()) {
+            if (zooAreaRepository.findById(employeesDto.getZoo_areaID()).isEmpty()) {
+                return "Not found zoo area id";
+            }
         }
 
-        if(zooAreaRepository.findById(employeesDto.getZoo_areaID()).isEmpty()) {
-            return "Not found zoo area id";
-        }
 
         Set<Employees> employeesSet = new HashSet<>();
         employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
@@ -162,11 +163,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         Account acc = accountRepository.findOneByEmail(employeesDto.getEmail());
-        if(acc == null) {
+        if (acc == null) {
             return "The email does not exist in Account";
         }
 
-        if(employeesRepository.findEmployeesByEmail(acc) != null) {
+        if (employeesRepository.findEmployeesByEmail(acc) != null) {
             return "This email is being used by Employees " + acc.getEmail();
         }
 
@@ -181,23 +182,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeesRepository.save(employees);
 
 
-        return "Employee " + employeesDto.getEmail() +" has been updated successfully";
+        return "Employee " + employeesDto.getEmail() + " has been updated successfully";
     }
 
     private boolean isValid(EmployeesDto employeesDto) {
-        if(employeesDto.getName().isEmpty() || employeesDto.getName() == null || employeesDto.getName().length() > 30) {
+        if (employeesDto.getName().isEmpty() || employeesDto.getName() == null || employeesDto.getName().length() > 30) {
             return false;
         }
 
-        if(employeesDto.getAddress().isEmpty() || employeesDto.getAddress() == null || employeesDto.getAddress().length() > 255) {
+        if (employeesDto.getAddress().isEmpty() || employeesDto.getAddress() == null || employeesDto.getAddress().length() > 255) {
             return false;
         }
 
-        if(!employeesDto.getEmail().contains("@")) {
+        if (!employeesDto.getEmail().contains("@")) {
             return false;
         }
 
-        if(!isValidPhoneNumber(employeesDto.getPhone_number())) {
+        if (!isValidPhoneNumber(employeesDto.getPhone_number())) {
             return false;
         }
 
