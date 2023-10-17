@@ -108,7 +108,7 @@ public class ManageController {
     public ResponseEntity<String> updateCage(@RequestBody CageDto cageDto) {
         String updateResponse = cageService.updateCage(cageDto);
 
-        if (updateResponse.contains("success")) {
+        if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -121,7 +121,7 @@ public class ManageController {
     public ResponseEntity<String> removeCage(@PathVariable String cageId) {
         try {
             String response = cageService.removeCage(cageId);
-            if(response.contains("success")) {
+            if(response.contains(SUCCESS_RESPONSE)) {
                 return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().body(response);
@@ -158,7 +158,7 @@ public class ManageController {
     public ResponseEntity<?> updateAnimal(@RequestBody AnimalDto animalDto) {
         String updateResponse = animalService.updateAnimal(animalDto);
 
-        if (updateResponse.startsWith("Animal updated successfully.")) {
+        if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -186,7 +186,7 @@ public class ManageController {
     public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String updateResponse = animalService.updateAnimalSpecies(animalSpeciesDto);
 
-        if (updateResponse.contains("successv")) {
+        if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
