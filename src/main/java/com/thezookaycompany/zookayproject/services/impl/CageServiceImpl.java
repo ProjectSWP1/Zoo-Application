@@ -75,6 +75,7 @@ public class CageServiceImpl implements CageService {
         }
         existingCage.setDescription(cageDto.getDescription());
         existingCage.setCapacity(cageDto.getCapacity());
+        existingCage.setZooArea(zooArea);
 
         cageRepository.save(existingCage);
 

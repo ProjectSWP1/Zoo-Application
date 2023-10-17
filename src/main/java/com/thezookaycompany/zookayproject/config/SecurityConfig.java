@@ -62,8 +62,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // URL Role based http configuration
         http
-                .csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/v1/oauth/login"))
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors((cors) -> cors.configurationSource(corsConfigurer()))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/home/**").permitAll();

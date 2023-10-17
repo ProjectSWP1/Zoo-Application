@@ -66,11 +66,13 @@ public class MemberServiceImpl implements MemberServices {
         return memberRepository.findAll();
     }
 
+
     @Override
     public Member findMemberByPhoneNumber(String phoneNumber) {
         return memberRepository.findMemberByPhoneNumber(phoneNumber);
     }
 
+    // TODO: Remove Zoo Area out of this MemberService
     @Override
     public ZooArea findZooAreaByZooAreaID(String zooAreaId) {
         return zooAreRepository.findZooAreaByZooAreaId(zooAreaId);
