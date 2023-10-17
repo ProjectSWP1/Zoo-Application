@@ -9,9 +9,12 @@ import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -183,6 +186,49 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
         return "Employee " + employeesDto.getEmail() + " has been updated successfully";
+    }
+
+    @Override
+    public void uploadQualificationImage(int employeeId, MultipartFile qualificationFile) throws IOException {
+        Employees employee = employeesRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
+
+        if (qualificationFile != null && !qualificationFile.isEmpty()) {
+            byte[] qualificationData = qualificationFile.getBytes();
+            employee.setQualification(qualificationData);
+            employeesRepository.save(employee);
+        }
+    }
+
+    @Override
+    public byte[] getQualificationImageById(int employeeId) {
+        Employees employee = employeesRepository.findById(employeeId).orElse(null);
+        if (employee != null) {
+            return employee.getQualification();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteQualificationImage(int employeeId) {
+        Employees employee = employeesRepository.findById(employeeId).orElse(null);
+        if (employee != null) {
+            employee.setQualification(null); // Delete the image by assigning null value
+            employeesRepository.save(employee);
+        }
+    }
+
+    @Override
+    public void updateQualificationImage(int employeeId, MultipartFile newQualificationFile) throws IOException {
+        Employees employee = employeesRepository.findById(employeeId).orElse(null);
+        if (employee != null) {
+            if (newQualificationFile != null && !newQualificationFile.isEmpty()) {
+                byte[] newQualificationData = newQualificationFile.getBytes();
+                employee.setQualification(newQualificationData); // Update new image
+                employeesRepository.save(employee);
+            }
+        }
     }
 
     private boolean isValid(EmployeesDto employeesDto) {
