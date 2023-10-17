@@ -7,15 +7,16 @@ import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
 import com.thezookaycompany.zookayproject.repositories.FeedingScheduleRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
-import com.thezookaycompany.zookayproject.services.AnimalFoodServices;
-import com.thezookaycompany.zookayproject.services.AnimalService;
-import com.thezookaycompany.zookayproject.services.CageService;
-import com.thezookaycompany.zookayproject.services.FeedingScheduleServices;
+import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +39,12 @@ public class ManageController {
 
     @Autowired
     private AnimalRepository animalRepository;
+
     @Autowired
     private AnimalService animalService;
+
+    @Autowired
+    private EmployeeService employeeService;
 
     // TODO: Clean code > chuyển toàn bộ cage repository sang cage services
 
@@ -376,6 +381,51 @@ public class ManageController {
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.badRequest().body(response);
+    }
+    @PostMapping("/{employeeId}/upload-qualification")
+    public ResponseEntity<String> uploadQualification(
+            @PathVariable int employeeId,
+            @RequestParam("qualificationFile") MultipartFile qualificationFile) {
+        try {
+            employeeService.uploadQualificationImage(employeeId, qualificationFile);
+            return ResponseEntity.ok("Qualification image uploaded successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error uploading qualification image: " + e.getMessage());
+        }
+    }
+    @GetMapping("/{employeeId}/qualification-image")
+    public ResponseEntity<byte[]> getQualificationImage(@PathVariable int employeeId) {
+        byte[] image = employeeService.getQualificationImageById(employeeId);
+        if (image != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/{employeeId}/delete-qualification")
+    public ResponseEntity<String> deleteQualificationImage(@PathVariable int employeeId) {
+        try {
+            employeeService.deleteQualificationImage(employeeId);
+            return ResponseEntity.ok("Qualification image deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting qualification image: " + e.getMessage());
+        }
+    }
+    @PutMapping("/{employeeId}/update-qualification")
+    public ResponseEntity<String> updateQualificationImage(
+            @PathVariable int employeeId,
+            @RequestParam("newQualificationFile") MultipartFile newQualificationFile) {
+        try {
+            employeeService.updateQualificationImage(employeeId, newQualificationFile);
+            return ResponseEntity.ok("Qualification image updated successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating qualification image: " + e.getMessage());
+        }
     }
 
 }
