@@ -14,12 +14,4 @@ public interface MemberServices {
     List<Member> getAllMember();
     Member findMemberByPhoneNumber (String phoneNumber);
 
-    ZooArea findZooAreaByZooAreaID (String zooAreaId);
-
-    List<ZooArea> findAllZooArea();
-
-    ZooArea findZooAreaByZooAreaDes ( String description);
-
-
-
 }

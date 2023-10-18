@@ -16,13 +16,8 @@ import com.thezookaycompany.zookayproject.model.entity.ZooNews;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
-import com.thezookaycompany.zookayproject.services.AccountService;
-import com.thezookaycompany.zookayproject.services.EmailService;
-import com.thezookaycompany.zookayproject.services.MemberServices;
+import com.thezookaycompany.zookayproject.services.*;
 
-import com.thezookaycompany.zookayproject.services.VoucherService;
-
-import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +47,8 @@ public class UserController {
 
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private ZooAreaService zooAreaService;
 
     //Register for users, you should leave this json
     //    const requestData = {
@@ -116,19 +113,17 @@ public class UserController {
         return "Account verified successfully";
     }
     @Autowired
-    private  MemberRepository memberRepository;
-    @Autowired
     private  MemberServices memberServices;
 
     @GetMapping("/member/all")
     public List<Member> getAllMember(){
 
-        return memberRepository.findAll();
+        return memberServices.getAllMember();
     }
     @GetMapping("/member/{phoneNumber}")
     public Member findMemberByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
 
-        return memberRepository.findMemberByPhoneNumber(phoneNumber);
+        return memberServices.findMemberByPhoneNumber(phoneNumber);
     }
     @PutMapping("/update/{phoneNumber}")
     public ResponseEntity<Member> updateMemberByPhoneNumber(
@@ -147,19 +142,19 @@ public class UserController {
     @GetMapping("/zoo-area/id/{zooAreaId}")
     ZooArea findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
 
-        return memberServices.findZooAreaByZooAreaID(zooAreaId);
+        return zooAreaService.findZooAreaByZooAreaID(zooAreaId);
 
     }
     @GetMapping("/zoo-area/des/{description}")
     ZooArea findZooAreaByZooAreaDes(@PathVariable("description") String description) {
 
-        return memberServices.findZooAreaByZooAreaDes(description);
+        return zooAreaService.findZooAreaByZooAreaDes(description);
 
     }
 
     @GetMapping("/zoo-area/all")
     public List <ZooArea> findAllZooArea(){
-        return memberServices.findAllZooArea();
+        return zooAreaService.findAllZooArea();
     }
 
     @GetMapping("/google")
