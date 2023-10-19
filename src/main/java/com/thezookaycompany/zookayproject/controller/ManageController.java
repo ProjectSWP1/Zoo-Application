@@ -35,9 +35,6 @@ public class ManageController {
     private ZooAreaService zooAreaService;
 
     @Autowired
-    private AnimalRepository animalRepository;
-
-    @Autowired
     private AnimalService animalService;
 
     @Autowired
@@ -45,6 +42,7 @@ public class ManageController {
 
     @Autowired
     private AnimalFoodServices animalFoodServices;
+
     @Autowired
     private FeedingScheduleServices feedingScheduleServices;
 
@@ -202,7 +200,6 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal Species not found with ID: " + speciesId);
         }
     }
-    // TODO: Clean code > chuyển toàn bộ animal repository sang animal services
     @GetMapping("/get-all-animalSpecies")
     public List<AnimalSpecies> getAllAnimalSpecies() {
         return animalService.getAllAnimalSpecies();
@@ -210,27 +207,27 @@ public class ManageController {
 
     @GetMapping("/get-animal/height-ascending")
     public List<Animal> getAnimalsByHeightAscending() {
-        return animalRepository.findAllByHeightAsc();
+        return animalService.findAllByHeightAsc();
     }
     @GetMapping("/get-animal/height-descending")
     public List<Animal> getAnimalsByHeightDescending() {
-        return animalRepository.findAllByHeightDesc();
+        return animalService.findAllByHeightDesc();
     }
     @GetMapping("/get-animal/weight-ascending")
     public List<Animal> getAnimalsByWeightAscending() {
-        return animalRepository.findAllByWeightAsc();
+        return animalService.findAllByWeightAsc();
     }
     @GetMapping("/get-animal/weight-descending")
     public List<Animal> getAnimalsByWeightDescending() {
-        return animalRepository.findAllByWeightDesc();
+        return animalService.findAllByWeightDesc();
     }
     @GetMapping("/get-animal/age-ascending")
     public List<Animal> getAnimalsByAgeAscending() {
-        return animalRepository.findAllByAgeAsc();
+        return animalService.findAllByAgeAsc();
     }
     @GetMapping("/get-animal/age-descending")
     public List<Animal> getAnimalsByAgeDescending() {
-        return animalRepository.findAllByAgeDesc();
+        return animalService.findAllByAgeDesc();
     }
 
     @GetMapping("/get-animal-with-species-and-cage/{animalId}")
