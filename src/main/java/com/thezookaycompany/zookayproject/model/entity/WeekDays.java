@@ -12,7 +12,7 @@ public class WeekDays {
 
     @Id
     @Column(nullable = false,name = "DayId")
-    private Integer DayId ;
+    private Integer DayId;
 
 
     @Column (nullable = false,name = "DayName")

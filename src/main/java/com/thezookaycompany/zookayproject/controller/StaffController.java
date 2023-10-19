@@ -86,7 +86,7 @@ public class StaffController {
     // create trainer schedule
     @PostMapping("/assign-trainer-schedule")
     public ResponseEntity<String> createTrainerSchedule(@RequestBody TrainerScheduleDto trainerScheduleDto){
-        String message =trainerScheduleService.CreateTrainerSchedule(trainerScheduleDto);
+        String message =trainerScheduleService.createTrainerSchedule(trainerScheduleDto);
         if(message.contains("success")) {
             return ResponseEntity.ok(message);
         } else {

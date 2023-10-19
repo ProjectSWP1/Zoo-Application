@@ -12,7 +12,7 @@ public interface TrainerScheduleService {
 
     TrainerSchedule getTrainerScheduleInfo(int empId);
 
-    String CreateTrainerSchedule(TrainerScheduleDto trainerScheduleDto);
+    String createTrainerSchedule(TrainerScheduleDto trainerScheduleDto);
 
     String createWeeklySchedule(TrainerScheduleDto trainerScheduleDto);
 }

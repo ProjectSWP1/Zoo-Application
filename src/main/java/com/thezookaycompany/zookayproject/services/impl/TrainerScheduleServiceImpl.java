@@ -42,7 +42,7 @@ public class TrainerScheduleServiceImpl implements TrainerScheduleService {
 
 
     @Override
-    public String CreateTrainerSchedule(TrainerScheduleDto trainerScheduleDto) {
+    public String createTrainerSchedule(TrainerScheduleDto trainerScheduleDto) {
         //validate data
         if(trainerScheduleRepository.existsById(trainerScheduleDto.getTrainerScheduleId())){
             return "Schedule's ID is already existed.";
@@ -61,9 +61,21 @@ public class TrainerScheduleServiceImpl implements TrainerScheduleService {
         //save trainer schedule vừa tạo trước để weekdaysSchedule có thể trỏ vào
         trainerScheduleRepository.save(trainerSchedule);
 
+        // Check no co trong database hay chua, neu chua => fail to add
+        if(!trainerScheduleRepository.existsById(trainerScheduleDto.getTrainerScheduleId())) {
+            return "Trainer Schedule with ID " + trainerScheduleDto.getTrainerScheduleId() + " is failed to add";
+        }
+
+        // Lấy trainer schedule ra từ ID vào temp rồi check temp có hay ko nữa
+        TrainerSchedule temp = trainerScheduleRepository.findById(trainerScheduleDto.getTrainerScheduleId()).orElse(null);
+        if(temp == null) {
+            return "Cannot found trainer schedule";
+        }
+
+
         //khởi tạo schedule weekday để hoàn thiện trainer schedule
         TrainerScheduleWeekDays trainerScheduleWeekDays = new TrainerScheduleWeekDays
-                (trainerScheduleDto.getWeekDaysId(),trainerScheduleRepository.getReferenceById(trainerScheduleDto.getTrainerScheduleId()),
+                (trainerScheduleDto.getWeekDaysId(),temp,
                         weekDaysRepository.getReferenceById(trainerScheduleDto.getDayId()));
 
         // save
