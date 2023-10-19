@@ -26,8 +26,6 @@ import java.util.List;
 public class AdminController {
     private final String SUCCESS_RESPONSE = "success";
     @Autowired
-    private TicketRepository ticketRepository;
-    @Autowired
     private TicketService ticketService;
     @Autowired
     private AccountService accountService;
@@ -88,21 +86,20 @@ public class AdminController {
     }
     //Tìm tất cả ticket đang có
 
-    // TODO: Clean code > chuyển toàn bộ ticket repository sang ticket service
     @GetMapping("/get-ticket")
     public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+        return ticketService.findAllTicket();
     }
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
     @GetMapping("/get-ticket/ascending")
     public List<Ticket> getTicketByTicketPriceAscending() {
-        return ticketRepository.findAllByTicketPriceAsc();
+        return ticketService.findAllByTicketPriceAsc();
     }
 
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự GIẢM DẦN//
     @GetMapping("/get-ticket/descending")
     public List<Ticket> getTicketByTicketPriceDescending() {
-        return ticketRepository.findAllByTicketPriceDesc();
+        return ticketService.findAllByTicketPriceDesc();
     }
     //Hàm này tạo Ticket mới : CREATE//
     @PostMapping("/create-ticket")

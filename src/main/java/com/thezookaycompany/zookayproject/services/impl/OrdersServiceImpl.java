@@ -38,4 +38,24 @@ public class OrdersServiceImpl implements OrdersService {
             throw new OrderNotFoundException("Order not found");
         }
     }
+
+    @Override
+    public List<Orders> findAllOrders() {
+        return ordersRepository.findAll();
+    }
+
+    @Override
+    public List<Orders> findAllByOrderIDAsc() {
+        return ordersRepository.findAllByOrderIDAsc();
+    }
+
+    @Override
+    public List<Orders> findAllByOrderIDDesc() {
+        return ordersRepository.findAllByOrderIDDesc();
+    }
+
+    @Override
+    public List<Orders> findOrdersByDescriptionContainingKeyword(String keyword) {
+        return ordersRepository.findOrdersByDescriptionContainingKeyword(keyword);
+    }
 }
