@@ -21,17 +21,17 @@ public class TrainerSchedule {
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "SpeciesID", nullable = false)
+    @JoinColumn(name = "speciesID", nullable = false)
    // @JsonIgnore
     private AnimalSpecies species;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empID", nullable = false)
-   // @JsonIgnore
+    @JsonIgnore
     private Employees emp;
 
     @OneToMany(mappedBy = "trainerSchedule")
-    private Set<TrainerScheduleWeekDays> trainerScheduleWeekDaysSet;
+    private Set<TrainerScheduleWeekDays> trainerScheduleDays;
 
     public Integer getTrainerScheduleId() {
         return trainerScheduleId;

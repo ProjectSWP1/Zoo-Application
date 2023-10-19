@@ -1,10 +1,9 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -19,8 +18,12 @@ public class WeekDays {
     @Column (nullable = false,name = "DayName")
     private String DayName;
 
-    @OneToMany(mappedBy = "weekDays")
-    private Set<TrainerScheduleWeekDays> trainerScheduleWeekDaysSet;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JsonBackReference
+    @JoinColumn(name = "DayId")
+    private Set<TrainerScheduleWeekDays> daysInTrainerSchedule;
+
+
 
     public WeekDays(Integer dayId, String dayName) {
         DayId = dayId;

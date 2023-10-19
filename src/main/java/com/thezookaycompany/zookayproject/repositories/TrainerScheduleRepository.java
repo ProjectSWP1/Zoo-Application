@@ -16,7 +16,7 @@ public interface TrainerScheduleRepository extends JpaRepository<TrainerSchedule
     TrainerSchedule findTrainerScheduleById(int empId);
 
 
-    @Query("SELECT t.trainerScheduleWeekDaysSet FROM TrainerSchedule t WHERE t.emp.empId = ?1")
+    @Query("SELECT t.trainerScheduleDays FROM TrainerSchedule t WHERE t.emp.empId = ?1")
     Set<TrainerScheduleWeekDays> findTrainerScheduleWeekDaysByTrainerScheduleId(int empId);
 
 }
