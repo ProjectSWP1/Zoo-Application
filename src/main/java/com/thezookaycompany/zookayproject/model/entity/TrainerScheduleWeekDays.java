@@ -1,16 +1,13 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Entity
-@EnableJpaRepositories
 public class TrainerScheduleWeekDays {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TrainerScheduleId")
@@ -23,11 +20,11 @@ public class TrainerScheduleWeekDays {
     public TrainerScheduleWeekDays() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -47,7 +44,7 @@ public class TrainerScheduleWeekDays {
         this.weekDays = weekDays;
     }
 
-    public TrainerScheduleWeekDays(Long id, TrainerSchedule trainerSchedule, WeekDays weekDays) {
+    public TrainerScheduleWeekDays(Integer id, TrainerSchedule trainerSchedule, WeekDays weekDays) {
         this.id = id;
         this.trainerSchedule = trainerSchedule;
         this.weekDays = weekDays;
