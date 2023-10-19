@@ -8,6 +8,7 @@ import com.thezookaycompany.zookayproject.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Service
@@ -73,5 +74,20 @@ public class TicketServiceImpl implements TicketService {
 
         return ticket.getTicketId();
 
+    }
+
+    @Override
+    public List<Ticket> findAllTicket() {
+        return ticketRepository.findAll();
+    }
+
+    @Override
+    public List<Ticket> findAllByTicketPriceAsc() {
+        return ticketRepository.findAllByTicketPriceAsc();
+    }
+
+    @Override
+    public List<Ticket> findAllByTicketPriceDesc() {
+        return ticketRepository.findAllByTicketPriceDesc();
     }
 }

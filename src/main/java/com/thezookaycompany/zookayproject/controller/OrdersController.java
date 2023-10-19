@@ -16,8 +16,6 @@ import java.util.List;
 
 public class OrdersController {
     @Autowired
-    private OrdersRepository ordersRepository;
-    @Autowired
     private OrdersService ordersService;
 
     @GetMapping("/get-order/{orderID}")
@@ -28,21 +26,21 @@ public class OrdersController {
     }
     @GetMapping("/get-order")
     public List<Orders> finAllOrders (){
-        return ordersRepository.findAll();
+        return ordersService.findAllOrders();
     }
 
     @GetMapping("/get-order-desc/{keyword}")
     public List<Orders> getCagesByDescription(@PathVariable String keyword) {
-        return ordersRepository.findOrdersByDescriptionContainingKeyword(keyword);
+        return ordersService.findOrdersByDescriptionContainingKeyword(keyword);
     }
     @GetMapping("/get-order/ascending")
     public List<Orders> getOrdersByOrderIDAscending() {
-        return ordersRepository.findAllByOrderIDAsc();
+        return ordersService.findAllByOrderIDAsc();
     }
 
     @GetMapping("/get-order/descending")
     public List<Orders> getOrdersByOrderIDDescending() {
-        return ordersRepository.findAllByOrderIDDesc();
+        return ordersService.findAllByOrderIDDesc();
     }
     @GetMapping("/get-order-details-ticket/{orderID}")
     public List<Ticket> listOrderTicketDetails(@PathVariable Integer orderID) {
