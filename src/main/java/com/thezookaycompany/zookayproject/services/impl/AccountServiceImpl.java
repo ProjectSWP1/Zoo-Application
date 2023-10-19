@@ -131,6 +131,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account getUserByEmail(String email) {
+        return accountRepository.findOneByEmail(email);
+    }
+
+    @Override
     public List<Account> getAllAccount() {
         return accountRepository.findAll();
     }

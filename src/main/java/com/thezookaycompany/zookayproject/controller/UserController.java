@@ -46,8 +46,6 @@ public class UserController {
     private ZooNewsService zooNewsService;
 
     @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
     private ZooAreaService zooAreaService;
 
     //Register for users, you should leave this json
@@ -63,11 +61,9 @@ public class UserController {
     public String userAccess() {
         return "User accessed";
     }
-
-    // TODO: Clean code > chuyển toàn bộ account repository sang account services
     @PostMapping("/findUser")
     public Account getUser(@RequestBody AccountDto accountDto) {
-        return accountRepository.findOneByEmail(accountDto.getEmail());
+        return accountService.getUserByEmail(accountDto.getEmail());
     }
 
     //For login user please write this json in ReactJS
@@ -104,7 +100,7 @@ public class UserController {
 
     @PutMapping("/verify")
     public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
-        Account account = accountRepository.findAccountByEmail(email);
+        Account account = accountService.getUserByEmail(email);
         if(account !=null){
             accountService.verifyAccount(account.getEmail(), otp);
         } else {

@@ -16,6 +16,8 @@ public interface AccountService {
 
     String removeAccount(String email);
 
+    Account getUserByEmail(String email);
+
     List<Account> getAllAccount();
     List<Account> getAllInactiveAccount();
 

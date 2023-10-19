@@ -29,13 +29,10 @@ public class ManageController {
     private final String SUCCESS_RESPONSE = "success";
 
     @Autowired
-    private CageRepository cageRepository;
-
-    @Autowired
     private CageService cageService;
 
     @Autowired
-    private ZooAreaRepository zooAreaRepository;
+    private ZooAreaService zooAreaService;
 
     @Autowired
     private AnimalRepository animalRepository;
@@ -45,8 +42,6 @@ public class ManageController {
 
     @Autowired
     private EmployeeService employeeService;
-
-    // TODO: Clean code > chuyển toàn bộ cage repository sang cage services
 
     @Autowired
     private AnimalFoodServices animalFoodServices;
@@ -58,8 +53,8 @@ public class ManageController {
     @GetMapping("/get-cage/{zooAreaId}")
     public List<Cage> getCagesByZooArea(@PathVariable String zooAreaId) {
 
-        ZooArea zooArea = zooAreaRepository.getZooAreaByZooAreaId(zooAreaId);
-        return cageRepository.findCagesByZooArea(zooArea);
+        ZooArea zooArea = zooAreaService.findZooAreaByZooAreaID(zooAreaId);
+        return cageService.listCagesByZooArea(zooArea);
     }
 
     // Lấy tất cả cage dựa trên Zoo Area
@@ -67,31 +62,31 @@ public class ManageController {
     // Hàm này để lấy tất cả cage đang có
     @GetMapping("/get-cage")
     public List<Cage> getAllCages() {
-        return cageRepository.findAll();
+        return cageService.getAllCages();
     }
 
     // Lấy zoo area hiện đang có để frontend làm thẻ select khi chuẩn bị tạo cage
     @GetMapping("/get-zoo-area")
     public List<ZooArea> getAllZooArea() {
-        return zooAreaRepository.findAll();
+        return zooAreaService.findAllZooArea();
     }
 
     // Truy xuất dữ liệu dựa vào keyword description (search keyword)
     @GetMapping("/get-cage-desc/{keyword}")
     public List<Cage> getCagesByDescription(@PathVariable String keyword) {
-        return cageRepository.findCagesByDescriptionContainingKeyword(keyword);
+        return cageService.getCagesByDescriptionKeyword(keyword);
     }
 
     // Hàm này để lấy tất cả cage dựa vào capacity TĂNG DẦN
     @GetMapping("/get-cage/ascending")
     public List<Cage> getCagesByCapacityAscending() {
-        return cageRepository.findAllByCapacityAsc();
+        return cageService.getCagesByCapacityAscending();
     }
 
     // Hàm này để lấy tất cả cage dựa vào capacity GIẢM DẦN
     @GetMapping("/get-cage/descending")
     public List<Cage> getCagesByCapacityDescending() {
-        return cageRepository.findAllByCapacityDesc();
+        return cageService.getCagesByCapacityDescending();
     }
     // Tạo thêm Chuồng: CREATE //
 
