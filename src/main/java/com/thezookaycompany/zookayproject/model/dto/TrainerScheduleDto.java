@@ -1,9 +1,5 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
-import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
-
-import java.util.List;
-
 public class TrainerScheduleDto {
 
     private Integer trainerScheduleId;
@@ -12,17 +8,17 @@ public class TrainerScheduleDto {
     private Integer speciesId;
     private Integer dayId;
 
-    private Long weekDaysId;
+    private Integer weekDaysId;
 
-    public Long getWeekDaysId() {
+    public Integer getWeekDaysId() {
         return weekDaysId;
     }
 
-    public void setWeekDaysId(Long weekDaysId) {
+    public void setWeekDaysId(Integer weekDaysId) {
         this.weekDaysId = weekDaysId;
     }
 
-    public TrainerScheduleDto(Integer trainerScheduleId, String description, Integer empId, Integer speciesId, Integer dayId, Long weekDaysId) {
+    public TrainerScheduleDto(Integer trainerScheduleId, String description, Integer empId, Integer speciesId, Integer dayId, Integer weekDaysId) {
         this.trainerScheduleId = trainerScheduleId;
         this.description = description;
         this.empId = empId;

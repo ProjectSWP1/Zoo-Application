@@ -3,16 +3,16 @@ package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.TrainerScheduleDto;
+import com.thezookaycompany.zookayproject.model.dto.TrainerScheduleInfo;
 import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
 import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.repositories.TrainerScheduleWeekDayRepository;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.TrainerScheduleService;
 import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +34,9 @@ public class StaffController {
 
     @Autowired
     private TrainerScheduleService trainerScheduleService;
+
+    @Autowired
+    private TrainerScheduleWeekDayRepository trainerScheduleWeekDayRepository;
 
     @GetMapping("/")
     public String helloStaff() {
@@ -80,13 +83,19 @@ public class StaffController {
     }
 
 
+    //TRAINER SCHEDULE--------------------------------------------------------------------------------
 
     //view all information about trainer include workday(mon,tues,wed,..)
     // 1 trainer thì có nhiều trainer schedule
     // 1 cái trainerSchedule thì chứa thông tin của 1 workday
-    @GetMapping("/view-trainer/schedule")
-    public Set<TrainerScheduleWeekDays> getTrainerSchedule(@RequestParam int empId) {
-        return trainerScheduleService.getTrainerSchedule(empId);
+    @GetMapping("/view-trainer-schedule")
+    public Set<TrainerSchedule> getTrainerSchedule(@RequestParam int empId) {
+        return trainerScheduleService.getTrainerScheduleInfo(empId);
+    }
+
+    @GetMapping("/view-trainer-scheduledays")
+    public List<TrainerScheduleInfo> getTrainerScheduleWithEmpId(@RequestParam int empId){
+        return trainerScheduleService.getTrainerScheduleByEmpId(empId);
     }
 
     // create trainer schedule
@@ -98,6 +107,25 @@ public class StaffController {
         } else {
             return ResponseEntity.badRequest().body(message);
         }
+    }
+
+    @PostMapping("/update-trainer-schedule")
+    public ResponseEntity<String> updateTrainerSchedule(@RequestBody TrainerScheduleDto trainerScheduleDto){
+        String message = trainerScheduleService.updateTrainerSchedule(trainerScheduleDto);
+        if(message.contains("success")) {
+            return ResponseEntity.ok(message);
+        } else {
+            return ResponseEntity.badRequest().body(message);
+        }
+    }
+
+    @DeleteMapping("/delete-trainer-schedule")
+    public ResponseEntity<String> removeTrainerSchedule(@RequestParam Integer empId, @RequestParam Integer trainerScheduleId) {
+        String message = trainerScheduleService.removeTrainerSchedule(empId, trainerScheduleId);
+        if(message.contains("success")) {
+            return ResponseEntity.ok(message);
+        }
+        return ResponseEntity.badRequest().body(message);
     }
 
 
