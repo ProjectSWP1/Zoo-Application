@@ -201,18 +201,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateResetPwdToken(String token, String email) throws AccountNotFoundException {
-
-            // check account exist ?
-            Account account = accountRepository.findAccountByEmail(email);
+    public void updateResetPwdToken(String token, Account account)  {
 
             // nếu tồn tại thì set account new Token
             if (account !=null){
                 account.setResetPwdToken(token);
+                account.setOtpGeneratedTime(LocalDateTime.now());
                 accountRepository.save(account);
-            } else {
-                throw new AccountNotFoundException("Could not find any customer with email "+email);
+
             }
+
     }
 
     @Override
@@ -233,18 +231,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateVerifyToken(String token, String email) throws AccountNotFoundException {
-
-        // check account exist ?
-        Account account = accountRepository.findAccountByEmail(email);
+    public void updateVerifyToken(String token, Account account)  {
 
         // nếu tồn tại thì set verify Token
         if (account !=null){
             account.setVerificationToken(token);
             account.setOtpGeneratedTime(LocalDateTime.now());
             accountRepository.save(account);
-        } else {
-            throw new AccountNotFoundException("Could not find any account with email "+email);
         }
     }
 
@@ -255,12 +248,10 @@ public class AccountServiceImpl implements AccountService {
         if(account == null){
             return "Could not find any account with email "+email;
         }
-
         // otp expired (2')
         if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
             account.setVerificationToken(null);
         }
-
         // check trùng otp
         if(account.getVerificationToken() == null) { return "OTP has expired";}
         else if(account.getVerificationToken().equals(otp)){
@@ -268,6 +259,6 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(account);
             return "Verify account successfully";
         }
-        return "Invalid OTP ";
+        return "Invalid OTP";
     }
 }

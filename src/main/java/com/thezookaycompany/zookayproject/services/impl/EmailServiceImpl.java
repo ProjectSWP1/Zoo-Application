@@ -2,6 +2,7 @@ package com.thezookaycompany.zookayproject.services.impl;
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
+import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
@@ -15,6 +16,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -26,10 +29,15 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private AccountService accountService;
     @Override
-    public void sendEmailResetPwd(AccountDto accountDto, String resetPwdLink) throws MessagingException {
+    public void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException {
+
+        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
+            account.setResetPwdToken(null);
+            accountRepository.save(account);
+        }
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
-        mimeMessageHelper.setTo(accountDto.getEmail());
+        mimeMessageHelper.setTo(account.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Please reset your password");
 
         //               **** CHỈNH SỬA LINK HREF SAU *****
@@ -58,13 +66,13 @@ public class EmailServiceImpl implements EmailService {
 
 
     @Override
-    public EmailTokenResponse sendVertificationEmail(AccountDto accountDto) throws AccountNotFoundException {
+    public EmailTokenResponse sendVertificationEmail(Account account) {
         //create and save otp
         String otp = RandomTokenGenerator.generateRandomOTP();
-        accountService.updateVerifyToken(otp,accountDto.getEmail());
+        accountService.updateVerifyToken(otp,account);
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(accountDto.getEmail());
+        simpleMailMessage.setTo(account.getEmail());
         simpleMailMessage.setSubject("[ZooKay] Verify Your Email Address");
 
        // String link = "http://localhost:8080/user/verify?email="+accountDto.getEmail()+"&otp="+otp;
@@ -89,7 +97,7 @@ public class EmailServiceImpl implements EmailService {
 
         simpleMailMessage.setText(content);
         javaMailSender.send(simpleMailMessage);
-        return new EmailTokenResponse(accountDto.getEmail(),otp);
+        return new EmailTokenResponse(account.getEmail(),otp);
     }
 
 }

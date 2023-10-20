@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/forgot")
@@ -21,64 +23,58 @@ public class ForgotPasswordController {
     @Autowired
     private AccountService accountService;
 
-
     @Autowired
     private EmailService emailService;
 
-
     @PostMapping("/send-email")
-    public String phaseForgotPwdForm(@RequestBody AccountDto accountDto){
+    public String phaseForgotPwdForm(@RequestBody AccountDto accountDto) throws MessagingException {
         // giống jsp frontend sẽ tạo 1 form chứa input type name=email để đưa email user nhập vào xử lý
         // String email = request.getParameter("email");
         // tạo 1 token mới để gửi cho user
+        Account account = accountService.getUserByEmail(accountDto.getEmail());
+        if (account == null) {
+            return "Couldn't find account with email: "+accountDto.getEmail();
+        }
         String token = RandomTokenGenerator.generateRandomString(20);
 
-        try {
             // validate account and set new resetPWdToken token
-            accountService.updateResetPwdToken(token, accountDto.getEmail());
+            accountService.updateResetPwdToken(token, account);
 
             //sau này có deploy có url sẽ chỉnh lại sau
             //generate link
             String resetPwdLink = "http://localhost:8080/forgot/reset_password?token="+token;
 
             // send email with link
-            emailService.sendEmailResetPwd(accountDto,resetPwdLink);
+            emailService.sendEmailResetPwd(account,resetPwdLink);
 
 
-        } catch (AccountNotFoundException e ) {
-            throw new RuntimeException(e);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        }
+
         return "Check your email to set new Password";
     }
 
 
     @PutMapping("/reset_password")
     public String setPwd(@RequestParam String token, @RequestBody PasswordDto passwordDto) {
-        // từ token lấy từ mail
-        // check xem token có tồn tại kh
-        // nếu tồn tại thì sẽ truy ra đc account đang giữ token đó
+
         Account account = accountService.getAccByPwdToken(token);
-
-        if (account == null){
-            throw new RuntimeException("Invalid Token");
+        if (account == null) {
+            return "Invalid Token or Your link has expired!";
         }
-            // nếu account tồn tại
-        else{
-            // check newPwd và confirmPwd giống
-            String newPassword = passwordDto.getNewPassword();
-            String confirmPassword = passwordDto.getConfirmPassword();
 
-            if (!newPassword.equals(confirmPassword)){
-                throw new RuntimeException("Password not match!");
-            } else {
-                // update password, resetPwdToken để ngăn người dùng sử dụng lại link token cũ để đổi mk
-                accountService.updatePassword(account, newPassword);
-            }
+        if (passwordDto.getNewPassword() == null || passwordDto.getNewPassword().isEmpty()) {
+            return "Missing input field!";
         }
+        if (passwordDto.getNewPassword().length() < 8) {
+            return "Password's length must be longer than 8";
+        }
+        String newPassword = passwordDto.getNewPassword();
+        String confirmPassword = passwordDto.getConfirmPassword();
+
+        if (!newPassword.equals(confirmPassword)) {
+            return "Password not match";
+        }
+
+        accountService.updatePassword(account, newPassword);
         return "You have changed password successfully";
     }
-
-
 }

@@ -25,13 +25,13 @@ public interface AccountService {
 
     LoginResponse loginAccount(LoginDto loginDto);
 
-    void updateResetPwdToken (String token, String email) throws AccountNotFoundException;
+    void updateResetPwdToken (String token, Account account) ;
 
     Account getAccByPwdToken(String resetPwdToken);
 
     void updatePassword(Account account, String newPassword);
 
-    void updateVerifyToken (String token, String email) throws AccountNotFoundException;
+    void updateVerifyToken (String token, Account account) ;
 
     String verifyAccount(String email, String otp);
 

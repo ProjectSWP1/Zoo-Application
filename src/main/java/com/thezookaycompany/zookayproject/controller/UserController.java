@@ -80,16 +80,13 @@ public class UserController {
     public String processSendMailWithToken(@RequestBody AccountDto accountDto){
 
         //send mail with token
-        try {
+
             Account account = accountService.getUserByEmail(accountDto.getEmail());
             if(account !=null){
-                emailService.sendVertificationEmail(accountDto);
+                emailService.sendVertificationEmail(account);
             } else {
                 return "Account's not found!";
             }
-        } catch (AccountNotFoundException e) {
-            throw new RuntimeException("Account's not Found");
-        }
         return "Please check your mail to get Verification OTP";
     }
 
