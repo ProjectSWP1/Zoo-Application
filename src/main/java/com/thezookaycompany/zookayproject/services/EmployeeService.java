@@ -2,7 +2,9 @@ package com.thezookaycompany.zookayproject.services;
 
 import com.thezookaycompany.zookayproject.model.dto.EmployeesDto;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface EmployeeService {
@@ -28,4 +30,9 @@ public interface EmployeeService {
 
     // Update employees
     String updateEmployees(EmployeesDto employeesDto);
+
+    void uploadQualificationImage(int employeeId, MultipartFile qualificationFile) throws IOException;
+    byte[] getQualificationImageById(int employeeId);
+    void deleteQualificationImage(int employeeId);
+    void updateQualificationImage(int employeeId, MultipartFile newQualificationFile) throws IOException;
 }

@@ -8,4 +8,9 @@ import java.util.List;
 public interface OrdersService {
     Orders findOrdersByOrderID (Integer orderID);
     List<Ticket> listOrderDetailsTicket (Integer orderID);
-}
+
+    List<Orders> findAllOrders();
+    List<Orders> findAllByOrderIDAsc();
+    List<Orders> findAllByOrderIDDesc();
+    List<Orders> findOrdersByDescriptionContainingKeyword(String keyword);
+ }

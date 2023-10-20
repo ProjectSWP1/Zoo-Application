@@ -14,6 +14,7 @@ import com.thezookaycompany.zookayproject.services.AnimalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -246,4 +247,35 @@ public class AnimalServiceImpl implements AnimalService {
     public AnimalSpecies findAnimalByAnimalSpeciesID(Integer speciesId) {
         return animalSpeciesRepository.findAnimalSpeciesBySpeciesId(speciesId);
     }
+
+    @Override
+    public List<Animal> findAllByHeightAsc() {
+        return animalRepository.findAllByHeightAsc();
+    }
+
+    @Override
+    public List<Animal> findAllByHeightDesc() {
+        return animalRepository.findAllByHeightDesc();
+    }
+
+    @Override
+    public List<Animal> findAllByWeightAsc() {
+        return animalRepository.findAllByWeightAsc();
+    }
+
+    @Override
+    public List<Animal> findAllByWeightDesc() {
+        return animalRepository.findAllByWeightDesc();
+    }
+
+    @Override
+    public List<Animal> findAllByAgeAsc() {
+        return animalRepository.findAllByAgeAsc();
+    }
+
+    @Override
+    public List<Animal> findAllByAgeDesc() {
+        return animalRepository.findAllByAgeDesc();
+    }
+
 }

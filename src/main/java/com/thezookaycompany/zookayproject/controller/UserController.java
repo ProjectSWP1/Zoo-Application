@@ -1,34 +1,20 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
-
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.thezookaycompany.zookayproject.model.dto.*;
-import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.model.entity.Member;
-import com.thezookaycompany.zookayproject.model.entity.ZooArea;
-import com.thezookaycompany.zookayproject.model.entity.ZooNews;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.MemberRepository;
+import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
-import com.thezookaycompany.zookayproject.services.AccountService;
-import com.thezookaycompany.zookayproject.services.EmailService;
-import com.thezookaycompany.zookayproject.services.MemberServices;
-import com.thezookaycompany.zookayproject.services.ZooNewsService;
+import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import javax.security.auth.login.AccountNotFoundException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +34,7 @@ public class UserController {
     private ZooNewsService zooNewsService;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private ZooAreaService zooAreaService;
 
     //Register for users, you should leave this json
     //    const requestData = {
@@ -63,11 +49,9 @@ public class UserController {
     public String userAccess() {
         return "User accessed";
     }
-
-    // TODO: Clean code > chuyển toàn bộ account repository sang account services
     @PostMapping("/findUser")
     public Account getUser(@RequestBody AccountDto accountDto) {
-        return accountRepository.findOneByEmail(accountDto.getEmail());
+        return accountService.getUserByEmail(accountDto.getEmail());
     }
 
     //For login user please write this json in ReactJS
@@ -91,41 +75,43 @@ public class UserController {
     }
 
     @PostMapping("/send-email")
+   // @PreAuthorize("hasRole('Member')")
     public String processSendMailWithToken(@RequestBody AccountDto accountDto){
 
         //send mail with token
-        try {
-            emailService.sendVertificationEmail(accountDto);
-        } catch (AccountNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return "Please check your mail to get Verification link";
+
+            Account account = accountService.getUserByEmail(accountDto.getEmail());
+            if(account !=null){
+                emailService.sendVertificationEmail(account);
+            } else {
+                return "Account's not found!";
+            }
+        return "Please check your mail to get Verification OTP";
     }
 
     @PutMapping("/verify")
     public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
-        Account account = accountRepository.findAccountByEmail(email);
+        String message;
+        Account account = accountService.getUserByEmail(email);
         if(account !=null){
-            accountService.verifyAccount(account.getEmail(), otp);
+              message = accountService.verifyAccount(account.getEmail(), otp);
         } else {
-            throw new RuntimeException("Invalid OTP or OTP had expired");
+            return "Invalid email - Couldn't find any account with email: "+email;
         }
-        return "Account verified successfully";
+        return message;
     }
-    @Autowired
-    private  MemberRepository memberRepository;
     @Autowired
     private  MemberServices memberServices;
 
     @GetMapping("/member/all")
     public List<Member> getAllMember(){
 
-        return memberRepository.findAll();
+        return memberServices.getAllMember();
     }
     @GetMapping("/member/{phoneNumber}")
     public Member findMemberByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
 
-        return memberRepository.findMemberByPhoneNumber(phoneNumber);
+        return memberServices.findMemberByPhoneNumber(phoneNumber);
     }
     @PutMapping("/update/{phoneNumber}")
     public ResponseEntity<Member> updateMemberByPhoneNumber(
@@ -144,25 +130,26 @@ public class UserController {
     @GetMapping("/zoo-area/id/{zooAreaId}")
     ZooArea findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
 
-        return memberServices.findZooAreaByZooAreaID(zooAreaId);
+        return zooAreaService.findZooAreaByZooAreaID(zooAreaId);
 
     }
     @GetMapping("/zoo-area/des/{description}")
     ZooArea findZooAreaByZooAreaDes(@PathVariable("description") String description) {
 
-        return memberServices.findZooAreaByZooAreaDes(description);
+        return zooAreaService.findZooAreaByZooAreaDes(description);
 
     }
 
     @GetMapping("/zoo-area/all")
     public List <ZooArea> findAllZooArea(){
-        return memberServices.findAllZooArea();
+        return zooAreaService.findAllZooArea();
     }
 
     @GetMapping("/google")
     public Map<String, Object> getUserGoogleLogin(@AuthenticationPrincipal OAuth2User oAuth2User) {
         return oAuth2User.getAttributes();
     }
+
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
     public PaymentResponse createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
@@ -190,6 +177,14 @@ public class UserController {
         return new PaymentResponse(paymentIntent.getId(),paymentIntent.getClientSecret());
     }
 
+    //GET ALL VOUCHER
+    @Autowired
+    private VoucherService voucherService;
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @GetMapping("/get-all-voucher")
+    public List <Voucher> getAllVoucher(){
+        return voucherService.getAllVoucher();
+    }
     @GetMapping("/getnews")
     public List<ZooNews> getAllNews() {
         return zooNewsService.getNews();

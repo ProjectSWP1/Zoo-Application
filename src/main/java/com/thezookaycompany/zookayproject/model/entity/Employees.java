@@ -3,10 +3,8 @@ package com.thezookaycompany.zookayproject.model.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
-
 
 @Entity
 @Table(name = "Employees")
@@ -34,11 +32,11 @@ public class Employees {
     @Column(nullable = false)
     private String address;
 
-    public Employees() {
-    }
-
     @Column(name = "active")
     private Boolean active;
+
+    public Employees() {
+    }
 
     public Boolean isActive() {
         return active;
@@ -47,6 +45,10 @@ public class Employees {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    @Lob
+    @Column(name = "qualification", columnDefinition = "BLOB")
+    private byte[] qualification;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ZooAreaID", nullable = true)
@@ -144,4 +146,11 @@ public class Employees {
         this.empTrainerSchedules = empTrainerSchedules;
     }
 
+    public byte[] getQualification() {
+        return qualification;
+    }
+
+    public void setQualification(byte[] qualification) {
+        this.qualification = qualification;
+    }
 }

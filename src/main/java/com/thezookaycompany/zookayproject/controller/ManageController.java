@@ -3,20 +3,16 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.exception.InvalidCageException;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
-import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
-import com.thezookaycompany.zookayproject.repositories.CageRepository;
-import com.thezookaycompany.zookayproject.repositories.FeedingScheduleRepository;
-import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
-import com.thezookaycompany.zookayproject.services.AnimalFoodServices;
-import com.thezookaycompany.zookayproject.services.AnimalService;
-import com.thezookaycompany.zookayproject.services.CageService;
-import com.thezookaycompany.zookayproject.services.FeedingScheduleServices;
+import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -28,23 +24,20 @@ public class ManageController {
     private final String SUCCESS_RESPONSE = "success";
 
     @Autowired
-    private CageRepository cageRepository;
-
-    @Autowired
     private CageService cageService;
 
     @Autowired
-    private ZooAreaRepository zooAreaRepository;
+    private ZooAreaService zooAreaService;
 
-    @Autowired
-    private AnimalRepository animalRepository;
     @Autowired
     private AnimalService animalService;
 
-    // TODO: Clean code > chuyển toàn bộ cage repository sang cage services
+    @Autowired
+    private EmployeeService employeeService;
 
     @Autowired
     private AnimalFoodServices animalFoodServices;
+
     @Autowired
     private FeedingScheduleServices feedingScheduleServices;
 
@@ -53,8 +46,8 @@ public class ManageController {
     @GetMapping("/get-cage/{zooAreaId}")
     public List<Cage> getCagesByZooArea(@PathVariable String zooAreaId) {
 
-        ZooArea zooArea = zooAreaRepository.getZooAreaByZooAreaId(zooAreaId);
-        return cageRepository.findCagesByZooArea(zooArea);
+        ZooArea zooArea = zooAreaService.findZooAreaByZooAreaID(zooAreaId);
+        return cageService.listCagesByZooArea(zooArea);
     }
 
     // Lấy tất cả cage dựa trên Zoo Area
@@ -62,31 +55,31 @@ public class ManageController {
     // Hàm này để lấy tất cả cage đang có
     @GetMapping("/get-cage")
     public List<Cage> getAllCages() {
-        return cageRepository.findAll();
+        return cageService.getAllCages();
     }
 
     // Lấy zoo area hiện đang có để frontend làm thẻ select khi chuẩn bị tạo cage
     @GetMapping("/get-zoo-area")
     public List<ZooArea> getAllZooArea() {
-        return zooAreaRepository.findAll();
+        return zooAreaService.findAllZooArea();
     }
 
     // Truy xuất dữ liệu dựa vào keyword description (search keyword)
     @GetMapping("/get-cage-desc/{keyword}")
     public List<Cage> getCagesByDescription(@PathVariable String keyword) {
-        return cageRepository.findCagesByDescriptionContainingKeyword(keyword);
+        return cageService.getCagesByDescriptionKeyword(keyword);
     }
 
     // Hàm này để lấy tất cả cage dựa vào capacity TĂNG DẦN
     @GetMapping("/get-cage/ascending")
     public List<Cage> getCagesByCapacityAscending() {
-        return cageRepository.findAllByCapacityAsc();
+        return cageService.getCagesByCapacityAscending();
     }
 
     // Hàm này để lấy tất cả cage dựa vào capacity GIẢM DẦN
     @GetMapping("/get-cage/descending")
     public List<Cage> getCagesByCapacityDescending() {
-        return cageRepository.findAllByCapacityDesc();
+        return cageService.getCagesByCapacityDescending();
     }
     // Tạo thêm Chuồng: CREATE //
 
@@ -108,7 +101,7 @@ public class ManageController {
     public ResponseEntity<String> updateCage(@RequestBody CageDto cageDto) {
         String updateResponse = cageService.updateCage(cageDto);
 
-        if (updateResponse.contains("success")) {
+        if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -121,7 +114,7 @@ public class ManageController {
     public ResponseEntity<String> removeCage(@PathVariable String cageId) {
         try {
             String response = cageService.removeCage(cageId);
-            if(response.contains("success")) {
+            if(response.contains(SUCCESS_RESPONSE)) {
                 return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().body(response);
@@ -158,7 +151,7 @@ public class ManageController {
     public ResponseEntity<?> updateAnimal(@RequestBody AnimalDto animalDto) {
         String updateResponse = animalService.updateAnimal(animalDto);
 
-        if (updateResponse.startsWith("Animal updated successfully.")) {
+        if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -185,8 +178,7 @@ public class ManageController {
     @PutMapping("/update-animal-species")
     public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String updateResponse = animalService.updateAnimalSpecies(animalSpeciesDto);
-
-        if (updateResponse.contains("success")) {
+        if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
@@ -202,7 +194,6 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal Species not found with ID: " + speciesId);
         }
     }
-    // TODO: Clean code > chuyển toàn bộ animal repository sang animal services
     @GetMapping("/get-all-animalSpecies")
     public List<AnimalSpecies> getAllAnimalSpecies() {
         return animalService.getAllAnimalSpecies();
@@ -210,27 +201,27 @@ public class ManageController {
 
     @GetMapping("/get-animal/height-ascending")
     public List<Animal> getAnimalsByHeightAscending() {
-        return animalRepository.findAllByHeightAsc();
+        return animalService.findAllByHeightAsc();
     }
     @GetMapping("/get-animal/height-descending")
     public List<Animal> getAnimalsByHeightDescending() {
-        return animalRepository.findAllByHeightDesc();
+        return animalService.findAllByHeightDesc();
     }
     @GetMapping("/get-animal/weight-ascending")
     public List<Animal> getAnimalsByWeightAscending() {
-        return animalRepository.findAllByWeightAsc();
+        return animalService.findAllByWeightAsc();
     }
     @GetMapping("/get-animal/weight-descending")
     public List<Animal> getAnimalsByWeightDescending() {
-        return animalRepository.findAllByWeightDesc();
+        return animalService.findAllByWeightDesc();
     }
     @GetMapping("/get-animal/age-ascending")
     public List<Animal> getAnimalsByAgeAscending() {
-        return animalRepository.findAllByAgeAsc();
+        return animalService.findAllByAgeAsc();
     }
     @GetMapping("/get-animal/age-descending")
     public List<Animal> getAnimalsByAgeDescending() {
-        return animalRepository.findAllByAgeDesc();
+        return animalService.findAllByAgeDesc();
     }
 
     @GetMapping("/get-animal-with-species-and-cage/{animalId}")
@@ -376,6 +367,51 @@ public class ManageController {
             return ResponseEntity.ok(response);
         }
         return ResponseEntity.badRequest().body(response);
+    }
+    @PostMapping("/{employeeId}/upload-qualification")
+    public ResponseEntity<String> uploadQualification(
+            @PathVariable int employeeId,
+            @RequestParam("qualificationFile") MultipartFile qualificationFile) {
+        try {
+            employeeService.uploadQualificationImage(employeeId, qualificationFile);
+            return ResponseEntity.ok("Qualification image uploaded successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error uploading qualification image: " + e.getMessage());
+        }
+    }
+    @GetMapping("/{employeeId}/qualification-image")
+    public ResponseEntity<byte[]> getQualificationImage(@PathVariable int employeeId) {
+        byte[] image = employeeService.getQualificationImageById(employeeId);
+        if (image != null) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    @DeleteMapping("/{employeeId}/delete-qualification")
+    public ResponseEntity<String> deleteQualificationImage(@PathVariable int employeeId) {
+        try {
+            employeeService.deleteQualificationImage(employeeId);
+            return ResponseEntity.ok("Qualification image deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting qualification image: " + e.getMessage());
+        }
+    }
+    @PutMapping("/{employeeId}/update-qualification")
+    public ResponseEntity<String> updateQualificationImage(
+            @PathVariable int employeeId,
+            @RequestParam("newQualificationFile") MultipartFile newQualificationFile) {
+        try {
+            employeeService.updateQualificationImage(employeeId, newQualificationFile);
+            return ResponseEntity.ok("Qualification image updated successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating qualification image: " + e.getMessage());
+        }
     }
 
 }

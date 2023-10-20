@@ -40,6 +40,9 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
+    private EmployeesRepository employeesRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
@@ -57,8 +60,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private MemberServices memberServices;
 
-    @Autowired
-    private EmployeesRepository employeesRepository;
 
 
     @Override
@@ -193,6 +194,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public Account getUserByEmail(String email) {
+        return accountRepository.findOneByEmail(email);
+    }
+
+    @Override
     public List<Account> getAllAccount() {
         return accountRepository.findAll();
     }
@@ -211,6 +217,7 @@ public class AccountServiceImpl implements AccountService {
         return matcher.matches();
     }
 
+    // Hàm assign role tới account (chỉ khi đã có thằng Employee active = 1)
     @Override
     public boolean assignRoleToAccount(AccountDto accountDto, String role_id) {
         if(!roleRepository.existsById(role_id)) {
@@ -218,6 +225,12 @@ public class AccountServiceImpl implements AccountService {
         }
         if(accountRepository.existsById(accountDto.getEmail())) {
             Account acc = accountRepository.findById(accountDto.getEmail()).get();
+            // Nếu employee ko có -> nghĩa chưa thêm employee trước khi assign role account này
+            if(!role_id.contains("MB")) {
+                if(!employeesRepository.existsEmployeesByEmailAndActiveIsTrue(acc)) {
+                    return false;
+                }
+            }
             acc.setRole(roleRepository.findById(role_id).get());
             accountRepository.save(acc);
             return true;
@@ -251,18 +264,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateResetPwdToken(String token, String email) throws AccountNotFoundException {
-
-            // check account exist ?
-            Account account = accountRepository.findAccountByEmail(email);
+    public void updateResetPwdToken(String token, Account account)  {
 
             // nếu tồn tại thì set account new Token
             if (account !=null){
                 account.setResetPwdToken(token);
+                account.setOtpGeneratedTime(LocalDateTime.now());
                 accountRepository.save(account);
-            } else {
-                throw new AccountNotFoundException("Could not find any customer with email "+email);
+
             }
+
     }
 
     @Override
@@ -283,32 +294,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateVerifyToken(String token, String email) throws AccountNotFoundException {
-
-        // check account exist ?
-        Account account = accountRepository.findAccountByEmail(email);
+    public void updateVerifyToken(String token, Account account)  {
 
         // nếu tồn tại thì set verify Token
         if (account !=null){
             account.setVerificationToken(token);
             account.setOtpGeneratedTime(LocalDateTime.now());
             accountRepository.save(account);
-        } else {
-            throw new AccountNotFoundException("Could not find any customer with email "+email);
         }
     }
 
     @Override
-    public void verifyAccount(String email, String otp) {
+    public String verifyAccount(String email, String otp) {
 
-        Account account = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Could not find any customer with email "+email));
-        //Period.between(account.getOtpGeneratedTime(),)
-        // check otp trùng hoặc otp expired (2')
-        if(account.getVerificationToken().equals(otp) || Duration.between(account.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds()< (2 *60)){
+        Account account = accountRepository.findAccountByEmail(email);
+        if(account == null){
+            return "Could not find any account with email "+email;
+        }
+        // otp expired (2')
+        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
+            account.setVerificationToken(null);
+        }
+        // check trùng otp
+        if(account.getVerificationToken() == null) { return "OTP has expired";}
+        else if(account.getVerificationToken().equals(otp)){
             account.setActive(true);
             accountRepository.save(account);
+            return "Verify account successfully";
         }
+        return "Invalid OTP";
     }
 }

@@ -23,6 +23,13 @@ public interface AnimalService {
 
     AnimalSpecies findAnimalByAnimalSpeciesID(Integer speciesId);
 
+    List<Animal> findAllByHeightAsc();
+    List<Animal> findAllByHeightDesc();
+    List<Animal> findAllByWeightAsc();
+    List<Animal> findAllByWeightDesc();
+    List<Animal> findAllByAgeAsc();
+    List<Animal> findAllByAgeDesc();
+
 
 
 

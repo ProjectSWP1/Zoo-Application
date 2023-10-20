@@ -66,25 +66,12 @@ public class MemberServiceImpl implements MemberServices {
         return memberRepository.findAll();
     }
 
+
     @Override
     public Member findMemberByPhoneNumber(String phoneNumber) {
         return memberRepository.findMemberByPhoneNumber(phoneNumber);
     }
 
-    @Override
-    public ZooArea findZooAreaByZooAreaID(String zooAreaId) {
-        return zooAreRepository.findZooAreaByZooAreaId(zooAreaId);
-    }
-
-    @Override
-    public List<ZooArea> findAllZooArea() {
-        return zooAreRepository.findAll();
-    }
-
-    @Override
-    public ZooArea findZooAreaByZooAreaDes(String description) {
-        return zooAreRepository.findByDescriptionContainingIgnoreCase(description);
-    }
 
 
     @Override

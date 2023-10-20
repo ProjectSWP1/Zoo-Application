@@ -8,7 +8,7 @@ import jakarta.mail.MessagingException;
 import javax.security.auth.login.AccountNotFoundException;
 
 public interface EmailService {
-    void sendEmailResetPwd(AccountDto accountDto, String resetPwdLink) throws MessagingException;
+    void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException;
 
-    EmailTokenResponse sendVertificationEmail (AccountDto accountDto) throws AccountNotFoundException;
+    EmailTokenResponse sendVertificationEmail (Account account) ;
 }

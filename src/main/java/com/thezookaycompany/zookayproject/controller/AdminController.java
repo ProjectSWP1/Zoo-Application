@@ -1,18 +1,15 @@
 package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.exception.InvalidTicketException;
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.EmployeesDto;
-import com.thezookaycompany.zookayproject.model.dto.MemberDto;
-import com.thezookaycompany.zookayproject.model.dto.TicketDto;
+import com.thezookaycompany.zookayproject.exception.InvalidVoucherException;
+import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.TicketService;
+import com.thezookaycompany.zookayproject.services.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +21,13 @@ import java.util.List;
 @CrossOrigin("*")
 @RequestMapping("/admin")
 public class AdminController {
-
-    @Autowired
-    private TicketRepository ticketRepository;
+    private final String SUCCESS_RESPONSE = "success";
     @Autowired
     private TicketService ticketService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private VoucherService voucherService;
 
     @GetMapping("/")
     public String adminAccess() {
@@ -54,7 +51,7 @@ public class AdminController {
         if(isSuccess) {
             return ResponseEntity.ok("The account successfully assigned to Role " + roleId+".");
         } else {
-            return ResponseEntity.badRequest().body("Something went wrong, please try again.");
+            return ResponseEntity.badRequest().body("Cannot assign this account to this role. Please check the Employee has this email account or not.");
         }
     }
 
@@ -100,21 +97,20 @@ public class AdminController {
     }
     //Tìm tất cả ticket đang có
 
-    // TODO: Clean code > chuyển toàn bộ ticket repository sang ticket service
     @GetMapping("/get-ticket")
     public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+        return ticketService.findAllTicket();
     }
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
     @GetMapping("/get-ticket/ascending")
     public List<Ticket> getTicketByTicketPriceAscending() {
-        return ticketRepository.findAllByTicketPriceAsc();
+        return ticketService.findAllByTicketPriceAsc();
     }
 
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự GIẢM DẦN//
     @GetMapping("/get-ticket/descending")
     public List<Ticket> getTicketByTicketPriceDescending() {
-        return ticketRepository.findAllByTicketPriceDesc();
+        return ticketService.findAllByTicketPriceDesc();
     }
     //Hàm này tạo Ticket mới : CREATE//
     @PostMapping("/create-ticket")
@@ -177,7 +173,7 @@ public class AdminController {
     public ResponseEntity<?> createEmployees(@RequestBody EmployeesDto employeesDto) {
         String response = employeeService.addEmployees(employeesDto);
 
-        if (response.contains("success")) {
+        if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -210,9 +206,33 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    //Create Voucher with Voucher ID generated on FE
+    @PostMapping("/create-voucher")
+    public ResponseEntity<String> createAnimalVoucher(@RequestBody VoucherDto voucherDto) {
+        String response = voucherService.createVoucher(voucherDto);
+        if(response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+    //Update ticketID on Voucher
+    @PutMapping("/update-voucher")
+    public ResponseEntity<?> updateVoucher(@RequestBody VoucherDto voucherDto) {
+        String updateResponse = voucherService.updateVoucher(voucherDto);
 
-
-
-
-
+        if (updateResponse.startsWith("Voucher updated successfully.")) {
+            return ResponseEntity.ok(updateResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
+        }
+    }
+    @DeleteMapping("/delete-voucher/{voucherId}")
+    public ResponseEntity<String> removeVoucher(@PathVariable String voucherId) {
+        try {
+            String deletedVoucherId = voucherService.deleteVoucher(voucherId);
+            return ResponseEntity.ok("Voucher removed successfully with id: " + deletedVoucherId);
+        } catch (InvalidVoucherException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Voucher not found with ID: " + voucherId);
+        }
+    }
 }

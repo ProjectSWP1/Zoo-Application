@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -75,6 +76,7 @@ public class CageServiceImpl implements CageService {
         }
         existingCage.setDescription(cageDto.getDescription());
         existingCage.setCapacity(cageDto.getCapacity());
+        existingCage.setZooArea(zooArea);
 
         cageRepository.save(existingCage);
 
@@ -91,5 +93,30 @@ public class CageServiceImpl implements CageService {
         cageRepository.delete(cage);
 
         return "Deleted cage id: " + cage.getCageID() + " successfully";
+    }
+
+    @Override
+    public List<Cage> listCagesByZooArea(ZooArea zooArea) {
+        return cageRepository.findCagesByZooArea(zooArea);
+    }
+
+    @Override
+    public List<Cage> getAllCages() {
+        return cageRepository.findAll();
+    }
+
+    @Override
+    public List<Cage> getCagesByDescriptionKeyword(String keyword) {
+        return cageRepository.findCagesByDescriptionContainingKeyword(keyword);
+    }
+
+    @Override
+    public List<Cage> getCagesByCapacityDescending() {
+        return cageRepository.findAllByCapacityDesc();
+    }
+
+    @Override
+    public List<Cage> getCagesByCapacityAscending() {
+        return cageRepository.findAllByCapacityAsc();
     }
 }
