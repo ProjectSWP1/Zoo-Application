@@ -33,19 +33,21 @@ public class Employees {
     @Column(nullable = false)
     private String address;
 
+    @Column(name = "active")
+    private Boolean active;
+
     public Employees() {
     }
 
-    public boolean isActive() {
+    public Boolean isActive() {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         this.active = active;
     }
 
-    @Column(name = "active")
-    private boolean active;
+
     @Lob
     @Column(name = "qualification", columnDefinition = "BLOB")
     private byte[] qualification;

@@ -244,21 +244,30 @@ public class AccountServiceImpl implements AccountService {
             account.setOtpGeneratedTime(LocalDateTime.now());
             accountRepository.save(account);
         } else {
-            throw new AccountNotFoundException("Could not find any customer with email "+email);
+            throw new AccountNotFoundException("Could not find any account with email "+email);
         }
     }
 
     @Override
-    public void verifyAccount(String email, String otp) {
+    public String verifyAccount(String email, String otp) {
 
-        Account account = accountRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Could not find any customer with email "+email));
-        //Period.between(account.getOtpGeneratedTime(),)
-        // check otp trùng hoặc otp expired (2')
-        if(account.getVerificationToken().equals(otp) || Duration.between(account.getOtpGeneratedTime(),
-                LocalDateTime.now()).getSeconds()< (2 *60)){
+        Account account = accountRepository.findAccountByEmail(email);
+        if(account == null){
+            return "Could not find any account with email "+email;
+        }
+
+        // otp expired (2')
+        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
+            account.setVerificationToken(null);
+        }
+
+        // check trùng otp
+        if(account.getVerificationToken() == null) { return "OTP has expired";}
+        else if(account.getVerificationToken().equals(otp)){
             account.setActive(true);
             accountRepository.save(account);
+            return "Verify account successfully";
         }
+        return "Invalid OTP ";
     }
 }

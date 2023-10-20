@@ -1,23 +1,12 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
-
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.thezookaycompany.zookayproject.model.dto.*;
-import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.model.entity.Member;
-import com.thezookaycompany.zookayproject.model.entity.Voucher;
-import com.thezookaycompany.zookayproject.model.entity.ZooArea;
-import com.thezookaycompany.zookayproject.model.entity.ZooNews;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.MemberRepository;
+import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,26 +76,33 @@ public class UserController {
     }
 
     @PostMapping("/send-email")
+   // @PreAuthorize("hasRole('Member')")
     public String processSendMailWithToken(@RequestBody AccountDto accountDto){
 
         //send mail with token
         try {
-            emailService.sendVertificationEmail(accountDto);
+            Account account = accountService.getUserByEmail(accountDto.getEmail());
+            if(account !=null){
+                emailService.sendVertificationEmail(accountDto);
+            } else {
+                return "Account's not found!";
+            }
         } catch (AccountNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Account's not Found");
         }
-        return "Please check your mail to get Verification link";
+        return "Please check your mail to get Verification OTP";
     }
 
     @PutMapping("/verify")
     public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
+        String message;
         Account account = accountService.getUserByEmail(email);
         if(account !=null){
-            accountService.verifyAccount(account.getEmail(), otp);
+              message = accountService.verifyAccount(account.getEmail(), otp);
         } else {
-            throw new RuntimeException("Invalid OTP or OTP had expired");
+            return "Invalid email - Couldn't find any account with email: "+email;
         }
-        return "Account verified successfully";
+        return message;
     }
     @Autowired
     private  MemberServices memberServices;
@@ -157,6 +153,7 @@ public class UserController {
     public Map<String, Object> getUserGoogleLogin(@AuthenticationPrincipal OAuth2User oAuth2User) {
         return oAuth2User.getAttributes();
     }
+
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
     public PaymentResponse createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
@@ -183,6 +180,7 @@ public class UserController {
 
         return new PaymentResponse(paymentIntent.getId(),paymentIntent.getClientSecret());
     }
+
     //GET ALL VOUCHER
     @Autowired
     private VoucherService voucherService;
