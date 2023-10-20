@@ -6,9 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.security.UserServices;
-import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.utils.RSAKeyProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -125,6 +123,7 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    // OAuth2 JWT
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();
@@ -145,6 +144,27 @@ public class SecurityConfig {
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
+    }
+    @Bean
+    public ClientRegistrationRepository clientRegistrationRepository() {
+        return new InMemoryClientRegistrationRepository(this.googleClientRegistration());
+    }
+
+    private ClientRegistration googleClientRegistration() {
+        return ClientRegistration.withRegistrationId("google")
+                .clientId("617519079034-u6adijl9a9fdrsu89i9s6elkebs37th8.apps.googleusercontent.com")
+                .clientSecret("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")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
+                .scope("email")
+                .authorizationUri("https://accounts.google.com/o/oauth2/v2/auth")
+                .tokenUri("https://www.googleapis.com/oauth2/v4/token")
+                .userInfoUri("https://www.googleapis.com/oauth2/v3/userinfo")
+                .userNameAttributeName(IdTokenClaimNames.SUB)
+                .jwkSetUri("https://www.googleapis.com/oauth2/v3/certs")
+                .clientName("Google")
+                .build();
     }
 }
 

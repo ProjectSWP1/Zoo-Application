@@ -3,10 +3,6 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.exception.InvalidCageException;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
-import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
-import com.thezookaycompany.zookayproject.repositories.CageRepository;
-import com.thezookaycompany.zookayproject.repositories.FeedingScheduleRepository;
-import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -183,7 +178,6 @@ public class ManageController {
     @PutMapping("/update-animal-species")
     public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String updateResponse = animalService.updateAnimalSpecies(animalSpeciesDto);
-
         if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {

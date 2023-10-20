@@ -1,14 +1,11 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.exception.InvalidCageException;
 import com.thezookaycompany.zookayproject.exception.InvalidTicketException;
 import com.thezookaycompany.zookayproject.exception.InvalidVoucherException;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.TicketService;
@@ -31,7 +28,6 @@ public class AdminController {
     private AccountService accountService;
     @Autowired
     private VoucherService voucherService;
-
 
     @GetMapping("/")
     public String adminAccess() {
@@ -59,9 +55,24 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/delete-account")
-    public ResponseEntity<?> removeAccount(@RequestBody AccountDto accountDto) {
-        String response = accountService.removeAccount(accountDto.getEmail());
+    // Tạo account dành cho Admin
+    /*
+        @params accountDto, memberDto, role
+    */
+    @PostMapping("/create-account")
+    public ResponseEntity<?> createAccount(@RequestBody AccountDto accountDto, @RequestBody MemberDto memberDto, @RequestParam String roleId) {
+        String response = accountService.admin_addAccount(accountDto, memberDto, roleId);
+        if(response.contains("success")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
+    @DeleteMapping("/delete-account/{email}")
+    public ResponseEntity<?> removeAccount(@PathVariable String email) {
+        String response = accountService.removeAccount(email);
         if(response.contains("success")) {
             return ResponseEntity.ok(response);
         } else {
@@ -224,11 +235,4 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Voucher not found with ID: " + voucherId);
         }
     }
-
-
-
-
-
-
-
 }

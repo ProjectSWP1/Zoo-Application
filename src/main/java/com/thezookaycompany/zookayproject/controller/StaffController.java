@@ -2,19 +2,21 @@ package com.thezookaycompany.zookayproject.controller;
 
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
+import com.thezookaycompany.zookayproject.model.dto.TrainerScheduleDto;
+import com.thezookaycompany.zookayproject.model.dto.TrainerScheduleInfo;
 import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
-import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.model.entity.Employees;
-import com.thezookaycompany.zookayproject.model.entity.ZooNews;
+import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.services.AccountService;
+import com.thezookaycompany.zookayproject.repositories.TrainerScheduleWeekDayRepository;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
+import com.thezookaycompany.zookayproject.services.TrainerScheduleService;
 import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/staff")
@@ -30,27 +32,43 @@ public class StaffController {
     @Autowired
     private ZooNewsService zooNewsService;
 
+    @Autowired
+    private TrainerScheduleService trainerScheduleService;
+
+    @Autowired
+    private TrainerScheduleWeekDayRepository trainerScheduleWeekDayRepository;
+
     @GetMapping("/")
     public String helloStaff() {
         return "Staff access";
     }
 
+
+    //chỉ trả về accountDto và security
     @GetMapping("/view-trainer")
     public List<Account> getAllTrainer (){
         return accountRepository.findAllByRole("ZT");
     }
 
+
     @PostMapping("/modify-trainer")
     public String updateAccountRole (@RequestBody AccountDto accountDto, @RequestParam String newRole){
-        
+
         accountRepository.updateAccountRole(accountDto.getEmail(),newRole);
 
         return "Update successfully";
     }
 
+    // trả về tất cả cái j có relation với employee này (ZooArea, schedule, account,..)
     @GetMapping("/get-trainer-employees")
     public List<Employees> getTrainerEmployees() {
         return employeeService.getTrainerEmployees();
+    }
+
+    // tìm tất cả employees có role Trainer đang quản lý bởi 1 thằng employee là staff
+    @GetMapping("/get-trainer-employees-managed-by/{managedEmpId}")
+    public List<Employees> getTrainerEmployeesByManagedEmpId(@PathVariable Integer managedEmpId) {
+        return employeeService.findTrainerEmployeesByManagedByEmp_EmpId(managedEmpId);
     }
 
     @PostMapping("/postnews")
@@ -63,4 +81,52 @@ public class StaffController {
             return ResponseEntity.badRequest().body(updatedResponse);
         }
     }
+
+
+    //TRAINER SCHEDULE--------------------------------------------------------------------------------
+
+    //view all information about trainer include workday(mon,tues,wed,..)
+    // 1 trainer thì có nhiều trainer schedule
+    // 1 cái trainerSchedule thì chứa thông tin của 1 workday
+    @GetMapping("/view-trainer-schedule")
+    public Set<TrainerSchedule> getTrainerSchedule(@RequestParam int empId) {
+        return trainerScheduleService.getTrainerScheduleInfo(empId);
+    }
+
+    @GetMapping("/view-trainer-scheduledays")
+    public List<TrainerScheduleInfo> getTrainerScheduleWithEmpId(@RequestParam int empId){
+        return trainerScheduleService.getTrainerScheduleByEmpId(empId);
+    }
+
+    // create trainer schedule
+    @PostMapping("/assign-trainer-schedule")
+    public ResponseEntity<String> createTrainerSchedule(@RequestBody TrainerScheduleDto trainerScheduleDto){
+        String message =trainerScheduleService.createTrainerSchedule(trainerScheduleDto);
+        if(message.contains("success")) {
+            return ResponseEntity.ok(message);
+        } else {
+            return ResponseEntity.badRequest().body(message);
+        }
+    }
+
+    @PostMapping("/update-trainer-schedule")
+    public ResponseEntity<String> updateTrainerSchedule(@RequestBody TrainerScheduleDto trainerScheduleDto){
+        String message = trainerScheduleService.updateTrainerSchedule(trainerScheduleDto);
+        if(message.contains("success")) {
+            return ResponseEntity.ok(message);
+        } else {
+            return ResponseEntity.badRequest().body(message);
+        }
+    }
+
+    @DeleteMapping("/delete-trainer-schedule")
+    public ResponseEntity<String> removeTrainerSchedule(@RequestParam Integer empId, @RequestParam Integer trainerScheduleId) {
+        String message = trainerScheduleService.removeTrainerSchedule(empId, trainerScheduleId);
+        if(message.contains("success")) {
+            return ResponseEntity.ok(message);
+        }
+        return ResponseEntity.badRequest().body(message);
+    }
+
+
 }
