@@ -62,6 +62,12 @@ public class StaffController {
         return employeeService.getTrainerEmployees();
     }
 
+    // tìm tất cả employees có role Trainer đang quản lý bởi 1 thằng employee là staff
+    @GetMapping("/get-trainer-employees-managed-by/{managedEmpId}")
+    public List<Employees> getTrainerEmployeesByManagedEmpId(@PathVariable Integer managedEmpId) {
+        return employeeService.findTrainerEmployeesByManagedByEmp_EmpId(managedEmpId);
+    }
+
     @PostMapping("/postnews")
     public ResponseEntity<String> postNews(@RequestBody ZooNewsDto zooNewsDto) {
         String updatedResponse = zooNewsService.postNews(zooNewsDto);

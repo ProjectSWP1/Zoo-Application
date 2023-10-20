@@ -3,6 +3,7 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.exception.InvalidTicketException;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.EmployeesDto;
+import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.dto.TicketDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
@@ -31,7 +32,6 @@ public class AdminController {
     @Autowired
     private AccountService accountService;
 
-
     @GetMapping("/")
     public String adminAccess() {
         return "Admin accessed";
@@ -58,9 +58,24 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/delete-account")
-    public ResponseEntity<?> removeAccount(@RequestBody AccountDto accountDto) {
-        String response = accountService.removeAccount(accountDto.getEmail());
+    // Tạo account dành cho Admin
+    /*
+        @params accountDto, memberDto, role
+    */
+    @PostMapping("/create-account")
+    public ResponseEntity<?> createAccount(@RequestBody AccountDto accountDto, @RequestBody MemberDto memberDto, @RequestParam String roleId) {
+        String response = accountService.admin_addAccount(accountDto, memberDto, roleId);
+        if(response.contains("success")) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+
+    @DeleteMapping("/delete-account/{email}")
+    public ResponseEntity<?> removeAccount(@PathVariable String email) {
+        String response = accountService.removeAccount(email);
         if(response.contains("success")) {
             return ResponseEntity.ok(response);
         } else {

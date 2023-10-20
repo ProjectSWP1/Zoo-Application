@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -62,12 +63,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String addAccount(AccountDto accountDto, MemberDto memberDto) {
-        if(accountDto.getEmail().isEmpty() || accountDto.getEmail() == null) {
+        if(accountDto.getEmail() == null || accountDto.getEmail().isEmpty()) {
             return "Email field is empty";
         }
         memberDto.setPhoneNumber(accountDto.getPhoneNumber());
 
-        if(accountDto.getPhoneNumber().isEmpty() || accountDto.getPhoneNumber() == null || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
+        if(accountDto.getPhoneNumber() == null || accountDto.getPhoneNumber().isEmpty() || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
             return "Invalid phone number, please try again";
         }
 
@@ -100,9 +101,71 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id) {
+        if(role_id == null || role_id.isEmpty()) {
+            return "You have not yet chose role you want to assign";
+        }
+        if(accountDto.getEmail() == null || accountDto.getEmail().isEmpty()) {
+            return "Email field is empty";
+        }
+        memberDto.setPhoneNumber(accountDto.getPhoneNumber());
+
+        if(accountDto.getPhoneNumber() == null || accountDto.getPhoneNumber().isEmpty() || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
+            return "Invalid phone number, please try again";
+        }
+
+        if(memberDto.getDob() == null || memberDto.getDob().isEmpty()) {
+            return "You cannot leave empty date of birth field";
+        }
+
+        Account temp = accountRepository.findAccountByEmail(accountDto.getEmail());
+        if (temp != null) {
+            return "This account has already existed";
+        }
+
+        // Parse lại Email thành Username
+        accountDto.setUsername(accountDto.getEmail().trim().split("@")[0]);
+        String encodedPassword = passwordEncoder.encode(accountDto.getPassword());
+        Role userRole = roleRepository.findById(role_id).orElse(null);
+        if(userRole == null) {
+            return "This role does not exist";
+        }
+        // Add member trước rồi mới add account
+        // This is will automatically set to true because administrator
+        memberServices.addMember(accountDto, memberDto);
+        Account acc = new Account(
+                accountDto.getUsername(),
+                encodedPassword,
+                accountDto.getEmail(),
+                memberRepository.findMemberByPhoneNumber(memberDto.getPhoneNumber()),
+                userRole,
+                true
+        );
+
+        Employees employees = new Employees();
+        switch (role_id) {
+            case "AD": return "You cannot assign this role Admin";
+            case "ZT", "ST":
+                employees.setName(memberDto.getName());
+                employees.setPhoneNumber(accountDto.getPhoneNumber());
+                employees.setActive(true);
+                employees.setAddress(memberDto.getAddress());
+                employees.setDoB(Date.valueOf(memberDto.getDob()));
+                employees.setEmail(acc);
+                employeesRepository.save(employees);
+                break;
+        }
+        accountRepository.save(acc);
+        return "New account has been added successfully.";
+    }
+
+    @Override
     public String deactivateAccount(String email) {
         Account acc = accountRepository.findById(email).orElse(null);
         if(acc != null) {
+            if(!acc.isActive()) {
+                return "This account has already deactivated.";
+            }
             acc.setActive(false);
             accountRepository.save(acc);
             return "The account " + email + " has been successfully deactivated";

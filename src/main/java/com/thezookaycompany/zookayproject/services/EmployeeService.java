@@ -9,6 +9,8 @@ public interface EmployeeService {
     // Lấy toàn bộ Employee (kể cả đã nghỉ việc)
     List<Employees> getAllEmployees();
 
+    List<Employees> findTrainerEmployeesByManagedByEmp_EmpId(Integer managedByEmpId);
+
     // Dành cho staff: Lấy employee đang là Zoo Trainer
     List<Employees> getTrainerEmployees();
 

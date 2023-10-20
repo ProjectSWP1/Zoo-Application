@@ -12,6 +12,8 @@ import java.util.List;
 public interface AccountService {
     String addAccount(AccountDto accountDto, MemberDto memberDto);
 
+    String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id);
+
     String deactivateAccount(String email);
 
     String removeAccount(String email);
