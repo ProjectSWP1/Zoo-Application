@@ -64,8 +64,8 @@ public class AdminController {
         Note: DB Employee chỉnh cột Zoo Area ID có thể null (nullable = true)
     */
     @PostMapping("/create-account")
-    public ResponseEntity<?> createAccount(@RequestBody RequestWrapper requestWrapper, @RequestParam String roleIdd) {
-        String response = accountService.admin_addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto(), roleIdd);
+    public ResponseEntity<?> createAccount(@RequestBody RequestWrapper requestWrapper, @RequestParam String roleId) {
+        String response = accountService.admin_addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto(), roleId);
         if(response.contains("success")) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
