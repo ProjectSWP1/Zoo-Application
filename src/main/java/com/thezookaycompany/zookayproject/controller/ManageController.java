@@ -184,7 +184,9 @@ public class ManageController {
     public ResponseEntity<String> updateAnimalSpecies(@RequestBody AnimalSpeciesDto animalSpeciesDto) {
         String updateResponse = animalService.updateAnimalSpecies(animalSpeciesDto);
 
+
         if (updateResponse.contains(SUCCESS_RESPONSE)) {
+
             return ResponseEntity.ok(updateResponse);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
