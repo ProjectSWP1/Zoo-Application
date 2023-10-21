@@ -1,9 +1,8 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.Set;
 
@@ -53,17 +52,19 @@ public class Employees {
     private byte[] qualification;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "ZooAreaID", nullable = false)
+    @JoinColumn(name = "ZooAreaID", nullable = true)
     private ZooArea zooArea;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "managed_by_empid", nullable = true)
     private Employees managedByEmp;
 
     @OneToMany(mappedBy = "managedByEmp")
+    @JsonBackReference
     private Set<Employees> managedByEmpEmployees;
 
     @OneToMany(mappedBy = "emp")
+    @JsonBackReference
     private Set<TrainerSchedule> empTrainerSchedules;
 
     public Integer getEmpId() {

@@ -45,6 +45,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public List<Employees> findTrainerEmployeesByManagedByEmp_EmpId(Integer managedByEmpId) {
+        return employeesRepository.findTrainerEmployeesByManagedByEmp_EmpId(managedByEmpId);
+    }
+
+    @Override
     public List<Employees> getTrainerEmployees() {
         return employeesRepository.findAllZooTrainers();
     }
