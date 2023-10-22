@@ -31,6 +31,10 @@ public class Animal {
     @Column(nullable = false)
     private double height;
 
+    @Lob
+    @Column(name = "imageAnimal", columnDefinition = "BLOB")
+    private byte[] imageAnimal;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SpeciesID", nullable = false)
     private AnimalSpecies species;
@@ -120,4 +124,11 @@ public class Animal {
         return species.getSpeciesId();
     }
 
+    public byte[] getImageAnimal() {
+        return imageAnimal;
+    }
+
+    public void setImageAnimal(byte[] imageAnimal) {
+        this.imageAnimal = imageAnimal;
+    }
 }
