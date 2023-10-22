@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.services.impl;
 
+import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,11 +31,14 @@ public class TokenServiceImpl implements TokenService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        Account account = (Account) auth.getPrincipal();
+
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .subject(auth.getName()) //username or email
                 .claim("roles", scope)
+                .claim("email", account.getEmail()) // Add the email as a custom claim
                 .build();
         //pass token value back to front end
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();

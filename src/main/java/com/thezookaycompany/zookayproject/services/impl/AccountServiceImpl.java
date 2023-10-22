@@ -7,10 +7,8 @@ import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Role;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
-import com.thezookaycompany.zookayproject.repositories.MemberRepository;
-import com.thezookaycompany.zookayproject.repositories.RoleRepository;
+import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
@@ -40,6 +38,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private ZooAreaRepository zooAreaRepository;
 
     @Autowired
     private EmployeesRepository employeesRepository;
@@ -128,7 +129,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id) {
+    public String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id, String zoo_area_id) {
         if(role_id == null || role_id.isEmpty()) {
             return "You have not yet chose role you want to assign";
         }
@@ -173,13 +174,30 @@ public class AccountServiceImpl implements AccountService {
         Employees employees = new Employees();
         switch (role_id) {
             case "AD": return "You cannot assign this role Admin";
-            case "ZT", "ST":
+            case "ST":
                 employees.setName(memberDto.getName());
                 employees.setPhoneNumber(accountDto.getPhoneNumber());
                 employees.setActive(true);
                 employees.setAddress(memberDto.getAddress());
                 employees.setDoB(convertDateFormat(memberDto.getDob()));
                 employees.setEmail(acc);
+                employeesRepository.save(employees);
+                break;
+            case "ZT":
+                if(zoo_area_id == null || zoo_area_id.isEmpty()) {
+                    return "You must fill the Zoo Area because this employee is Trainer";
+                }
+                ZooArea zooArea = zooAreaRepository.findById(zoo_area_id).orElse(null);
+                if(zooArea == null) {
+                    return "Zoo Area is not found";
+                }
+                employees.setName(memberDto.getName());
+                employees.setPhoneNumber(accountDto.getPhoneNumber());
+                employees.setActive(true);
+                employees.setAddress(memberDto.getAddress());
+                employees.setDoB(convertDateFormat(memberDto.getDob()));
+                employees.setEmail(acc);
+                employees.setZooArea(zooArea);
                 employeesRepository.save(employees);
                 break;
         }

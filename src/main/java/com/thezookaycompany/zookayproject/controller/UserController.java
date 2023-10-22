@@ -189,4 +189,10 @@ public class UserController {
     public List<ZooNews> getAllNews() {
         return zooNewsService.getNews();
     }
+
+    // Lấy tin tức mới nhất dựa vào Date created
+    @GetMapping("/get-newest-news")
+    public List<ZooNews> getNewestNews() {
+        return zooNewsService.getNewestNews();
+    }
 }

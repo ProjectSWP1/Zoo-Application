@@ -194,6 +194,7 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal Species not found with ID: " + speciesId);
         }
     }
+
     @GetMapping("/get-all-animalSpecies")
     public List<AnimalSpecies> getAllAnimalSpecies() {
         return animalService.getAllAnimalSpecies();
@@ -369,9 +370,27 @@ public class ManageController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    //QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE
+
+
+    @GetMapping("/get-employee-by/{email}")
+    public Employees getEmployeeByEmail(@PathVariable String email) {
+        return employeeService.getEmployeeByEmail(email);
+    }
+   @PutMapping("/update-profile")
+    public ResponseEntity<String> updateEmployees(@RequestBody EmployeesDto employeesDto) {
+        String response = employeeService.updateEmployees(employeesDto);
+        if (response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+    }
+  
+  //QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE
 
     //**Upload Qualification Image by id**//
+
     @PostMapping("/{employeeId}/upload-qualification")
     public ResponseEntity<String> uploadQualification(
             @PathVariable int employeeId,
@@ -481,6 +500,6 @@ public class ManageController {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error updating animal image: " + e.getMessage());
-        }
-    }
+
+   
 }

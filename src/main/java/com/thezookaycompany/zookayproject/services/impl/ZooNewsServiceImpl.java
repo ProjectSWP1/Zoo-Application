@@ -46,4 +46,9 @@ public class ZooNewsServiceImpl implements ZooNewsService {
     public List<ZooNews> getNews() {
         return zooNewsRepository.findAll();
     }
+
+    @Override
+    public List<ZooNews> getNewestNews() {
+        return zooNewsRepository.findAllByOrderByDateCreatedDesc();
+    }
 }
