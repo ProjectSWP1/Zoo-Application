@@ -5,7 +5,9 @@ import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
 import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
 import com.thezookaycompany.zookayproject.model.entity.Animal;
 import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface AnimalService {
@@ -30,8 +32,10 @@ public interface AnimalService {
     List<Animal> findAllByAgeAsc();
     List<Animal> findAllByAgeDesc();
 
-
-
+    void uploadAnimalImage(Integer animalId, MultipartFile animalImgFile) throws IOException;
+    void deleteAnimalImage(Integer animalId);
+    void updateAnimalImage(Integer animalId, MultipartFile newAnimalImgFile) throws IOException;
+    byte[] getAnimalImageById(Integer animalId);
 
 
 

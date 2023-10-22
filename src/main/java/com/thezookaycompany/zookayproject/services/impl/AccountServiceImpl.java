@@ -7,10 +7,8 @@ import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Role;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
-import com.thezookaycompany.zookayproject.repositories.MemberRepository;
-import com.thezookaycompany.zookayproject.repositories.RoleRepository;
+import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
@@ -25,9 +23,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +38,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private ZooAreaRepository zooAreaRepository;
 
     @Autowired
     private EmployeesRepository employeesRepository;
@@ -101,8 +104,32 @@ public class AccountServiceImpl implements AccountService {
         return "You have registered successfully. To verify your email, check your gmail box";
     }
 
+    private java.util.Date convertDateFormat(String dob) {
+
+        // Create a SimpleDateFormat for the input format
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+
+        // Create a SimpleDateFormat for the output format
+        SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            // Parse the input string to a Date object
+            java.util.Date date = inputDateFormat.parse(dob);
+
+            // Format the Date object to a formatted String
+            String formattedDateString = outputDateFormat.format(date);
+
+            // Parse the formatted String back to a Date object
+            Date formattedDate = outputDateFormat.parse(formattedDateString);
+
+            return formattedDate;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    public String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id) {
+    public String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id, String zoo_area_id) {
         if(role_id == null || role_id.isEmpty()) {
             return "You have not yet chose role you want to assign";
         }
@@ -132,8 +159,9 @@ public class AccountServiceImpl implements AccountService {
             return "This role does not exist";
         }
         // Add member trước rồi mới add account
-        // This is will automatically set to true because administrator
-        memberServices.addMember(accountDto, memberDto);
+
+        // This will automatically set to true because administrator
+        memberServices.addMember(accountDto, memberDto); // bắt buộc tạo member để khi role chuyển về MB
         Account acc = new Account(
                 accountDto.getUsername(),
                 encodedPassword,
@@ -146,13 +174,30 @@ public class AccountServiceImpl implements AccountService {
         Employees employees = new Employees();
         switch (role_id) {
             case "AD": return "You cannot assign this role Admin";
-            case "ZT", "ST":
+            case "ST":
                 employees.setName(memberDto.getName());
                 employees.setPhoneNumber(accountDto.getPhoneNumber());
                 employees.setActive(true);
                 employees.setAddress(memberDto.getAddress());
-                employees.setDoB(Date.valueOf(memberDto.getDob()));
+                employees.setDoB(convertDateFormat(memberDto.getDob()));
                 employees.setEmail(acc);
+                employeesRepository.save(employees);
+                break;
+            case "ZT":
+                if(zoo_area_id == null || zoo_area_id.isEmpty()) {
+                    return "You must fill the Zoo Area because this employee is Trainer";
+                }
+                ZooArea zooArea = zooAreaRepository.findById(zoo_area_id).orElse(null);
+                if(zooArea == null) {
+                    return "Zoo Area is not found";
+                }
+                employees.setName(memberDto.getName());
+                employees.setPhoneNumber(accountDto.getPhoneNumber());
+                employees.setActive(true);
+                employees.setAddress(memberDto.getAddress());
+                employees.setDoB(convertDateFormat(memberDto.getDob()));
+                employees.setEmail(acc);
+                employees.setZooArea(zooArea);
                 employeesRepository.save(employees);
                 break;
         }
