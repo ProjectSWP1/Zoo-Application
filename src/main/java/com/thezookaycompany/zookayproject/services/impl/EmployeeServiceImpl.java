@@ -138,6 +138,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    public Employees getEmployeeByEmail(String email) {
+        Account account = accountRepository.findById(email).orElse(null);
+        Employees employees = null;
+        if(account != null) {
+            employees = employeesRepository.findEmployeesByEmail(account);
+        }
+        return employees;
+    }
+
+    @Override
     public String updateEmployees(EmployeesDto employeesDto) {
         Employees employees = employeesRepository.findById(employeesDto.getEmpID()).orElse(null);
         if (employees == null) {

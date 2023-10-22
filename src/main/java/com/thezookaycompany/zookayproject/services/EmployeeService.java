@@ -27,7 +27,7 @@ public interface EmployeeService {
 
     // Sa thải employees (disable employee)
     String deactivateEmployees(Integer empID);
-
+    Employees getEmployeeByEmail(String email);
     // Update employees
     String updateEmployees(EmployeesDto employeesDto);
 

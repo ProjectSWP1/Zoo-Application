@@ -11,4 +11,6 @@ public interface ZooNewsService {
     String postNews(ZooNewsDto zooNewsDto);
 
     List<ZooNews> getNews();
+
+    List<ZooNews> getNewestNews();
 }

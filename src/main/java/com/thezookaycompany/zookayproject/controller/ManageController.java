@@ -194,6 +194,7 @@ public class ManageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal Species not found with ID: " + speciesId);
         }
     }
+
     @GetMapping("/get-all-animalSpecies")
     public List<AnimalSpecies> getAllAnimalSpecies() {
         return animalService.getAllAnimalSpecies();
@@ -368,6 +369,12 @@ public class ManageController {
         }
         return ResponseEntity.badRequest().body(response);
     }
+
+    @GetMapping("/get-employee-by/{email}")
+    public Employees getEmployeeByEmail(@PathVariable String email) {
+        return employeeService.getEmployeeByEmail(email);
+    }
+
     @PostMapping("/{employeeId}/upload-qualification")
     public ResponseEntity<String> uploadQualification(
             @PathVariable int employeeId,
