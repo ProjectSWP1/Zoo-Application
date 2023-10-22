@@ -7,13 +7,17 @@ import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
 import com.thezookaycompany.zookayproject.model.entity.Animal;
 import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
 import com.thezookaycompany.zookayproject.model.entity.Cage;
+import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.AnimalSpeciesRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
 import com.thezookaycompany.zookayproject.services.AnimalService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -276,6 +280,49 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public List<Animal> findAllByAgeDesc() {
         return animalRepository.findAllByAgeDesc();
+    }
+
+    @Override
+    public void uploadAnimalImage(Integer animalId, MultipartFile animalImgFile) throws IOException {
+        Animal animal = animalRepository.findById(animalId)
+                .orElseThrow(() -> new EntityNotFoundException("Animal not found"));
+
+        if (animalImgFile != null && !animalImgFile.isEmpty()) {
+            byte[] imgAnimalData = animalImgFile.getBytes();
+            animal.setImageAnimal(imgAnimalData);
+            animalRepository.save(animal);
+        }
+    }
+
+    @Override
+    public void deleteAnimalImage(Integer animalId) {
+        Animal animal = animalRepository.findById(animalId).orElse(null);
+        if (animal != null) {
+            animal.setImageAnimal(null); // Delete the image by assigning null value
+            animalRepository.save(animal);
+        }
+    }
+
+    @Override
+    public void updateAnimalImage(Integer animalId, MultipartFile newAnimalImgFile) throws IOException {
+        Animal animal = animalRepository.findById(animalId).orElse(null);
+        if (animal != null) {
+            if (newAnimalImgFile != null && !newAnimalImgFile.isEmpty()) {
+                byte[] newAnimalImgData = newAnimalImgFile.getBytes();
+                animal.setImageAnimal(newAnimalImgData); // Update new image
+                animalRepository.save(animal);
+            }
+        }
+    }
+
+    @Override
+    public byte[] getAnimalImageById(Integer animalId) {
+        Animal animal = animalRepository.findById(animalId).orElse(null);
+        if (animal != null) {
+            return animal.getImageAnimal();
+        } else {
+            return null;
+        }
     }
 
 }

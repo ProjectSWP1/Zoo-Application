@@ -370,10 +370,26 @@ public class ManageController {
         return ResponseEntity.badRequest().body(response);
     }
 
+
+
     @GetMapping("/get-employee-by/{email}")
     public Employees getEmployeeByEmail(@PathVariable String email) {
         return employeeService.getEmployeeByEmail(email);
     }
+   @PutMapping("/update-profile")
+    public ResponseEntity<String> updateEmployees(@RequestBody EmployeesDto employeesDto) {
+        String response = employeeService.updateEmployees(employeesDto);
+        if (response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+    }
+  
+  //QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE//QUALIFICATION IMAGE
+
+    //**Upload Qualification Image by id**//
 
     @PostMapping("/{employeeId}/upload-qualification")
     public ResponseEntity<String> uploadQualification(
@@ -387,17 +403,25 @@ public class ManageController {
                     .body("Error uploading qualification image: " + e.getMessage());
         }
     }
+    //**Get Qualification Image by id**//
     @GetMapping("/{employeeId}/qualification-image")
-    public ResponseEntity<byte[]> getQualificationImage(@PathVariable int employeeId) {
+    public ResponseEntity<byte[]> getQualificationImage(@PathVariable int employeeId, String format) {
         byte[] image = employeeService.getQualificationImageById(employeeId);
         if (image != null) {
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.IMAGE_PNG);
+
+            if (format != null && format.equalsIgnoreCase("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            }
+
             return new ResponseEntity<>(image, headers, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    //**Delete Qualification Image by id**//
     @DeleteMapping("/{employeeId}/delete-qualification")
     public ResponseEntity<String> deleteQualificationImage(@PathVariable int employeeId) {
         try {
@@ -408,6 +432,7 @@ public class ManageController {
                     .body("Error deleting qualification image: " + e.getMessage());
         }
     }
+    //**Update Qualification Image by id**//
     @PutMapping("/{employeeId}/update-qualification")
     public ResponseEntity<String> updateQualificationImage(
             @PathVariable int employeeId,
@@ -420,13 +445,61 @@ public class ManageController {
                     .body("Error updating qualification image: " + e.getMessage());
         }
     }
-    @PutMapping("/update-profile")
-    public ResponseEntity<String> updateEmployees(@RequestBody EmployeesDto employeesDto) {
-        String response = employeeService.updateEmployees(employeesDto);
-        if (response.contains(SUCCESS_RESPONSE)) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    //ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE
+
+    //**Upload Animal Image by id**//
+    @PostMapping("/{animalId}/upload-animalImg")
+    public ResponseEntity<String> uploadImageAnimal(
+            @PathVariable Integer animalId,
+            @RequestParam("animalImgFile") MultipartFile animalImgFile) {
+        try {
+            animalService.uploadAnimalImage(animalId,animalImgFile);
+            return ResponseEntity.ok("Animal image uploaded successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error uploading animal image: " + e.getMessage());
         }
     }
+    //**Get Animal Image by id**//
+    @GetMapping("/{animalId}/animal-image")
+    public ResponseEntity<byte[]> getAnimalImage(@PathVariable Integer animalId, @RequestParam(required = false) String format) {
+        byte[] image = animalService.getAnimalImageById(animalId);
+        if (image != null) {
+            HttpHeaders headers = new HttpHeaders();
+
+            if (format != null && format.equalsIgnoreCase("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            }
+
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    //**Delete Animal Img by id**//
+    @DeleteMapping("/{animalId}/delete-animalImg")
+    public ResponseEntity<String> deleteAnimalImage(@PathVariable Integer animalId) {
+        try {
+            animalService.deleteAnimalImage(animalId);
+            return ResponseEntity.ok("Animal image deleted successfully.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting animal image: " + e.getMessage());
+        }
+    }
+    //**Update Animal Img by id**//
+    @PutMapping("/{animalId}/update-animalImg")
+    public ResponseEntity<String> updateAnimalImage(
+            @PathVariable Integer animalId,
+            @RequestParam("newAnimalImgFile") MultipartFile newAnimalImgFile) {
+        try {
+            animalService.updateAnimalImage(animalId, newAnimalImgFile);
+            return ResponseEntity.ok("Animal image updated successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating animal image: " + e.getMessage());
+
+   
 }
