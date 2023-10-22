@@ -1,42 +1,53 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
+import java.util.Date;
+
 public class TrainerScheduleDto {
 
     private Integer trainerScheduleId;
     private String description;
     private Integer empId;
     private Integer speciesId;
-    private Integer dayId;
+    private Integer shift;
 
-    private Integer weekDaysId;
+    private String workDay;
 
-    public Integer getWeekDaysId() {
-        return weekDaysId;
+    public Integer getShift() {
+        return shift;
     }
 
-    public void setWeekDaysId(Integer weekDaysId) {
-        this.weekDaysId = weekDaysId;
+    public void setShift(Integer shift) {
+        this.shift = shift;
     }
 
-    public TrainerScheduleDto(Integer trainerScheduleId, String description, Integer empId, Integer speciesId, Integer dayId, Integer weekDaysId) {
+    public String getWorkDay() {
+        return workDay;
+    }
+
+    public void setWorkDay(String workDay) {
+        this.workDay = workDay;
+    }
+
+    public TrainerScheduleDto(Integer trainerScheduleId, String description, Integer empId, Integer speciesId, Integer shift, String workDay) {
         this.trainerScheduleId = trainerScheduleId;
         this.description = description;
         this.empId = empId;
         this.speciesId = speciesId;
-        this.dayId = dayId;
-        this.weekDaysId=weekDaysId;
+        this.shift = shift;
+        this.workDay = workDay;
+    }
+
+    public TrainerScheduleDto(Integer trainerScheduleId, String description, Integer speciesId, Integer shift, String workDay) {
+        this.trainerScheduleId = trainerScheduleId;
+        this.description = description;
+        this.speciesId = speciesId;
+        this.shift = shift;
+        this.workDay = workDay;
     }
 
     public TrainerScheduleDto() {
     }
 
-    public Integer getDayId() {
-        return dayId;
-    }
-
-    public void setDayId(Integer dayId) {
-        this.dayId = dayId;
-    }
 
     public Integer getTrainerScheduleId() {
         return trainerScheduleId;

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+import java.util.Date;
 import java.util.Set;
 
 
@@ -30,8 +31,41 @@ public class TrainerSchedule {
     @JsonIgnore
     private Employees emp;
 
-    @OneToMany(mappedBy = "trainerSchedule")
-    private Set<TrainerScheduleWeekDays> trainerScheduleDays;
+
+    @Column(name = "workDay")
+    @Temporal(TemporalType.DATE)
+    private Date workDay;
+
+    @Column
+    private Integer shift;
+
+    public TrainerSchedule() {
+    }
+
+    public TrainerSchedule(Integer trainerScheduleId, String description, AnimalSpecies species, Employees emp, Date workDay, Integer shift) {
+        this.trainerScheduleId = trainerScheduleId;
+        this.description = description;
+        this.species = species;
+        this.emp = emp;
+        this.workDay = workDay;
+        this.shift = shift;
+    }
+
+    public Date getWorkDay() {
+        return workDay;
+    }
+
+    public void setWorkDay(Date workDay) {
+        this.workDay = workDay;
+    }
+
+    public Integer getShift() {
+        return shift;
+    }
+
+    public void setShift(Integer shift) {
+        this.shift = shift;
+    }
 
     public Integer getTrainerScheduleId() {
         return trainerScheduleId;
