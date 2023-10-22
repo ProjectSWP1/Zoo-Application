@@ -420,5 +420,13 @@ public class ManageController {
                     .body("Error updating qualification image: " + e.getMessage());
         }
     }
-
+    @PutMapping("/update-profile")
+    public ResponseEntity<String> updateEmployees(@RequestBody EmployeesDto employeesDto) {
+        String response = employeeService.updateEmployees(employeesDto);
+        if (response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 }

@@ -3,11 +3,9 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.thezookaycompany.zookayproject.model.dto.EmployeesDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
+import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.ZooArea;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
-import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
-import com.thezookaycompany.zookayproject.repositories.RoleRepository;
-import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
+import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,9 @@ import java.util.regex.Pattern;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Autowired
     private EmployeesRepository employeesRepository;
@@ -149,28 +150,37 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public String updateEmployees(EmployeesDto employeesDto) {
+        if(employeesDto.getEmpID() == null) {
+            return "The employee ID must not be null";
+        }
+        // Tìm employees hiện tại bằng ID
         Employees employees = employeesRepository.findById(employeesDto.getEmpID()).orElse(null);
         if (employees == null) {
             return "No employee is found";
         }
+        // Hàm check Name, Address, Phone_Number, Email có bị lỗi khi nhập hay không
 
         if (!isValid(employeesDto)) {
             return "Invalid data to update, please check the input again";
         }
+        // Nếu employee có cập nhật thêm managedByEmpID thì đầu tiên check employee id có tồn tại hay ko
         if (employeesDto.getManagedByEmpID() != null) {
             if (employeesRepository.findById(employeesDto.getManagedByEmpID()).isEmpty()) {
-                return "Not found managed Employee ID";
+                return "Not found Employee ID manager";
             }
         }
-        if (employeesDto.getZoo_areaID() != null || employeesDto.getZoo_areaID().isEmpty()) {
+        // Nếu employees này có Zoo Area thì check zoo Area có tồn tại hay ko. Co' thi set luon
+        if (employeesDto.getZoo_areaID() != null) {
             if (zooAreaRepository.findById(employeesDto.getZoo_areaID()).isEmpty()) {
                 return "Not found zoo area id";
             }
+            employees.setZooArea(zooAreaRepository.getZooAreaByZooAreaId(employeesDto.getZoo_areaID()));
         }
 
-
         Set<Employees> employeesSet = new HashSet<>();
-        employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
+        if(employeesDto.getManagedByEmpID() != null) {
+            employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
+        }
 
         Date doB;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -185,17 +195,22 @@ public class EmployeeServiceImpl implements EmployeeService {
             return "The email does not exist in Account";
         }
 
-        if (employeesRepository.findEmployeesByEmail(acc) != null) {
-            return "This email is being used by Employees " + acc.getEmail();
-        }
-
         employees.setName(employeesDto.getName());
         employees.setAddress(employeesDto.getAddress());
         employees.setActive(employeesDto.isActive());
         employees.setDoB(doB);
-        employees.setPhoneNumber(employeesDto.getPhone_number());
-        employees.setEmail(accountRepository.findOneByEmail(employeesDto.getEmail()));
-        employees.setZooArea(zooAreaRepository.getZooAreaByZooAreaId(employeesDto.getZoo_areaID()));
+        employees.setPhoneNumber(employeesDto.getPhone_number()); // Phone number này ko ràng buộc với Member, employees vẫn có thể có số dt khác với cột member
+        //Thay đổi luôn Member
+        Member member = memberRepository.findMemberByEmail(employeesDto.getEmail());
+        if(member == null) {
+            employeesRepository.save(employees);
+            return "Employee " + employeesDto.getEmail() + " has been updated successfully. We found that this employee do not have membership yet. So we don't need to update them in Member";
+        } else {
+            member.setDob(doB);
+            member.setName(employeesDto.getName());
+            member.setAddress(employeesDto.getAddress());
+            memberRepository.save(member);
+        }
 
         employeesRepository.save(employees);
 
@@ -247,11 +262,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private boolean isValid(EmployeesDto employeesDto) {
-        if (employeesDto.getName().isEmpty() || employeesDto.getName() == null || employeesDto.getName().length() > 30) {
+        if (employeesDto.getName() == null || employeesDto.getName().isEmpty() || employeesDto.getName().length() > 30) {
             return false;
         }
 
-        if (employeesDto.getAddress().isEmpty() || employeesDto.getAddress() == null || employeesDto.getAddress().length() > 255) {
+        if (employeesDto.getAddress() == null || employeesDto.getAddress().isEmpty() ||  employeesDto.getAddress().length() > 255) {
             return false;
         }
 
