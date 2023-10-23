@@ -150,7 +150,6 @@ public class ManageController {
     @PutMapping("/update-animal")
     public ResponseEntity<?> updateAnimal(@RequestBody AnimalDto animalDto) {
         String updateResponse = animalService.updateAnimal(animalDto);
-
         if (updateResponse.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(updateResponse);
         } else {
