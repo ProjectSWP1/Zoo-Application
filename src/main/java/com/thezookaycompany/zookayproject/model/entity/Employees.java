@@ -46,6 +46,7 @@ public class Employees {
         this.active = active;
     }
 
+
     @Lob
     @Column(name = "qualification", columnDefinition = "BLOB")
     private byte[] qualification;

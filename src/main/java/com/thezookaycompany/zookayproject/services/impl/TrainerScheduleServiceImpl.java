@@ -1,16 +1,15 @@
 package com.thezookaycompany.zookayproject.services.impl;
 
 import com.thezookaycompany.zookayproject.model.dto.TrainerScheduleDto;
-import com.thezookaycompany.zookayproject.model.dto.TrainerScheduleInfo;
 import com.thezookaycompany.zookayproject.model.entity.TrainerSchedule;
-import com.thezookaycompany.zookayproject.model.entity.TrainerScheduleWeekDays;
 import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.TrainerScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 @Service
@@ -22,160 +21,159 @@ public class TrainerScheduleServiceImpl implements TrainerScheduleService {
     @Autowired
     private AnimalSpeciesRepository animalSpeciesRepository;
 
-    @Autowired
-    private WeekDaysRepository weekDaysRepository;
 
-    @Autowired
-    private TrainerScheduleWeekDayRepository trainerScheduleWeekDayRepository;
+
 
     @Autowired
     private TrainerScheduleRepository trainerScheduleRepository;
 
-    @Override
-    public Set<TrainerScheduleWeekDays> getTrainerSchedule(int empId) {
-        return trainerScheduleRepository.findTrainerScheduleWeekDaysByTrainerScheduleId(empId);
-    }
 
     @Override
     public Set<TrainerSchedule> getTrainerScheduleInfo(int empID) {
         return trainerScheduleRepository.findTrainerScheduleById(empID);
     }
 
-    @Override
-    public List<TrainerScheduleInfo> getTrainerScheduleByEmpId(int empId) {
-        List<Integer[]> queryResult = trainerScheduleWeekDayRepository.findTrainerSchedulesAndDaysByEmpId(empId);
-        List<TrainerScheduleInfo> trainerScheduleInfos = new ArrayList<>();
-
-        for (Integer[] result : queryResult) {
-            TrainerScheduleInfo info = new TrainerScheduleInfo();
-            info.setId(result[0]);
-            info.setTrainerScheduleId(result[1]);
-            info.setDayId(result[2]);
-            trainerScheduleInfos.add(info);
-        }
-        return trainerScheduleInfos;
-    }
 
 
     @Override
     public String createTrainerSchedule(TrainerScheduleDto trainerScheduleDto) {
+        Set<TrainerSchedule> workList = trainerScheduleRepository.findTrainerScheduleById(trainerScheduleDto.getEmpId());
 
-        //bây h khống chế kh cho create 2 lịch của 1 trainer mà có chung ngày
-        List<TrainerScheduleInfo> workList = getTrainerScheduleByEmpId(trainerScheduleDto.getEmpId());
-        if (isDuplicateSchedule(trainerScheduleDto)) {
-            return "The trainer's working day already exists. Please schedule another date!";
-        }
-        // 1 tuần có 7 ngày :)
-        else if (workList.size() == 7) {
-            return "Trainer's work schedule is full!";
-        }
-        //validate data
-        if (trainerScheduleRepository.existsById(trainerScheduleDto.getTrainerScheduleId())) {
-            return "Schedule's ID is already existed.";
-        }
-        if (trainerScheduleDto.getDescription().isEmpty() || trainerScheduleDto.getDescription().length() > 255 || trainerScheduleDto.getDescription() == null) {
+        // empId, animalSpecies sẽ hiển thị theo ZooArea
+
+        // check description
+        if (trainerScheduleDto.getDescription() == null || trainerScheduleDto.getDescription().isEmpty() || trainerScheduleDto.getDescription().length() > 255) {
             return "Invalid input field: description";
         }
-        // species, empId, DayId fe sẽ handle chuẩn data nên kh cần validate lại
-        // khởi tạo trainer Schedule
-        TrainerSchedule trainerSchedule = new TrainerSchedule();
-        trainerSchedule.setTrainerScheduleId(trainerScheduleDto.getTrainerScheduleId());
-        trainerSchedule.setDescription(trainerScheduleDto.getDescription());
-        trainerSchedule.setEmp(employeesRepository.getReferenceById(trainerScheduleDto.getEmpId()));
-        trainerSchedule.setSpecies(animalSpeciesRepository.getReferenceById(trainerScheduleDto.getSpeciesId()));
 
-        //save trainer schedule vừa tạo trước để weekdaysSchedule có thể trỏ vào
-        trainerScheduleRepository.save(trainerSchedule);
-
-        // Check no co trong database hay chua, neu chua => fail to add
-        if (!trainerScheduleRepository.existsById(trainerScheduleDto.getTrainerScheduleId())) {
-            return "Trainer Schedule with ID " + trainerScheduleDto.getTrainerScheduleId() + " is failed to add";
+        //Todo: quản lý nhân viên như nào thì hãy sửa lại dùm nha
+        if (employeesRepository.findById(trainerScheduleDto.getEmpId()).isEmpty()) {
+            return "Not found managed Employee ID";
         }
 
-        // Lấy trainer schedule ra từ ID vào temp rồi check temp có hay ko nữa
-        TrainerSchedule temp = trainerScheduleRepository.findById(trainerScheduleDto.getTrainerScheduleId()).orElse(null);
-        if (temp == null) {
-            return "Cannot found trainer schedule";
+        if (animalSpeciesRepository.findById(trainerScheduleDto.getSpeciesId()).isEmpty()) {
+            return "Not found managed Animal Species ID";
+        }
+        // end of Todo
+
+        // format workDate
+        Date workdate;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            workdate = simpleDateFormat.parse(trainerScheduleDto.getWorkDay());
+        } catch (ParseException e) {
+            return "Cannot parse date format: " + trainerScheduleDto.getWorkDay() + ", please follow yyyy-MM-ddd format";
         }
 
-        // save lịch ngày chi tiết
-        TrainerScheduleWeekDays trainerScheduleWeekDays = new TrainerScheduleWeekDays
-                (trainerScheduleDto.getWeekDaysId(), temp,
-                        weekDaysRepository.getReferenceById(trainerScheduleDto.getDayId()));
+        // gọi hàm check trùng lịch
+        boolean isDuplicate = false;
+        if (workList != null && workList.size() >0){
+            isDuplicate = isDuplicateSchedule(trainerScheduleDto,workList);
+        }
+
+        if(isDuplicate){
+            return "The trainer's working day already exists. Please schedule another date!";
+        } else {
+            TrainerSchedule trainerSchedule = new TrainerSchedule();
+            trainerSchedule.setShift(trainerScheduleDto.getShift());
+            trainerSchedule.setEmp(employeesRepository.getReferenceById(trainerScheduleDto.getEmpId()));
 
 
-        trainerScheduleWeekDayRepository.save(trainerScheduleWeekDays);
-        return "Assign Schedule successfully";
+            trainerSchedule.setWorkDay(workdate);
+            trainerSchedule.setSpecies(animalSpeciesRepository.getReferenceById(trainerScheduleDto.getSpeciesId()));
+            trainerSchedule.setDescription(trainerScheduleDto.getDescription());
+            trainerScheduleRepository.save(trainerSchedule);
+
+            return "Assign Schedule successfully";
+        }
     }
 
     // hàm check trùng lịch
-    private boolean isDuplicateSchedule(TrainerScheduleDto trainerScheduleDto) {
-        //check xem lịch mới update có trùng với lịch nào có sẵn của trainer đó hay ko
-        List<TrainerScheduleInfo> workList = getTrainerScheduleByEmpId(trainerScheduleDto.getEmpId());
-        if (workList != null && workList.size() > 0 && workList.size() < 7) {
-            for (TrainerScheduleInfo t : workList) {
-                if (t.getDayId().equals(trainerScheduleDto.getDayId())) {
-                    return true;
-                }
+    // có nghĩa là 1 ngày có 2 ca shift: 1 & 2
+    // thì tối đa trong 1 ngày nhân viên chỉ làm việc 2 ca
+    // nếu cả 2 ca của 1 ngày đều tồn tại thì isDuplicateSchedule = true
+    private boolean isDuplicateSchedule(TrainerScheduleDto trainerScheduleDto, Set<TrainerSchedule> workList) {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date inputDate = null;
+
+        try {
+            inputDate = dateFormat.parse(trainerScheduleDto.getWorkDay());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        for (TrainerSchedule ts : workList) {
+            if (ts.getWorkDay().equals(inputDate) && ts.getShift().equals(trainerScheduleDto.getShift())) {
+                return true;
             }
         }
         return false;
     }
 
-    @Override
-    public String updateTrainerSchedule(TrainerScheduleDto trainerScheduleDto) {
-        // update ở đây chỉ cho sửa đổi ngày làm việc của trainer và đổi đối tượng làm việc
-        // vd: rửa đít cho khỉ đổi từ t2 -> t4
-        // các attribute sẽ để readonly: trainerSchduleId, empId, Id (key của TSWD)
+@Override
+public String updateTrainerSchedule(TrainerScheduleDto trainerScheduleDto) {
+    TrainerSchedule trainerSchedule = trainerScheduleRepository.getReferenceById(trainerScheduleDto.getTrainerScheduleId());
+    if (!trainerScheduleRepository.existsById(trainerScheduleDto.getTrainerScheduleId())) {
+        return "Cannot find any Schedule with the Id: " + trainerScheduleDto.getTrainerScheduleId();
+    }
 
+    if (trainerScheduleDto.getDescription().isEmpty() || trainerScheduleDto.getDescription().length() > 255 || trainerScheduleDto.getDescription() == null) {
+        return "Invalid input field: description";
+    }
 
-        // DayId
-        // check trùng lịch mới vs cũ
-        if (isDuplicateSchedule(trainerScheduleDto)) {
-            return "The trainer's working day already exists. Please schedule another date!";
-        }
-        if (trainerScheduleDto.getDescription().isEmpty() || trainerScheduleDto.getDescription().length() > 255 || trainerScheduleDto.getDescription() == null) {
-            return "Invalid input field: description";
-        }
-        if (!animalSpeciesRepository.existsById(trainerScheduleDto.getSpeciesId())) {
-            return "Animal Species is not found!";
-        }
-        Set<TrainerScheduleWeekDays> listSchedule = trainerScheduleWeekDayRepository.findTrainerScheduleById(trainerScheduleDto.getTrainerScheduleId());
-        if (listSchedule != null && listSchedule.size() > 0) {
-            TrainerSchedule trainerSchedule = new TrainerSchedule();
-            trainerSchedule.setEmp(employeesRepository.getReferenceById(trainerScheduleDto.getEmpId()));
-            trainerSchedule.setTrainerScheduleId(trainerScheduleDto.getTrainerScheduleId());
-            trainerSchedule.setDescription(trainerScheduleDto.getDescription());
-            trainerSchedule.setSpecies(animalSpeciesRepository.findAnimalSpeciesBySpeciesId(trainerScheduleDto.getSpeciesId()));
+    if (!animalSpeciesRepository.existsById(trainerScheduleDto.getSpeciesId())) {
+        return "Animal Species is not found!";
+    }
 
-            //save trainerSchedule
-            trainerScheduleRepository.save(trainerSchedule);
+    // Format workDate
+    Date newWorkdate;
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    try {
+        newWorkdate = simpleDateFormat.parse(trainerScheduleDto.getWorkDay());
+    } catch (ParseException e) {
+        return "Cannot parse date format: " + trainerScheduleDto.getWorkDay() + ", please follow yyyy-MM-dd format";
+    }
 
-            TrainerScheduleWeekDays trainerScheduleWeekDays = new TrainerScheduleWeekDays();
-            trainerScheduleWeekDays.setId(trainerScheduleDto.getWeekDaysId());
-            trainerScheduleWeekDays.setWeekDays(weekDaysRepository.getReferenceById(trainerScheduleDto.getDayId()));
-            trainerScheduleWeekDays.setTrainerSchedule(trainerSchedule);
+    // Collections chứa các ngày làm việc của một trainer với empId
+    Set<TrainerSchedule> workList = trainerScheduleRepository.findTrainerScheduleById(trainerScheduleDto.getEmpId());
 
-            // save scheduleWeekdays
-            trainerScheduleWeekDayRepository.save(trainerScheduleWeekDays);
-            return "Update Schedule successfully!";
-        }
+    if (workList == null || workList.isEmpty()) {
         return "Employee has no Schedule to update. Go create ones";
     }
 
+    boolean isDuplicate = isDuplicateSchedule(trainerScheduleDto, workList);
+
+    if (isDuplicate) {
+        return "The trainer's working day already exists. Please schedule another date!";
+    }
+
+    int shiftCount = 0;
+    for (TrainerSchedule t : workList) {
+        if (t.getWorkDay().compareTo(newWorkdate) == 0) {
+            shiftCount++;
+        }
+    }
+
+    if (shiftCount == 0 || (shiftCount == 1 && trainerScheduleDto.getShift() != 2) || (shiftCount == 1 && trainerScheduleDto.getShift() != 1)) {
+        trainerSchedule.setSpecies(animalSpeciesRepository.getReferenceById(trainerScheduleDto.getSpeciesId()));
+        trainerSchedule.setDescription(trainerScheduleDto.getDescription());
+        trainerSchedule.setShift(trainerScheduleDto.getShift());
+        trainerSchedule.setWorkDay(newWorkdate);
+        trainerScheduleRepository.save(trainerSchedule);
+        return "Update Schedule successfully";
+    }
+    return "Invalid shift or the trainer's working day already exists. Please schedule another date!";
+}
+
+
     @Override
-    public String removeTrainerSchedule(Integer empId, Integer trainerScheduleId) {
-        List<TrainerScheduleInfo> workList = getTrainerScheduleByEmpId(empId);
-        if (workList != null && workList.size() > 0) {
-            for (TrainerScheduleInfo t : workList) {
-                //check extist
-                if (t.getTrainerScheduleId().equals(trainerScheduleId)) {
-                    trainerScheduleWeekDayRepository.deleteById(t.getId());
+    public String removeTrainerSchedule(Integer trainerScheduleId) {
+
+                if (trainerScheduleRepository.existsById(trainerScheduleId)) {
                     trainerScheduleRepository.deleteById(trainerScheduleId);
                     return "Trainer's Schedule removed successfully!";
                 }
-            }
-        }
         return "Trainer's Schedule not found.";
     }
 
