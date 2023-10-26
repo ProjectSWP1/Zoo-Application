@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -27,14 +29,19 @@ public class OrdersServiceImpl implements OrdersService {
         this.entityManager = entityManager;
     }
     @Override
-    public List<Ticket> listOrderDetailsTicket(Integer orderID) {
-        Orders order = entityManager.find(Orders.class, orderID);
-
-        if (order != null) {
-            // Convert the Set<Ticket> to a List<Ticket>
-            return new ArrayList<>(order.getOrderDetailTickets());
-        } else {
-            throw new OrderNotFoundException("Order not found");
+            public List<Map<String, Object>> listOrderDetailsTicket(Integer orderID) {
+                Orders order = entityManager.find(Orders.class, orderID);
+                if (order != null) {
+                    List<Map<String, Object>> result = new ArrayList<>();
+                    for (Ticket ticket : order.getOrderDetailTickets()) {
+                        Map<String, Object> ticketInfo = new HashMap<>();
+                        ticketInfo.put("orderID", order.getOrderID());
+                        ticketInfo.put("ticketId", ticket.getTicketId());
+                        result.add(ticketInfo);
+                    }
+                    return result;
+                } else {
+                    throw new OrderNotFoundException("Order not found");
         }
     }
     @Override

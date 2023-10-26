@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Voucher {
 
     @Id
-    @Column(name = "VoucherID", nullable = false, updatable = false, length = 5)
+    @Column(name = "VoucherID", nullable = true, updatable = false, length = 5) // voucherID để null
     private String voucherId;
 
     @OneToOne(cascade = CascadeType.ALL)

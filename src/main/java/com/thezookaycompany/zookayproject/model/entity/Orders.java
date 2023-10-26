@@ -25,6 +25,14 @@ public class Orders {
     @Temporal(TemporalType.DATE)
     private Date orderDate;
 
+    @Column(nullable = false, length = 30)
+    private String email;
+
+    @Column(nullable = false, length = 12)
+    private String phoneNumber;
+
+    @Column
+
     @OneToOne(mappedBy = "order")
     private Payment orderPayments;
 
@@ -90,4 +98,19 @@ public class Orders {
         this.orderMembers = orderMembers;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }
