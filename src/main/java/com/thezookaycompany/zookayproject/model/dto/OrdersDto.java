@@ -23,6 +23,12 @@ public class OrdersDto {
         this.totalOrder = totalOrder;
     }
 
+    public OrdersDto(String description, Date orderDate, String email, String phoneNumber) {
+        this.description = description;
+        this.orderDate = orderDate;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
     public void setTotalOrder(Double totalOrder) {
         this.totalOrder = totalOrder;

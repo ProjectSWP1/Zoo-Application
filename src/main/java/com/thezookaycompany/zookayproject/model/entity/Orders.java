@@ -23,24 +23,26 @@ public class Orders {
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
-    private Date orderDate;
+    private Date orderDate; // Order Date => Instance.now();
 
     @Column(nullable = false, length = 30)
-    private String email;
+    private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
     @Column(nullable = false, length = 12)
-    private String phoneNumber;
+    private String phoneNumber; // nếu phone number không có sẽ là khách hàng chưa đăng ký
 
-    @Column
 
-    @OneToOne(mappedBy = "order")
-    private Payment orderPayments;
+
+//    @OneToOne(mappedBy = "order")
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Payment orderPayments; // tạo tạm thời trước rồi tạo payment để bắt đầu giao dịch
 
     @ManyToMany(mappedBy = "orderDetail")
-    private Set<Ticket> orderDetailTickets;
+    private Set<Ticket> orderDetailTickets; // lấy tất cả vé bỏ vào từ FE
 
     @OneToMany(mappedBy = "order")
-    private Set<Member> orderMembers;
+    private Set<Member> orderMembers; // member id là lấy id nếu ko có thì bắt n gười dùng nhập email, phonenumber
 
     public double calculateTotalPriceOrder() {
         Double total = 0.0;
