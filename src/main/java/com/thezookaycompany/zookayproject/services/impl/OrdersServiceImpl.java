@@ -22,7 +22,6 @@ public class OrdersServiceImpl implements OrdersService {
         return ordersRepository.findOrdersByOrderID(orderID);
     }
     private final EntityManager entityManager;
-
     @Autowired
     public OrdersServiceImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -38,7 +37,6 @@ public class OrdersServiceImpl implements OrdersService {
             throw new OrderNotFoundException("Order not found");
         }
     }
-
     @Override
     public List<Orders> findAllOrders() {
         return ordersRepository.findAll();

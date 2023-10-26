@@ -8,6 +8,8 @@ import java.util.List;
 public interface TicketService {
     Ticket findTicketByTicketID(String ticketId);
 
+    List getTicketByDescriptionKeyword(String keyword);
+
     Ticket createTicket(TicketDto ticketDto);
 
     String updateTicket (TicketDto ticketDto);

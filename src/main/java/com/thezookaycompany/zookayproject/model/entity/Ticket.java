@@ -35,6 +35,11 @@ public class Ticket {
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     private Voucher ticketVouchers;
 
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+    @Column(name = "description", nullable = false)
+    private String description;
+
 
     @ManyToMany
     @JoinTable(
@@ -89,4 +94,19 @@ public class Ticket {
         this.orderDetail = orderDetail;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
