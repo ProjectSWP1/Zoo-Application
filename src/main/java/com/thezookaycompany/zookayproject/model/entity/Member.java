@@ -2,6 +2,7 @@ package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.Order;
 
 import java.util.Date;
 import java.util.Set;
@@ -33,10 +34,16 @@ public class Member {
     @Column(nullable = false, length = 10)
     private String gender;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "OrderID", nullable = true)
-    private Orders order;
+    @OneToMany(mappedBy = "member")
+    private Set<Orders> memberOrders;
+
+    public Set<Orders> getMemberOrders() {
+        return memberOrders;
+    }
+
+    public void setMemberOrders(Set<Orders> memberOrders) {
+        this.memberOrders = memberOrders;
+    }
 
     public Member() {
 
@@ -101,14 +108,6 @@ public class Member {
 
     public void setGender(final String gender) {
         this.gender = gender;
-    }
-
-    public Orders getOrder() {
-        return order;
-    }
-
-    public void setOrder(final Orders order) {
-        this.order = order;
     }
 
     public Set<Account> getPhoneNumberAccounts() {

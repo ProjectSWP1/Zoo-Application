@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject;
 
 import com.stripe.Stripe;
+import com.thezookaycompany.zookayproject.model.entity.Role;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;

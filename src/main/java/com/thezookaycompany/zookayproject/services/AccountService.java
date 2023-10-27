@@ -37,4 +37,6 @@ public interface AccountService {
 
     String verifyAccount(String email, String otp);
 
+    boolean isExpiredToken(Account account);
+
 }

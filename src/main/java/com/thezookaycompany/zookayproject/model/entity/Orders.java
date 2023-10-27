@@ -2,6 +2,7 @@ package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.stripe.model.Coupon;
 import jakarta.persistence.*;
@@ -28,9 +29,6 @@ public class Orders {
     @Column(nullable = false, length = 30)
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
-    @Column(nullable = false, length = 12)
-    private String phoneNumber; // nếu phone number không có sẽ là khách hàng chưa đăng ký
-
 
 
 //    @OneToOne(mappedBy = "order")
@@ -38,11 +36,14 @@ public class Orders {
     @PrimaryKeyJoinColumn
     private Payment orderPayments; // tạo tạm thời trước rồi tạo payment để bắt đầu giao dịch
 
-    @ManyToMany(mappedBy = "orderDetail")
-    private Set<Ticket> orderDetailTickets; // lấy tất cả vé bỏ vào từ FE
+    @OneToMany(mappedBy = "orderDetail")
+    private Set<Ticket> orderDetailTickets;
 
-    @OneToMany(mappedBy = "order")
-    private Set<Member> orderMembers; // member id là lấy id nếu ko có thì bắt n gười dùng nhập email, phonenumber
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phoneNumber", nullable = false)
+    private Member member;
+
 
     public double calculateTotalPriceOrder() {
         Double total = 0.0;
@@ -92,13 +93,6 @@ public class Orders {
         this.orderDetailTickets = orderDetailTickets;
     }
 
-    public Set<Member> getOrderMembers() {
-        return orderMembers;
-    }
-
-    public void setOrderMembers(final Set<Member> orderMembers) {
-        this.orderMembers = orderMembers;
-    }
 
     public String getEmail() {
         return email;
@@ -108,11 +102,4 @@ public class Orders {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }

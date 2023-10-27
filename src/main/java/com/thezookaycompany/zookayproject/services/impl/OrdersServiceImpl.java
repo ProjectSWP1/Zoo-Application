@@ -63,7 +63,6 @@ public class OrdersServiceImpl implements OrdersService {
         // Set the properties of newOrders based on the data in ordersDto
         newOrders.setDescription(ordersDto.getDescription());
         newOrders.setOrderDate(LocalDateTime.now());
-        newOrders.setPhoneNumber(ordersDto.getPhoneNumber());
         newOrders.setEmail(ordersDto.getEmail());
 
         // Save the newOrders entity to the database using the ordersRepository

@@ -369,4 +369,14 @@ public class AccountServiceImpl implements AccountService {
         }
         return "Invalid OTP";
     }
+
+    @Override
+    public boolean isExpiredToken(Account account) {
+        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (10 *60)){
+            account.setResetPwdToken(null);
+            accountRepository.save(account);
+            return true;
+        }
+        return false;
+    }
 }

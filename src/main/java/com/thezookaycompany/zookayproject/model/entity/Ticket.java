@@ -28,7 +28,7 @@ public class Ticket {
     private Double ticketPrice;
 
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Temporal(TemporalType.DATE)
     private Date bookDate;
 
@@ -42,14 +42,10 @@ public class Ticket {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToMany
-    @JsonBackReference
-    @JoinTable(
-            name = "OrderDetails",
-            joinColumns = @JoinColumn(name = "TicketID"),
-            inverseJoinColumns = @JoinColumn(name = "OrderID")
-    )
-    private Set<Orders> orderDetail;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phoneNumber", nullable = true)
+    private Orders orderDetail;
 
     public String getTicketId() {
         return ticketId;
@@ -88,6 +84,13 @@ public class Ticket {
         this.ticketVouchers = ticketVouchers;
     }
 
+    public Orders getOrderDetail() {
+        return orderDetail;
+    }
+
+    public void setOrderDetail(Orders orderDetail) {
+        this.orderDetail = orderDetail;
+    }
 
     public int getQuantity() {
         return quantity;
@@ -96,7 +99,6 @@ public class Ticket {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
     public String getDescription() {
         return description;
     }
