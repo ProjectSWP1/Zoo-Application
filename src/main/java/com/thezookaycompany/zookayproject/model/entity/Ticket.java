@@ -44,7 +44,7 @@ public class Ticket {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phoneNumber", nullable = true)
+    @JoinColumn(name = "orderID", nullable = true)
     private Orders orderDetail;
 
     public String getTicketId() {
