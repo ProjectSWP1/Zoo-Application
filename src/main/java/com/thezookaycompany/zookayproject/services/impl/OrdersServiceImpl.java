@@ -14,6 +14,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -61,7 +62,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         // Set the properties of newOrders based on the data in ordersDto
         newOrders.setDescription(ordersDto.getDescription());
-        newOrders.setOrderDate(new Date());
+        newOrders.setOrderDate(LocalDateTime.now());
         newOrders.setPhoneNumber(ordersDto.getPhoneNumber());
         newOrders.setEmail(ordersDto.getEmail());
 

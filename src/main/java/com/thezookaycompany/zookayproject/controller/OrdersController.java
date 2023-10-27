@@ -50,6 +50,13 @@ public class OrdersController {
     public List<Map<String, Object>> listOrderDetailsTicket(@PathVariable Integer orderID) throws PaymentNotSuccessfulException {
         return ordersService.listOrderDetailsTicket(orderID);
     }
+
+    //EXAMPLE CREATE ORDER
+//    {
+//        "description": "Order 7",
+//            "email": "kieutranquocson7@gmail.com",
+//            "phoneNumber": "0777777777"
+//    // chỉ cần thêm như trên id với date time tự generate
     @PostMapping("/create-order")
     public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto) {
         String response = ordersService.createOrders(ordersDto);

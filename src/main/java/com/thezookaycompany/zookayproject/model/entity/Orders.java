@@ -8,6 +8,7 @@ import org.hibernate.annotations.Formula;
 
 import java.util.Date;
 import java.util.Set;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -22,8 +23,7 @@ public class Orders {
     private String description;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date orderDate; // Order Date => Instance.now();
+    private LocalDateTime orderDate; // Order Date => Instance.now();
 
     @Column(nullable = false, length = 30)
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
@@ -68,11 +68,11 @@ public class Orders {
         this.description = description;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(final Date orderDate) {
+    public void setOrderDate(final LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 
