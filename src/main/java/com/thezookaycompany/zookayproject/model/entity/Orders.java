@@ -9,6 +9,7 @@ import org.hibernate.annotations.Formula;
 
 import java.util.Date;
 import java.util.Set;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -22,17 +23,26 @@ public class Orders {
     private String description;
 
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date orderDate;
+    private LocalDateTime orderDate; // Order Date => Instance.now();
 
-    @OneToOne(mappedBy = "order")
-    private Payment orderPayments;
+    @Column(nullable = false, length = 30)
+    private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
+
+    @Column(nullable = false, length = 12)
+    private String phoneNumber; // nếu phone number không có sẽ là khách hàng chưa đăng ký
+
+
+
+//    @OneToOne(mappedBy = "order")
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Payment orderPayments; // tạo tạm thời trước rồi tạo payment để bắt đầu giao dịch
 
     @ManyToMany(mappedBy = "orderDetail")
-    private Set<Ticket> orderDetailTickets;
+    private Set<Ticket> orderDetailTickets; // lấy tất cả vé bỏ vào từ FE
 
     @OneToMany(mappedBy = "order")
-    private Set<Member> orderMembers;
+    private Set<Member> orderMembers; // member id là lấy id nếu ko có thì bắt n gười dùng nhập email, phonenumber
 
     public double calculateTotalPriceOrder() {
         Double total = 0.0;
@@ -58,11 +68,11 @@ public class Orders {
         this.description = description;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(final Date orderDate) {
+    public void setOrderDate(final LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -90,4 +100,19 @@ public class Orders {
         this.orderMembers = orderMembers;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

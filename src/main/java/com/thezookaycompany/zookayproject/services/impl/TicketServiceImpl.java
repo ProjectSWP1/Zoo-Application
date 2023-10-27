@@ -25,6 +25,11 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<Ticket> getTicketByDescriptionKeyword(String keyword) {
+        return ticketRepository.findTicketByDescriptionContainingKeyword(keyword);
+    }
+
+    @Override
     public Ticket createTicket(TicketDto ticketDto) {
 
         //Find cage
@@ -36,6 +41,8 @@ public class TicketServiceImpl implements TicketService {
         newTicket.setTicketId(ticketDto.getTicketId());
         newTicket.setTicketPrice(ticketDto.getTicketPrice());
         newTicket.setBookDate(ticketDto.getBookDate());
+        newTicket.setQuantity(ticketDto.getQuantity());
+        newTicket.setDescription(ticketDto.getDescription());
         // Set other properties as needed
 
         // Save the new ticket to the database
@@ -55,6 +62,8 @@ public class TicketServiceImpl implements TicketService {
             // Update the ticket properties with data from the DTO
             existingTicket.setTicketPrice(ticketDto.getTicketPrice());
             existingTicket.setBookDate(ticketDto.getBookDate());
+            existingTicket.setDescription(ticketDto.getDescription());
+            existingTicket.setQuantity(ticketDto.getQuantity());
             // Update other properties as needed
 
             // Save the updated ticket to the database

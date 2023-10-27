@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "ticketId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "ticketId")
 public class Ticket {
 
 //    private LocalDate localDate;
@@ -33,10 +34,16 @@ public class Ticket {
 
 
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Voucher ticketVouchers;
 
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+    @Column(name = "description", nullable = false)
+    private String description;
 
     @ManyToMany
+    @JsonBackReference
     @JoinTable(
             name = "OrderDetails",
             joinColumns = @JoinColumn(name = "TicketID"),
@@ -81,12 +88,20 @@ public class Ticket {
         this.ticketVouchers = ticketVouchers;
     }
 
-    public Set<Orders> getOrderDetail() {
-        return orderDetail;
+
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setOrderDetail(final Set<Orders> orderDetail) {
-        this.orderDetail = orderDetail;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
