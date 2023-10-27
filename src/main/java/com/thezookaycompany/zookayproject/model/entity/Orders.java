@@ -29,9 +29,6 @@ public class Orders {
     @Column(nullable = false, length = 30)
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
-    @Column(nullable = false, length = 12)
-    private String phoneNumber; // nếu phone number không có sẽ là khách hàng chưa đăng ký
-
 
 
 //    @OneToOne(mappedBy = "order")
@@ -47,13 +44,6 @@ public class Orders {
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member member;
 
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
 
     public double calculateTotalPriceOrder() {
         Double total = 0.0;
@@ -112,11 +102,4 @@ public class Orders {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
 }
