@@ -10,6 +10,10 @@ public class OrdersDto {
 
     private Double totalOrder;
 
+    private String email;
+
+    private String phoneNumber;
+
     public Double getTotalOrder() {
         return totalOrder;
     }
@@ -19,6 +23,12 @@ public class OrdersDto {
         this.totalOrder = totalOrder;
     }
 
+    public OrdersDto(String description, Date orderDate, String email, String phoneNumber) {
+        this.description = description;
+        this.orderDate = orderDate;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
 
     public void setTotalOrder(Double totalOrder) {
         this.totalOrder = totalOrder;
@@ -56,5 +66,21 @@ public class OrdersDto {
 
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

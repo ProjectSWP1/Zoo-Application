@@ -105,6 +105,12 @@ public class AdminController {
     public List<Ticket> getAllTickets() {
         return ticketService.findAllTicket();
     }
+
+    //Hàm này lấy tất cả Ticket dựa vào description keyword
+    @GetMapping("/get-ticket-desc/{keyword}")
+    public List<Ticket> getTicketByDescription(@PathVariable String keyword) {
+        return ticketService.getTicketByDescriptionKeyword(keyword);
+    }
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
     @GetMapping("/get-ticket/ascending")
     public List<Ticket> getTicketByTicketPriceAscending() {

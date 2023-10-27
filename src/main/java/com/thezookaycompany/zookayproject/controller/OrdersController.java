@@ -1,20 +1,24 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.model.entity.Cage;
+import com.thezookaycompany.zookayproject.exception.PaymentNotSuccessfulException;
+import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
+import com.thezookaycompany.zookayproject.model.dto.VoucherDto;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
-import com.thezookaycompany.zookayproject.model.entity.Ticket;
-import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.services.OrdersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/order")
 
 public class OrdersController {
+    private final String SUCCESS_RESPONSE = "success";
     @Autowired
     private OrdersService ordersService;
 
@@ -42,9 +46,25 @@ public class OrdersController {
     public List<Orders> getOrdersByOrderIDDescending() {
         return ordersService.findAllByOrderIDDesc();
     }
-    @GetMapping("/get-order-details-ticket/{orderID}")
-    public List<Ticket> listOrderTicketDetails(@PathVariable Integer orderID) {
+    @GetMapping("/{orderID}/orderDetails")
+    public List<Map<String, Object>> listOrderDetailsTicket(@PathVariable Integer orderID) throws PaymentNotSuccessfulException {
         return ordersService.listOrderDetailsTicket(orderID);
     }
+
+    //EXAMPLE CREATE ORDER
+//    {
+//        "description": "Order 7",
+//            "email": "kieutranquocson7@gmail.com",
+//            "phoneNumber": "0777777777"
+//    // chỉ cần thêm như trên id với date time tự generate
+    @PostMapping("/create-order")
+    public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto) {
+        String response = ordersService.createOrders(ordersDto);
+        if(response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+
 
 }

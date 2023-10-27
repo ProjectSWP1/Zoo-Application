@@ -176,5 +176,4 @@ public String updateTrainerSchedule(TrainerScheduleDto trainerScheduleDto) {
                 }
         return "Trainer's Schedule not found.";
     }
-
 }

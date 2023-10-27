@@ -7,6 +7,9 @@ public class TicketDto {
     private double ticketPrice;
 
     private Date bookDate;
+
+    private int quantity;
+    private String description;
     public  TicketDto(){
 
     }
@@ -39,5 +42,21 @@ public class TicketDto {
 
     public void setBookDate(Date bookDate) {
         this.bookDate = bookDate;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
