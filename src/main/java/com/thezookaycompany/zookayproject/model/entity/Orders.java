@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.stripe.model.Coupon;
 import jakarta.persistence.*;
@@ -28,11 +29,13 @@ public class Orders {
     @OneToOne(mappedBy = "order")
     private Payment orderPayments;
 
-    @ManyToMany(mappedBy = "orderDetail")
+    @OneToMany(mappedBy = "orderDetail")
     private Set<Ticket> orderDetailTickets;
 
-    @OneToMany(mappedBy = "order")
-    private Set<Member> orderMembers;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phoneNumber", nullable = false)
+    private Member member;
 
     public double calculateTotalPriceOrder() {
         Double total = 0.0;
@@ -82,12 +85,5 @@ public class Orders {
         this.orderDetailTickets = orderDetailTickets;
     }
 
-    public Set<Member> getOrderMembers() {
-        return orderMembers;
-    }
-
-    public void setOrderMembers(final Set<Member> orderMembers) {
-        this.orderMembers = orderMembers;
-    }
 
 }

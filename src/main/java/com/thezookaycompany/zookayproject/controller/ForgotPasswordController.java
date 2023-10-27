@@ -8,6 +8,9 @@ import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/forgot")
+@CrossOrigin
 public class ForgotPasswordController {
 
     @Autowired
@@ -27,54 +31,51 @@ public class ForgotPasswordController {
     private EmailService emailService;
 
     @PostMapping("/send-email")
-    public String phaseForgotPwdForm(@RequestBody AccountDto accountDto) throws MessagingException {
-        // giống jsp frontend sẽ tạo 1 form chứa input type name=email để đưa email user nhập vào xử lý
-        // String email = request.getParameter("email");
-        // tạo 1 token mới để gửi cho user
+    public ResponseEntity<String> phaseForgotPwdForm(@RequestBody AccountDto accountDto) throws MessagingException {
+        // Kiểm tra xem email có tồn tại trong hệ thống không
         Account account = accountService.getUserByEmail(accountDto.getEmail());
         if (account == null) {
-            return "Couldn't find account with email: "+accountDto.getEmail();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Couldn't find account with email: " + accountDto.getEmail());
         }
+
         String token = RandomTokenGenerator.generateRandomString(20);
 
-            // validate account and set new resetPWdToken token
-            accountService.updateResetPwdToken(token, account);
+        // validate account and set new resetPWdToken token
+        accountService.updateResetPwdToken(token, account);
 
-            //sau này có deploy có url sẽ chỉnh lại sau
-            //generate link
-            String resetPwdLink = "http://localhost:8080/forgot/reset_password?token="+token;
+        // Sau này có deploy có URL sẽ chỉnh lại sau
+        // Tạo đường dẫn
 
-            // send email with link
-            emailService.sendEmailResetPwd(account,resetPwdLink);
+        String resetPwdLink = "http://localhost:3000/resetpassword?token=" + token;
+        // Gửi email với đường dẫn
+        emailService.sendEmailResetPwd(account, resetPwdLink);
 
 
+        return ResponseEntity.ok("Check your email to set a new password");
+    }
 
-        return "Check your email to set new Password";
+    @PostMapping("/check-token")
+    public ResponseEntity<String> checkResetPwdToken(@RequestParam String token){
+        Account account = accountService.getAccByPwdToken(token);
+        if (account != null) {
+            if(accountService.isExpiredToken(account)){
+                return ResponseEntity.status(404).body("Invalid token or Your link has expired!");
+            }
+            else return ResponseEntity.status(200).body(account.getUsername());
+        } else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid token or Your link has expired!");
     }
 
 
     @PutMapping("/reset_password")
-    public String setPwd(@RequestParam String token, @RequestBody PasswordDto passwordDto) {
+    public ResponseEntity<String> setPwd(@RequestParam String token, @RequestBody PasswordDto passwordDto) {
 
         Account account = accountService.getAccByPwdToken(token);
-        if (account == null) {
-            return "Invalid Token or Your link has expired!";
+        if(account == null ){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid token or Your link has expired!");
         }
 
-        if (passwordDto.getNewPassword() == null || passwordDto.getNewPassword().isEmpty()) {
-            return "Missing input field!";
-        }
-        if (passwordDto.getNewPassword().length() < 8) {
-            return "Password's length must be longer than 8";
-        }
-        String newPassword = passwordDto.getNewPassword();
-        String confirmPassword = passwordDto.getConfirmPassword();
-
-        if (!newPassword.equals(confirmPassword)) {
-            return "Password not match";
-        }
-
-        accountService.updatePassword(account, newPassword);
-        return "You have changed password successfully";
+        accountService.updatePassword(account, passwordDto.getNewPassword());
+        return ResponseEntity.status(HttpStatus.OK).body("You have changed password successfully");
     }
 }

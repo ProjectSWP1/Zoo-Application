@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject;
 
 import com.stripe.Stripe;
+import com.thezookaycompany.zookayproject.model.entity.Role;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.RoleRepository;
@@ -32,10 +33,10 @@ public class ZookayprojectApplication {
 	CommandLineRunner run(RoleRepository roleRepository, AccountRepository accountRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
 		return args -> {
 
-//			Role adminRole = roleRepository.save(new Role("AD", "Admin"));
-//			roleRepository.save(new Role("MB", "Member"));
-//			roleRepository.save(new Role("ZT", "Trainer"));
-//			roleRepository.save(new Role("ST", "Staff"));
+			Role adminRole = roleRepository.save(new Role("AD", "Admin"));
+			roleRepository.save(new Role("MB", "Member"));
+			roleRepository.save(new Role("ZT", "Trainer"));
+			roleRepository.save(new Role("ST", "Staff"));
 
 			// Tạo account cho admin truy cập
 //			Member member = new Member("0909090909", "admin", "admin@official.zookay.com", "empty", 1, "UNDEFINED", Date.valueOf("1994-04-25"));

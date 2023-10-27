@@ -27,7 +27,7 @@ public class Ticket {
     private Double ticketPrice;
 
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Temporal(TemporalType.DATE)
     private Date bookDate;
 
@@ -36,13 +36,9 @@ public class Ticket {
     private Voucher ticketVouchers;
 
 
-    @ManyToMany
-    @JoinTable(
-            name = "OrderDetails",
-            joinColumns = @JoinColumn(name = "TicketID"),
-            inverseJoinColumns = @JoinColumn(name = "OrderID")
-    )
-    private Set<Orders> orderDetail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phoneNumber", nullable = true)
+    private Orders orderDetail;
 
     public String getTicketId() {
         return ticketId;
@@ -81,12 +77,5 @@ public class Ticket {
         this.ticketVouchers = ticketVouchers;
     }
 
-    public Set<Orders> getOrderDetail() {
-        return orderDetail;
-    }
-
-    public void setOrderDetail(final Set<Orders> orderDetail) {
-        this.orderDetail = orderDetail;
-    }
 
 }

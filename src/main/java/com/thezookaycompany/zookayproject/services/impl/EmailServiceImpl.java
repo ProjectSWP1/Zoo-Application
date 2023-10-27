@@ -31,10 +31,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException {
 
-        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
-            account.setResetPwdToken(null);
-            accountRepository.save(account);
-        }
+
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
         mimeMessageHelper.setTo(account.getEmail());
@@ -61,6 +58,7 @@ public class EmailServiceImpl implements EmailService {
                 "The ZooKay Devs Team\\n\"";
 
         mimeMessageHelper.setText(content1);
+
         javaMailSender.send(mimeMessage);
     }
 
