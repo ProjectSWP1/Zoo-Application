@@ -39,7 +39,6 @@ public class Orders {
     @OneToMany(mappedBy = "orderDetail")
     private Set<Ticket> orderDetailTickets;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member member;

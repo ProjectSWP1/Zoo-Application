@@ -101,7 +101,7 @@ public class UserController {
         return message;
     }
     @Autowired
-    private  MemberServices memberServices;
+    private MemberServices memberServices;
 
     @GetMapping("/member/all")
     public List<Member> getAllMember(){
