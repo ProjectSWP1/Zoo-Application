@@ -47,6 +47,13 @@ public class Orders {
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member member;
 
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
 
     public double calculateTotalPriceOrder() {
         Double total = 0.0;

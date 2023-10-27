@@ -84,6 +84,13 @@ public class Ticket {
         this.ticketVouchers = ticketVouchers;
     }
 
+    public Orders getOrderDetail() {
+        return orderDetail;
+    }
+
+    public void setOrderDetail(Orders orderDetail) {
+        this.orderDetail = orderDetail;
+    }
 
     public int getQuantity() {
         return quantity;

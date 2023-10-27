@@ -37,6 +37,13 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private Set<Orders> memberOrders;
 
+    public Set<Orders> getMemberOrders() {
+        return memberOrders;
+    }
+
+    public void setMemberOrders(Set<Orders> memberOrders) {
+        this.memberOrders = memberOrders;
+    }
 
     public Member() {
 
