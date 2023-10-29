@@ -5,13 +5,11 @@ import com.thezookaycompany.zookayproject.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,5 +40,13 @@ public class TokenServiceImpl implements TokenService {
                 .build();
         //pass token value back to front end
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsSet)).getTokenValue();
+    }
+
+    // decode email từ jwt
+    @Override
+    public Map<String, Object> decodeJwt(String jwtToken) {
+        Jwt jwt = jwtDecoder.decode(jwtToken);
+        Map<String, Object> claimData = jwt.getClaims();
+        return claimData;
     }
 }

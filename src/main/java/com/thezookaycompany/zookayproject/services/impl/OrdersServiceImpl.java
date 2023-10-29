@@ -3,12 +3,11 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.thezookaycompany.zookayproject.exception.OrderNotFoundException;
 import com.thezookaycompany.zookayproject.exception.PaymentNotSuccessfulException;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
-import com.thezookaycompany.zookayproject.model.entity.Orders;
-import com.thezookaycompany.zookayproject.model.entity.Payment;
-import com.thezookaycompany.zookayproject.model.entity.Ticket;
-import com.thezookaycompany.zookayproject.model.entity.Voucher;
+import com.thezookaycompany.zookayproject.model.entity.*;
+import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.repositories.PaymentRepository;
+import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.OrdersService;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,11 @@ public class OrdersServiceImpl implements OrdersService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private TicketRepository ticketRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Override
     public Orders findOrdersByOrderID(Integer orderID) {
         return ordersRepository.findOrdersByOrderID(orderID);
@@ -34,6 +38,7 @@ public class OrdersServiceImpl implements OrdersService {
     public OrdersServiceImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
+
     @Override
     public List<Map<String, Object>> listOrderDetailsTicket(Integer orderID) throws PaymentNotSuccessfulException {
         Orders order = entityManager.find(Orders.class, orderID);
@@ -41,12 +46,13 @@ public class OrdersServiceImpl implements OrdersService {
             Payment payment = paymentRepository.findPaymentByOrder_OrderID(orderID).orElse(null);
             if (payment != null && payment.isStatus()) {
                 List<Map<String, Object>> result = new ArrayList<>();
-                for (Ticket ticket : order.getOrderDetailTickets()) {
-                    Map<String, Object> ticketInfo = new HashMap<>();
-                    ticketInfo.put("orderID", order.getOrderID());
-                    ticketInfo.put("ticketId", ticket.getTicketId());
-                    result.add(ticketInfo);
-                }
+                // FIXME:điều chỉnh lại nhe
+//                for (Ticket ticket : order.getOrderDetailTickets()) {
+//                    Map<String, Object> ticketInfo = new HashMap<>();
+//                    ticketInfo.put("orderID", order.getOrderID());
+//                    ticketInfo.put("ticketId", ticket.getTicketId());
+//                    result.add(ticketInfo);
+//                }
                 return result;
             } else {
                 throw new PaymentNotSuccessfulException("Payment í not successful");
@@ -70,6 +76,43 @@ public class OrdersServiceImpl implements OrdersService {
 
         // Return a success message
         return "New orders have been added successfully";
+    }
+
+    @Override
+    public String createMemberOrders(OrdersDto ordersDto, Account account) {
+        Orders orders = new Orders();
+        orders.setOrderDate(LocalDateTime.now());
+        orders.setDescription(ordersDto.getDescription());
+        // tinh totalOrderPrice
+        // set member nguoi dat order
+        orders.setEmail(account.getEmail());
+        orders.setMember(memberRepository.findMemberByEmail(account.getEmail()));
+
+        //******** gọi ticket ra cập nhật expDate save và truyền vào entity orders
+        Ticket ticket = ticketRepository.findTicketByTicketId(ordersDto.getTicketId());
+        ticket.setExpDate(ordersDto.getExpDate());
+        ticketRepository.save(ticket);
+        orders.setQuantity(ordersDto.getTicketQuantity());
+        orders.setTicket(ticket);
+        ordersRepository.save(orders);
+        return "Order's created successfully";
+    }
+
+    @Override
+    public String createGuestOrders(OrdersDto ordersDto){
+        Orders orders = new Orders();
+        orders.setEmail(ordersDto.getEmail());
+        orders.setOrderDate(LocalDateTime.now());
+        orders.setDescription(ordersDto.getDescription());
+
+        Ticket ticket = ticketRepository.findTicketByTicketId(ordersDto.getTicketId());
+        ticket.setExpDate(ordersDto.getExpDate());
+        ticketRepository.save(ticket);
+
+        orders.setQuantity(ordersDto.getTicketQuantity());
+        orders.setTicket(ticket);
+        ordersRepository.save(orders);
+        return "Order's created successfully";
     }
 
     @Override

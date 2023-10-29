@@ -5,6 +5,7 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
+import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
+
+
     @Autowired
     private AccountService accountService;
 
@@ -35,6 +38,9 @@ public class UserController {
 
     @Autowired
     private ZooAreaService zooAreaService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     //Register for users, you should leave this json
     //    const requestData = {
@@ -147,30 +153,12 @@ public class UserController {
 
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
-    public PaymentResponse createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
+    public ResponseEntity<String> createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
 
-        // create payment intent to confirm
-        PaymentIntentCreateParams params =
-                PaymentIntentCreateParams.builder()
-                        // createPayment for product cost how much...
-                        // object orderDto chứa total amount order
-                        .setAmount((long) (ordersDto.getTotalOrder() * 1000L))
-                        .putMetadata("TotalTickets", ordersDto.getDescription())
-                        .setCurrency("vnd")
-                        // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-                        .setAutomaticPaymentMethods(
-                                PaymentIntentCreateParams.AutomaticPaymentMethods
-                                        .builder()
-                                        .setEnabled(true)
-                                        .build()
-                        )
-                        .build();
-
-        // Create a PaymentIntent with the order amount and currency
-        PaymentIntent paymentIntent = PaymentIntent.create(params);
-
-        return new PaymentResponse(paymentIntent.getId(),paymentIntent.getClientSecret());
+        return ResponseEntity.ok(paymentService.createPaymentIntent(ordersDto));
     }
+    //-------------------------------------------------------
+
 
     //GET ALL VOUCHER
     @Autowired

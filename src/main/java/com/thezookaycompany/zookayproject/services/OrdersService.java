@@ -2,6 +2,7 @@ package com.thezookaycompany.zookayproject.services;
 
 import com.thezookaycompany.zookayproject.exception.PaymentNotSuccessfulException;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
+import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface OrdersService {
     List<Orders> findOrdersByDescriptionContainingKeyword(String keyword);
 
     String createOrders (OrdersDto ordersDto);
+
+    String createMemberOrders (OrdersDto ordersDto, Account account);
+    String createGuestOrders (OrdersDto ordersDto);
  }

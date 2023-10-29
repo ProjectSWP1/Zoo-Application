@@ -40,8 +40,7 @@ public class TicketServiceImpl implements TicketService {
         Ticket newTicket = new Ticket();
         newTicket.setTicketId(ticketDto.getTicketId());
         newTicket.setTicketPrice(ticketDto.getTicketPrice());
-        newTicket.setBookDate(ticketDto.getBookDate());
-        newTicket.setQuantity(ticketDto.getQuantity());
+        //newTicket.setBookDate(ticketDto.getBookDate());
         newTicket.setDescription(ticketDto.getDescription());
         // Set other properties as needed
 
@@ -61,9 +60,8 @@ public class TicketServiceImpl implements TicketService {
         if (existingTicket != null) {
             // Update the ticket properties with data from the DTO
             existingTicket.setTicketPrice(ticketDto.getTicketPrice());
-            existingTicket.setBookDate(ticketDto.getBookDate());
             existingTicket.setDescription(ticketDto.getDescription());
-            existingTicket.setQuantity(ticketDto.getQuantity());
+            existingTicket.setExpDate(ticketDto.getBookDate());
             // Update other properties as needed
 
             // Save the updated ticket to the database

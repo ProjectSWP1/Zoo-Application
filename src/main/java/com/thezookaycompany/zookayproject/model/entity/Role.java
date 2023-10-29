@@ -28,11 +28,16 @@ public class Role implements GrantedAuthority {
     }
 
 
-
-
-
     public Role() {
 
+    }
+
+    public String getRoleID() {
+        return RoleID;
+    }
+
+    public String getRoleName() {
+        return RoleName;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.Date;
 public class OrdersDto {
     private Integer orderID;
     private String description;
-
+    
     private Date orderDate;
 
     private Double totalOrder;
@@ -13,6 +13,36 @@ public class OrdersDto {
     private String email;
 
     private String phoneNumber;
+
+    private Date expDate;
+
+    public Date getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
+
+    private String ticketId;
+
+    private Integer ticketQuantity;
+
+    public String getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(String ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Integer getTicketQuantity() {
+        return ticketQuantity;
+    }
+
+    public void setTicketQuantity(Integer ticketQuantity) {
+        this.ticketQuantity = ticketQuantity;
+    }
 
     public Double getTotalOrder() {
         return totalOrder;

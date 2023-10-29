@@ -29,29 +29,47 @@ public class Orders {
     @Column(nullable = false, length = 30)
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
+    // add quantity
 
 
-//    @OneToOne(mappedBy = "order")
+    //@OneToOne(mappedBy = "order")
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Payment orderPayments; // tạo tạm thời trước rồi tạo payment để bắt đầu giao dịch
 
-    @OneToMany(mappedBy = "orderDetail")
-    private Set<Ticket> orderDetailTickets;
+
+//    @OneToMany(mappedBy = "orderDetail")
+//    private Set<Ticket> orderDetailTickets;
+
+    // các vé trong 1 ngày là giống nhau và mỗi ngày mỗi khác => và 1 order chỉ có thể đặt 1 loại vé cho 1 ngày
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ticketId", nullable = true)
+    private Ticket ticket;
+
+    @Column(name = "quantity", nullable = true)
+    private int quantity;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = false)
     private Member member;
 
 
-    public double calculateTotalPriceOrder() {
-        Double total = 0.0;
-        for (Ticket ticket : orderDetailTickets) {
-            total += ticket.getTicketPrice();
-        }
-        return total;
+    public Ticket getTicket() {
+        return ticket;
     }
 
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
     public Integer getOrderID() {
         return orderID;
     }
@@ -84,15 +102,6 @@ public class Orders {
         this.orderPayments = orderPayments;
     }
 
-    public Set<Ticket> getOrderDetailTickets() {
-        return orderDetailTickets;
-    }
-
-    public void setOrderDetailTickets(final Set<Ticket> orderDetailTickets) {
-        this.orderDetailTickets = orderDetailTickets;
-    }
-
-
     public String getEmail() {
         return email;
     }
@@ -101,4 +110,11 @@ public class Orders {
         this.email = email;
     }
 
+    public Member getMember() {
+        return member;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
+    }
 }

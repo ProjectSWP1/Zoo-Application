@@ -4,10 +4,7 @@ import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginDto;
 import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
-import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.model.entity.Employees;
-import com.thezookaycompany.zookayproject.model.entity.Role;
-import com.thezookaycompany.zookayproject.model.entity.ZooArea;
+import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmployeeService;
@@ -28,7 +25,9 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +61,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private MemberServices memberServices;
+
+    @Autowired
+    private TrainerScheduleRepository trainerScheduleRepository;
 
 
 
@@ -208,10 +210,25 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String deactivateAccount(String email) {
         Account acc = accountRepository.findById(email).orElse(null);
+        Employees employees = employeesRepository.findEmployeesByEmail(acc);
+        Set<TrainerSchedule> workList= new HashSet<>();
         if(acc != null) {
             if(!acc.isActive()) {
                 return "This account has already deactivated.";
             }
+
+            // neu account nay la cua trainer thi xoa tat ca lich cua trainer do
+            if(acc.getRole().getRoleID().equals("ZT")){
+                workList = trainerScheduleRepository.findTrainerScheduleById(employees.getEmpId());
+
+                // neu co lcih thi xoa het lich
+                if(workList !=null && workList.size() >0){
+                    for(TrainerSchedule ts : workList) {
+                        trainerScheduleRepository.deleteById(ts.getTrainerScheduleId());
+                    }
+                }
+            }
+            //deactive
             acc.setActive(false);
             accountRepository.save(acc);
             return "The account " + email + " has been successfully deactivated";
