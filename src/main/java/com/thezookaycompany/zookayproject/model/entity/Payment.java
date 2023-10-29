@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.nimbusds.jose.shaded.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ public class Payment {
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SerializedName("id")
     private Integer id;
 
     @OneToOne(cascade = CascadeType.ALL)

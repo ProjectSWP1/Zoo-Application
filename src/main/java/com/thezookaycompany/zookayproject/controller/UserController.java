@@ -153,9 +153,9 @@ public class UserController {
 
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
-    public ResponseEntity<String> createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
+    public ResponseEntity<String> createPaymentIntent(@RequestBody OrdersDto ordersDto,@RequestBody PaymentDto createPayment) throws StripeException {
 
-        return ResponseEntity.ok(paymentService.createPaymentIntent(ordersDto));
+        return ResponseEntity.ok(paymentService.createPaymentIntent(ordersDto,createPayment));
     }
     //-------------------------------------------------------
 
