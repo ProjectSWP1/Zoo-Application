@@ -107,7 +107,7 @@ public class UserController {
         return message;
     }
     @Autowired
-    private  MemberServices memberServices;
+    private MemberServices memberServices;
 
     @GetMapping("/member/all")
     public List<Member> getAllMember(){
@@ -149,11 +149,6 @@ public class UserController {
     @GetMapping("/zoo-area/all")
     public List <ZooArea> findAllZooArea(){
         return zooAreaService.findAllZooArea();
-    }
-
-    @GetMapping("/google")
-    public Map<String, Object> getUserGoogleLogin(@AuthenticationPrincipal OAuth2User oAuth2User) {
-        return oAuth2User.getAttributes();
     }
 
     //PAYMENT---------------------------------------------------------------------------

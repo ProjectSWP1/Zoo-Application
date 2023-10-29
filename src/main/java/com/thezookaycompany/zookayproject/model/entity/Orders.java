@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "orderID")
 public class Orders {
     @Id
     @Column(nullable = false, updatable = false)
@@ -38,7 +38,6 @@ public class Orders {
     private Payment orderPayments; // tạo tạm thời trước rồi tạo payment để bắt đầu giao dịch
 
 
-
 //    @OneToMany(mappedBy = "orderDetail")
 //    private Set<Ticket> orderDetailTickets;
 
@@ -57,6 +56,7 @@ public class Orders {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = false)
