@@ -27,25 +27,35 @@ public class Ticket {
     @Column(nullable = false, name="TicketPrice")
     private Double ticketPrice;
 
-
+    //user book ngày tham quan Zoo
     @Column(nullable = true)
     @Temporal(TemporalType.DATE)
-    private Date bookDate;
-
+    private Date expDate;
 
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     @JsonBackReference
     private Voucher ticketVouchers;
 
-    @Column(name = "quantity", nullable = false)
-    private int quantity;
-    @Column(name = "description", nullable = false)
+
+    @Column(name = "description")
     private String description;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderID", nullable = true)
-    private Orders orderDetail;
+    @OneToMany(mappedBy = "ticket")
+    @JsonBackReference
+    private Set<Orders> ticketInOrders;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "orderID", nullable = true)
+//    private Orders orderDetail;
+
+    public Date getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
 
     public String getTicketId() {
         return ticketId;
@@ -62,18 +72,8 @@ public class Ticket {
             return ticketPrice;
         }
     }
-
-
     public void setTicketPrice(final Double ticketPrice) {
         this.ticketPrice = ticketPrice;
-    }
-
-    public Date getBookDate() {
-        return bookDate;
-    }
-
-    public void setBookDate(final Date bookDate) {
-        this.bookDate = bookDate;
     }
 
     public Voucher getTicketVouchers() {
@@ -84,20 +84,11 @@ public class Ticket {
         this.ticketVouchers = ticketVouchers;
     }
 
-    public Orders getOrderDetail() {
-        return orderDetail;
+    public Set<Orders> getTicketInOrders() {
+        return ticketInOrders;
     }
-
-    public void setOrderDetail(Orders orderDetail) {
-        this.orderDetail = orderDetail;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setTicketInOrders(Set<Orders> ticketInOrders) {
+        this.ticketInOrders = ticketInOrders;
     }
     public String getDescription() {
         return description;

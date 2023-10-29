@@ -6,9 +6,8 @@ public class TicketDto {
     private String ticketId;
     private double ticketPrice;
 
-    private Date bookDate;
+    private Date expDate;
 
-    private int quantity;
     private String description;
     public  TicketDto(){
 
@@ -17,7 +16,7 @@ public class TicketDto {
     public TicketDto(String ticketId, double ticketPrice, Date bookDate) {
         this.ticketId = ticketId;
         this.ticketPrice = ticketPrice;
-        this.bookDate = bookDate;
+        this.expDate = bookDate;
     }
 
     public String getTicketId() {
@@ -37,19 +36,11 @@ public class TicketDto {
     }
 
     public Date getBookDate() {
-        return bookDate;
+        return expDate;
     }
 
     public void setBookDate(Date bookDate) {
-        this.bookDate = bookDate;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+        this.expDate = bookDate;
     }
 
     public String getDescription() {
