@@ -3,7 +3,6 @@ package com.thezookaycompany.zookayproject.controller;
 import com.thezookaycompany.zookayproject.exception.PaymentNotSuccessfulException;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
-import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.OrdersService;
@@ -19,7 +18,6 @@ import java.util.Map;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/order")
-
 public class OrdersController {
     private final String SUCCESS_RESPONSE = "success";
 

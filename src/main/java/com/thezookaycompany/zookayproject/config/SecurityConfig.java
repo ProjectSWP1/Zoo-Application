@@ -37,9 +37,6 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
-
     private final RSAKeyProperties keys;
 
     public SecurityConfig(RSAKeyProperties keys) {
@@ -67,10 +64,10 @@ public class SecurityConfig {
 
         // Role Resource Setup and Form setup
         http
-                .oauth2Login((login) -> {
-                            login.successHandler(oAuth2LoginSuccessHandler);
-                        }
-                )
+//                .oauth2Login((login) -> {
+//                            //login.successHandler(oAuth2LoginSuccessHandler);
+//                        }
+//                )
 
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwtConfigurer -> {
