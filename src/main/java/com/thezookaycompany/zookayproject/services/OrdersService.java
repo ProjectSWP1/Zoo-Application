@@ -5,6 +5,7 @@ import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
 
+import java.time.Month;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,5 +25,17 @@ public interface OrdersService {
 
     List<OrdersDto> getAllOrdersDetail();
     Optional<OrdersDto> getOrderDetailsById(Integer orderID);
+    long countSoldTickets();
 
- }
+
+    long countSuccessfulTicketsOrderedToday();
+
+    long countSuccessfulTicketsOrderedThisWeek();
+
+    long countSuccessfulTicketsOrderedThisMonth(int year, Month month);
+
+    long countSuccessfulTicketsOrderedThisYear(int year);
+
+
+    double calculateTotalPriceOfZoo();
+}
