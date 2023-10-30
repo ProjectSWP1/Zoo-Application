@@ -266,6 +266,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    @Override
+    public long countEmployees() {
+        return employeesRepository.count();
+    }
+
     private boolean isValid(EmployeesDto employeesDto) {
         if (employeesDto.getName() == null || employeesDto.getName().isEmpty() || employeesDto.getName().length() > 30) {
             return false;

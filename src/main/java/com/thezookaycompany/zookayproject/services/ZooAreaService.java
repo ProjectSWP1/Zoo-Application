@@ -8,4 +8,6 @@ public interface ZooAreaService {
     List<ZooArea> findAllZooArea();
     ZooArea findZooAreaByZooAreaDes ( String description);
     ZooArea findZooAreaByZooAreaID (String zooAreaId);
+
+    long countZooAreas();
 }

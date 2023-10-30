@@ -37,7 +37,7 @@ public interface AnimalService {
     void updateAnimalImage(Integer animalId, MultipartFile newAnimalImgFile) throws IOException;
     byte[] getAnimalImageById(Integer animalId);
 
-
-
+    long countAnimals();
+    long countAnimalSpecies();
 
 }

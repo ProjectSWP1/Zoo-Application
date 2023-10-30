@@ -325,4 +325,14 @@ public class AnimalServiceImpl implements AnimalService {
         }
     }
 
+    @Override
+    public long countAnimals() {
+        return animalRepository.count();
+    }
+
+    @Override
+    public long countAnimalSpecies() {
+        return animalSpeciesRepository.count();
+    }
+
 }

@@ -16,4 +16,6 @@ public interface FeedingScheduleServices {
     List<FeedingSchedule> getFeedingSchedulesByDescQuantity();
     List<FeedingSchedule> getFeedingSchedulesByAscQuantity();
     List<FeedingSchedule> getFeedingScheduleByDescription(String keyword);
+
+    long countFeedingSchedules();
 }

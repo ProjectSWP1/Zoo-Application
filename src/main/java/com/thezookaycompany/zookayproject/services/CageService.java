@@ -21,4 +21,6 @@ public interface CageService {
 
     List<Cage> getCagesByCapacityDescending();
     List<Cage> getCagesByCapacityAscending();
+
+    long countCages();
 }

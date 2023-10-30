@@ -26,4 +26,9 @@ public class ZooAreaServiceImpl implements ZooAreaService {
     public ZooArea findZooAreaByZooAreaID(String zooAreaId) {
         return zooAreaRepository.findZooAreaByZooAreaId(zooAreaId);
     }
+
+    @Override
+    public long countZooAreas() {
+        return zooAreaRepository.count();
+    }
 }

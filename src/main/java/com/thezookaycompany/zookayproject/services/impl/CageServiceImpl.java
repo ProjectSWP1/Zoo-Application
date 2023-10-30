@@ -119,4 +119,9 @@ public class CageServiceImpl implements CageService {
     public List<Cage> getCagesByCapacityAscending() {
         return cageRepository.findAllByCapacityAsc();
     }
+
+    @Override
+    public long countCages() {
+        return cageRepository.count();
+    }
 }

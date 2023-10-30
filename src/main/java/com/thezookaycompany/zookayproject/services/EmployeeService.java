@@ -35,4 +35,6 @@ public interface EmployeeService {
     byte[] getQualificationImageById(int employeeId);
     void deleteQualificationImage(int employeeId);
     void updateQualificationImage(int employeeId, MultipartFile newQualificationFile) throws IOException;
+
+    long countEmployees();
 }

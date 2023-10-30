@@ -124,4 +124,9 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
     public List<FeedingSchedule> getFeedingScheduleByDescription(String keyword) {
         return feedingScheduleRepository.findByDescriptionContaining(keyword);
     }
+
+    @Override
+    public long countFeedingSchedules() {
+        return feedingScheduleRepository.count();
+    }
 }
