@@ -10,6 +10,7 @@ import com.thezookaycompany.zookayproject.repositories.PaymentRepository;
 import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.OrdersService;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -135,7 +136,110 @@ public class OrdersServiceImpl implements OrdersService {
     public List<Orders> findOrdersByDescriptionContainingKeyword(String keyword) {
         return ordersRepository.findOrdersByDescriptionContainingKeyword(keyword);
     }
+    @Transactional()
+    public List<OrdersDto> getAllOrdersDetail() {
+
+        List<Orders> orders = ordersRepository.findAll(); // Use the method provided by your repository to fetch all orders
+        return convertToOrdersDtoList(orders);
+    }
+    @Transactional()
+    public Optional<OrdersDto> getOrderDetailsById(Integer orderID) {
+        Optional<Orders> order = ordersRepository.findById(orderID);
+
+        if (order.isPresent()) {
+            OrdersDto ordersDto = convertToOrdersDto(order.get());
+            return Optional.of(ordersDto);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private List<OrdersDto> convertToOrdersDtoList(List<Orders> orders) {
+
+
+        List<OrdersDto> ordersDtoList = new ArrayList<>();
+
+        for (Orders order : orders) {
+            OrdersDto ordersDto = new OrdersDto();
+            // Set properties of OrdersDto from the corresponding properties of Orders
+            ordersDto.setOrderID(order.getOrderID());
+            ordersDto.setDescription(order.getDescription());
+            ordersDto.setOrderDate(order.getOrderDate());
+            ordersDto.setEmail(order.getEmail());
+            ordersDto.setTicketQuantity(order.getQuantity());
+            ordersDto.setTicketPrice(order.getTicket().getTicketPrice());
+
+
+
+            // Get phoneNumber from the associated Member
+            if (order.getMember() != null) {
+                ordersDto.setPhoneNumber(order.getMember().getPhoneNumber());
+            }
+
+            // Get expDate from the associated Ticket
+            if (order.getTicket() != null) {
+                ordersDto.setExpDate(order.getTicket().getExpDate());
+                ordersDto.setTicketId(order.getTicket().getTicketId());
+
+                // Calculate totalOrder as quantity * ticket price
+                double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice();
+                ordersDto.setTotalOrder(totalOrder);
+            }
+
+            // Check if a payment record exists for this order
+            Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
+            if (payment != null && payment.isStatus()) {
+                ordersDto.setPaymentStatus(true);
+            } else {
+                ordersDto.setPaymentStatus(false);
+            }
+
+            // Add the converted OrdersDto to the list
+            ordersDtoList.add(ordersDto);
+        }
+
+        return ordersDtoList;
+    }
+
+    private OrdersDto convertToOrdersDto(Orders order) {
+        OrdersDto ordersDto = new OrdersDto();
+
+        // Set properties of OrdersDto from the corresponding properties of Orders
+        ordersDto.setOrderID(order.getOrderID());
+        ordersDto.setDescription(order.getDescription());
+        ordersDto.setOrderDate(order.getOrderDate());
+        ordersDto.setEmail(order.getEmail());
+        ordersDto.setTicketQuantity(order.getQuantity());
+        ordersDto.setTicketPrice(order.getTicket().getTicketPrice());
+
+        // Get phoneNumber from the associated Member
+        if (order.getMember() != null) {
+            ordersDto.setPhoneNumber(order.getMember().getPhoneNumber());
+        }
+
+        // Get expDate from the associated Ticket
+        if (order.getTicket() != null) {
+            ordersDto.setExpDate(order.getTicket().getExpDate());
+            ordersDto.setTicketId(order.getTicket().getTicketId());
+
+            // Calculate totalOrder as quantity * ticket price
+            double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice();
+            ordersDto.setTotalOrder(totalOrder);
+        }
+
+        // Check if a payment record exists for this order
+        Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
+        if (payment != null && payment.isStatus()) {
+            ordersDto.setPaymentStatus(true);
+        } else {
+            ordersDto.setPaymentStatus(false);
+        }
+
+        return ordersDto;
+    }
 
 
 
 }
+
+

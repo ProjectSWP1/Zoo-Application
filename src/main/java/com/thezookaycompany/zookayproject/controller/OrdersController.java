@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -31,13 +32,20 @@ public class OrdersController {
 
     @GetMapping("/get-order/{orderID}")
     Orders findOrdersByOrderID(@PathVariable("orderID") Integer orderID) {
-
         return ordersService.findOrdersByOrderID(orderID);
 
     }
     @GetMapping("/get-order")
     public List<Orders> finAllOrders (){
         return ordersService.findAllOrders();
+    }
+    @GetMapping("/all")
+    public List<OrdersDto> getAllOrdersDetail() {
+        return ordersService.getAllOrdersDetail();
+    }
+    @GetMapping("/{orderID}")
+    public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
+        return ordersService.getOrderDetailsById(orderID);
     }
 
     @GetMapping("/get-order-desc/{keyword}")
@@ -59,11 +67,6 @@ public class OrdersController {
     }
 
     //EXAMPLE CREATE ORDER
-//    {
-//        "description": "Order 7",
-//            "email": "kieutranquocson7@gmail.com",
-//            "phoneNumber": "0777777777"
-//    // chỉ cần thêm như trên id với date time tự generate
     @PostMapping("/create-order")
     public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto,@RequestHeader("Authorization") String bearerJwt) {
         String response ="";

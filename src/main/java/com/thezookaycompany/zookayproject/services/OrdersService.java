@@ -7,6 +7,7 @@ import com.thezookaycompany.zookayproject.model.entity.Orders;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface OrdersService {
     Orders findOrdersByOrderID (Integer orderID);
@@ -20,4 +21,8 @@ public interface OrdersService {
 
     String createMemberOrders (OrdersDto ordersDto, Account account);
     String createGuestOrders (OrdersDto ordersDto);
+
+    List<OrdersDto> getAllOrdersDetail();
+    Optional<OrdersDto> getOrderDetailsById(Integer orderID);
+
  }
