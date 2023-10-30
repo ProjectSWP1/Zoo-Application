@@ -59,7 +59,7 @@ public class Orders {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phoneNumber", nullable = false)
+    @JoinColumn(name = "phoneNumber", nullable = true)
     private Member member;
 
 
