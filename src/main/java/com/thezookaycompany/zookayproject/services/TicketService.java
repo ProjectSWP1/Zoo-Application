@@ -10,7 +10,7 @@ public interface TicketService {
 
     List getTicketByDescriptionKeyword(String keyword);
 
-    Ticket createTicket(TicketDto ticketDto);
+    String createTicket(TicketDto ticketDto);
 
     String updateTicket (TicketDto ticketDto);
 

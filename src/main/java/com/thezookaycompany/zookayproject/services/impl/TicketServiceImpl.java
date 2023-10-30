@@ -8,6 +8,7 @@ import com.thezookaycompany.zookayproject.services.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -30,48 +31,67 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket createTicket(TicketDto ticketDto) {
+    public String createTicket(TicketDto ticketDto) {
+        Date expDate = ticketDto.getExpDate();
+        Date currentDate = new Date();
 
-        //Find cage
-        if(ticketRepository.findById(ticketDto.getTicketId()).isPresent()) {
-            throw new InvalidTicketException("This Ticket ID has existed.");
+        // Check Date
+        if (expDate != null && expDate.after(new Date(currentDate.getTime() + 24 * 60 * 60 * 1000))) {
+            //Find Ticket
+            if (ticketRepository.findById(ticketDto.getTicketId()).isPresent()) {
+                return  "This Ticket ID has existed.";
+            }
+
+            // Create a new Ticket entity and populate it with data from the DTO
+            Ticket newTicket = new Ticket();
+            newTicket.setTicketId(ticketDto.getTicketId());
+            newTicket.setTicketPrice(ticketDto.getTicketPrice());
+            newTicket.setDescription(ticketDto.getDescription());
+            newTicket.setExpDate(ticketDto.getExpDate());
+
+            // Save the new ticket to the database
+            ticketRepository.save(newTicket);
+
+            return "New ticket has been added successfully";
+        } else {
+            return "Please give me expDate greater than 1 day to get current date";
         }
-        // Create a new Ticket entity and populate it with data from the DTO
-        Ticket newTicket = new Ticket();
-        newTicket.setTicketId(ticketDto.getTicketId());
-        newTicket.setTicketPrice(ticketDto.getTicketPrice());
-        //newTicket.setBookDate(ticketDto.getBookDate());
-        newTicket.setDescription(ticketDto.getDescription());
-        // Set other properties as needed
-
-        // Save the new ticket to the database
-        return ticketRepository.save(newTicket);
     }
+
 
 
     @Override
     public String updateTicket(TicketDto ticketDto) {
-
         // Retrieve the existing Ticket entity by its ID
         Ticket existingTicket = ticketRepository.findById(ticketDto.getTicketId())
                 .orElse(null);
 
         // Check if the ticket exists
         if (existingTicket != null) {
-            // Update the ticket properties with data from the DTO
-            existingTicket.setTicketPrice(ticketDto.getTicketPrice());
-            existingTicket.setDescription(ticketDto.getDescription());
-            existingTicket.setExpDate(ticketDto.getBookDate());
-            // Update other properties as needed
+            Date expDate = ticketDto.getExpDate();
+            Date currentDate = new Date();
 
-            // Save the updated ticket to the database
-            ticketRepository.save(existingTicket);
+            // Check Date
+            if (expDate != null && expDate.after(new Date(currentDate.getTime() + 24 * 60 * 60 * 1000))) {
+                // Update the ticket properties with data from the DTO
+                existingTicket.setTicketPrice(ticketDto.getTicketPrice());
+                existingTicket.setDescription(ticketDto.getDescription());
+                existingTicket.setExpDate(expDate);
+                // Update other properties as needed
 
-            return "Ticket updated successfully";
+                // Save the updated ticket to the database
+                ticketRepository.save(existingTicket);
+
+                return "Ticket updated successfully";
+            } else {
+                return "Please give me expDate greater than 1 day to get current date";
+            }
         } else {
             return "Ticket not found with ID: " + ticketDto.getTicketId();
         }
     }
+
+
 
     @Override
     public String removeTicket(String id) {

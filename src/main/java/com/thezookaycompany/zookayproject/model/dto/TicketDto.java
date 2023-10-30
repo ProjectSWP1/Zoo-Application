@@ -50,4 +50,12 @@ public class TicketDto {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Date getExpDate() {
+        return expDate;
+    }
+
+    public void setExpDate(Date expDate) {
+        this.expDate = expDate;
+    }
 }
