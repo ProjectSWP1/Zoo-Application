@@ -1,12 +1,13 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class OrdersDto {
     private Integer orderID;
     private String description;
     
-    private Date orderDate;
+    private LocalDateTime orderDate;
 
     private Double totalOrder;
 
@@ -16,6 +17,14 @@ public class OrdersDto {
 
     private Date expDate;
 
+    private String ticketId;
+
+    private Double ticketPrice;
+
+    private Integer ticketQuantity;
+
+    private boolean paymentStatus;
+
     public Date getExpDate() {
         return expDate;
     }
@@ -24,9 +33,7 @@ public class OrdersDto {
         this.expDate = expDate;
     }
 
-    private String ticketId;
 
-    private Integer ticketQuantity;
 
     public String getTicketId() {
         return ticketId;
@@ -53,7 +60,9 @@ public class OrdersDto {
         this.totalOrder = totalOrder;
     }
 
-    public OrdersDto(String description, Date orderDate, String email, String phoneNumber) {
+
+
+    public OrdersDto(String description, LocalDateTime orderDate, String email, String phoneNumber) {
         this.description = description;
         this.orderDate = orderDate;
         this.email = email;
@@ -68,7 +77,7 @@ public class OrdersDto {
 
     }
 
-    public OrdersDto(Integer orderID, String description, Date orderDate) {
+    public OrdersDto(Integer orderID, String description, LocalDateTime orderDate) {
         this.orderID = orderID;
         this.description = description;
         this.orderDate = orderDate;
@@ -90,11 +99,11 @@ public class OrdersDto {
         this.description = description;
     }
 
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 
@@ -113,4 +122,21 @@ public class OrdersDto {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+    public boolean isPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(boolean paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
+
+    public Double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(Double ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
 }
+

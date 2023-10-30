@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface OrdersRepository extends JpaRepository<Orders ,String> {
+public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
      Orders findOrdersByOrderID (Integer orderID);
      @Query("SELECT o FROM Orders o WHERE LOWER(o.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
      List<Orders> findOrdersByDescriptionContainingKeyword(@Param("keyword") String keyword);
