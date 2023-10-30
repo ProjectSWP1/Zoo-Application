@@ -1,33 +1,31 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
-import com.nimbusds.jose.shaded.gson.annotations.SerializedName;
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
 
 
 @Entity
 public class Payment {
 
+
     @Id
     @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @SerializedName("id")
     private Integer id;
-
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "OrderID", nullable = false)
+    @JoinColumn(name = "OrderID", nullable = false,unique = true)
     private Orders order;
 
-    @Column(name="Status")
-    private boolean Status;
-
-    public boolean isStatus() {
-        return Status;
+    @Column
+    private Boolean isSuccess;
+    public Payment() {
     }
 
-    public void setStatus(boolean status) {
-        Status = status;
+    public Boolean getSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(Boolean success) {
+        isSuccess = success;
     }
 
     public Integer getId() {

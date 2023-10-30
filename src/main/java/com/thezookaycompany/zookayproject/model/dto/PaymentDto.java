@@ -4,13 +4,30 @@ import com.nimbusds.jose.shaded.gson.annotations.SerializedName;
 import com.thezookaycompany.zookayproject.model.entity.Payment;
 
 public class PaymentDto {
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     private String cardNumber;
     private String expMonth;
     private String expYear;
     private String cvc;
-    private String token;
-    private String email;
+
+    private String chargeId;
+
+    public String getChargeId() {
+        return chargeId;
+    }
+
+    public void setChargeId(String chargeId) {
+        this.chargeId = chargeId;
+    }
 
     public String getCardNumber() {
         return cardNumber;
@@ -44,19 +61,4 @@ public class PaymentDto {
         this.cvc = cvc;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

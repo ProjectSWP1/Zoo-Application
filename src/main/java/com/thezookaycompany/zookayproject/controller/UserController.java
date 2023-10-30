@@ -1,10 +1,7 @@
 package com.thezookaycompany.zookayproject.controller;
 
 import com.stripe.exception.StripeException;
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginDto;
-import com.thezookaycompany.zookayproject.model.dto.LoginResponse;
-import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
+import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
@@ -150,10 +147,17 @@ public class UserController {
 
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
-    public ResponseEntity<String> createPaymentIntent(@RequestBody OrdersDto ordersDto,@RequestBody PaymentDto createPayment) throws StripeException {
-
-        return ResponseEntity.ok(paymentService.createPaymentIntent(ordersDto,createPayment));
+    public ResponseEntity<String> createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
+        String message= "";
+        PaymentResponse paymentResponse = paymentService.createPaymentIntent(ordersDto);
+        if (paymentResponse!= null){
+            message =paymentService.confirmPayment(ordersDto,paymentResponse);
+        } else {
+            message = "OrderId has been paid";
+        }
+        return ResponseEntity.ok(message);
     }
+
     //-------------------------------------------------------
 
 

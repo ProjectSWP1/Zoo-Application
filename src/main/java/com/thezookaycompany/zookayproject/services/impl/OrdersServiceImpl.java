@@ -44,7 +44,7 @@ public class OrdersServiceImpl implements OrdersService {
         Orders order = entityManager.find(Orders.class, orderID);
         if (order != null) {
             Payment payment = paymentRepository.findPaymentByOrder_OrderID(orderID).orElse(null);
-            if (payment != null && payment.isStatus()) {
+            if (payment != null && payment.getSuccess()) {
                 List<Map<String, Object>> result = new ArrayList<>();
                 // FIXME:điều chỉnh lại nhe
 //                for (Ticket ticket : order.getOrderDetailTickets()) {
@@ -100,6 +100,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public String createGuestOrders(OrdersDto ordersDto){
+
         Orders orders = new Orders();
         orders.setEmail(ordersDto.getEmail());
         orders.setOrderDate(LocalDateTime.now());
