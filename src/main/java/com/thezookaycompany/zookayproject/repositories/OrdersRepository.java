@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import com.thezookaycompany.zookayproject.model.entity.Payment;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -20,5 +22,36 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
      List<Orders> findAllByOrderIDAsc();
      @Query("SELECT o FROM Orders o ORDER BY o.orderID DESC")
      List<Orders> findAllByOrderIDDesc();
+     @Query("SELECT o FROM Orders o WHERE o.orderPayments.isSuccess = :isSuccess")
+     List<Orders> findOrdersByPaymentSuccess(@Param("isSuccess") boolean isSuccess);
+
+
+     @Query("SELECT o FROM Orders o WHERE o.orderDate BETWEEN :startOfDay AND :endOfDay AND o.orderPayments.isSuccess = :isSuccess")
+     List<Orders> findOrdersByOrderDateBetweenAndOrderPaymentsSuccess(
+             @Param("startOfDay") LocalDateTime startOfDay,
+             @Param("endOfDay") LocalDateTime endOfDay,
+             @Param("isSuccess") boolean isSuccess
+     );
+     @Query("SELECT o FROM Orders o WHERE o.orderDate BETWEEN :startOfWeek AND :endOfWeek AND o.orderPayments.isSuccess = :isSuccess")
+     List<Orders> findSuccessfulOrdersThisWeek(
+             @Param("startOfWeek") LocalDateTime startOfWeek,
+             @Param("endOfWeek") LocalDateTime endOfWeek,
+             @Param("isSuccess") boolean isSuccess
+     );
+
+     @Query("SELECT o FROM Orders o WHERE o.orderDate BETWEEN :startOfMonth AND :endOfMonth AND o.orderPayments.isSuccess = :isSuccess")
+     List<Orders> findSuccessfulOrdersThisMonth(
+             @Param("startOfMonth") LocalDateTime startOfMonth,
+             @Param("endOfMonth") LocalDateTime endOfMonth,
+             @Param("isSuccess") boolean isSuccess
+     );
+
+     @Query("SELECT o FROM Orders o WHERE o.orderDate BETWEEN :startOfYear AND :endOfYear AND o.orderPayments.isSuccess = :isSuccess")
+     List<Orders> findSuccessfulOrdersThisYear(
+             @Param("startOfYear") LocalDateTime startOfYear,
+             @Param("endOfYear") LocalDateTime endOfYear,
+             @Param("isSuccess") boolean isSuccess
+     );
+
 
 }
