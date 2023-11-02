@@ -283,13 +283,20 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public void uploadAnimalImage(Integer animalId, MultipartFile animalImgFile) throws IOException {
+    public void uploadAnimalImage(Integer animalId, byte[] imageBytes, String format) throws IOException {
         Animal animal = animalRepository.findById(animalId)
                 .orElseThrow(() -> new EntityNotFoundException("Animal not found"));
 
-        if (animalImgFile != null && !animalImgFile.isEmpty()) {
-            byte[] imgAnimalData = animalImgFile.getBytes();
-            animal.setImageAnimal(imgAnimalData);
+        if (imageBytes != null && imageBytes.length > 0) {
+            animal.setImageAnimal(imageBytes);
+
+            // Handle the format based on the parameter
+            if (format != null && format.equalsIgnoreCase("jpg")) {
+                animal.setImageFormat("jpg");
+            } else {
+                animal.setImageFormat("png"); // Default to PNG if format is not specified or not "jpg"
+            }
+
             animalRepository.save(animal);
         }
     }
@@ -303,17 +310,6 @@ public class AnimalServiceImpl implements AnimalService {
         }
     }
 
-    @Override
-    public void updateAnimalImage(Integer animalId, MultipartFile newAnimalImgFile) throws IOException {
-        Animal animal = animalRepository.findById(animalId).orElse(null);
-        if (animal != null) {
-            if (newAnimalImgFile != null && !newAnimalImgFile.isEmpty()) {
-                byte[] newAnimalImgData = newAnimalImgFile.getBytes();
-                animal.setImageAnimal(newAnimalImgData); // Update new image
-                animalRepository.save(animal);
-            }
-        }
-    }
 
     @Override
     public byte[] getAnimalImageById(Integer animalId) {
