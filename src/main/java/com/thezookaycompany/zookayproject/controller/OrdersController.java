@@ -30,6 +30,18 @@ public class OrdersController {
     @Autowired
     private AccountService accountService;
 
+
+//    DÙNG CÁI NÀY
+    @GetMapping("/all")
+    public List<OrdersDto> getAllOrdersDetail() {
+        return ordersService.getAllOrdersDetail();
+    }
+    //    DÙNG CÁI NÀY
+    @GetMapping("/{orderID}")
+    public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
+        return ordersService.getOrderDetailsById(orderID);
+    }
+//MẤY CÁI DƯỚI LỖI
     @GetMapping("/get-order/{orderID}")
     Orders findOrdersByOrderID(@PathVariable("orderID") Integer orderID) {
         return ordersService.findOrdersByOrderID(orderID);
@@ -38,14 +50,6 @@ public class OrdersController {
     @GetMapping("/get-order")
     public List<Orders> finAllOrders (){
         return ordersService.findAllOrders();
-    }
-    @GetMapping("/all")
-    public List<OrdersDto> getAllOrdersDetail() {
-        return ordersService.getAllOrdersDetail();
-    }
-    @GetMapping("/{orderID}")
-    public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
-        return ordersService.getOrderDetailsById(orderID);
     }
 
     @GetMapping("/get-order-desc/{keyword}")
@@ -66,7 +70,7 @@ public class OrdersController {
         return ordersService.listOrderDetailsTicket(orderID);
     }
 
-    //EXAMPLE CREATE ORDER
+    //EXAMPLE CREATE ORDER // DÙNG CÁI NÀY
     @PostMapping("/create-order")
     public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto,@RequestHeader("Authorization") String bearerJwt) {
         String response ="";
