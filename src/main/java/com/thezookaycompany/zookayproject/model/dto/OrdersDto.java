@@ -23,7 +23,7 @@ public class OrdersDto {
 
     private Integer ticketQuantity;
 
-    private boolean paymentStatus;
+    private boolean isSuccess;
 
     public Date getExpDate() {
         return expDate;
@@ -123,12 +123,12 @@ public class OrdersDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isPaymentStatus() {
-        return paymentStatus;
+    public boolean isSuccess() {
+        return isSuccess;
     }
 
-    public void setPaymentStatus(boolean paymentStatus) {
-        this.paymentStatus = paymentStatus;
+    public void setSuccess(boolean success) {
+        isSuccess = success;
     }
 
     public Double getTicketPrice() {

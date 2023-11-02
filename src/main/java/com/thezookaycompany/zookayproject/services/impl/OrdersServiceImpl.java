@@ -14,7 +14,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 
 @Service
@@ -154,6 +156,77 @@ public class OrdersServiceImpl implements OrdersService {
         }
     }
 
+    @Override
+    public long countSoldTickets() {
+        // Find all orders with successful payments
+        List<Orders> successfulOrders = ordersRepository.findOrdersByPaymentSuccess(true);
+        // Calculate the total quantity of successful orders
+        long totalQuantitySold = successfulOrders.stream()
+                .mapToLong(Orders::getQuantity)
+                .sum();
+
+        return totalQuantitySold;
+    }
+    @Override
+    public long countSuccessfulTicketsOrderedToday() {
+        // Get the current date and time
+        LocalDateTime currentDate = LocalDateTime.now();
+
+        // Calculate the start and end of the current day
+        LocalDateTime startOfDay = currentDate.withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime endOfDay = currentDate.withHour(23).withMinute(59).withSecond(59).withNano(999);
+
+        // Query the database for orders placed today with successful payments
+        List<Orders> successfulOrdersPlacedToday = ordersRepository.findOrdersByOrderDateBetweenAndOrderPaymentsSuccess(startOfDay, endOfDay, true);
+
+        // Calculate the total quantity of tickets ordered today with successful payments
+        long totalSuccessfulTicketsOrderedToday = successfulOrdersPlacedToday.stream()
+                .mapToLong(Orders::getQuantity)
+                .sum();
+
+        return totalSuccessfulTicketsOrderedToday;
+    }
+
+    @Override
+    public long countSuccessfulTicketsOrderedThisWeek() {
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime startOfWeek = currentDate.with(DayOfWeek.MONDAY);
+        LocalDateTime endOfWeek = currentDate.with(DayOfWeek.SUNDAY);
+
+        List<Orders> successfulOrdersThisWeek = ordersRepository.findSuccessfulOrdersThisWeek(
+                startOfWeek, endOfWeek, true);
+
+        return successfulOrdersThisWeek.stream()
+                .mapToLong(Orders::getQuantity)
+                .sum();
+    }
+    @Override
+    public long countSuccessfulTicketsOrderedThisMonth(int year, Month month) {
+        LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0, 0, 0);
+        LocalDateTime endOfMonth = startOfMonth.withDayOfMonth(month.maxLength()).withHour(23).withMinute(59).withSecond(59).withNano(999);
+
+        List<Orders> successfulOrdersForMonth = ordersRepository.findSuccessfulOrdersThisMonth(
+                startOfMonth, endOfMonth, true);
+
+        return successfulOrdersForMonth.stream()
+                .mapToLong(Orders::getQuantity)
+                .sum();
+    }
+
+    @Override
+    public long countSuccessfulTicketsOrderedThisYear(int year) {
+        LocalDateTime startOfYear = LocalDateTime.of(year, 1, 1, 0, 0, 0, 0);
+        LocalDateTime endOfYear = startOfYear.withDayOfYear(365).withHour(23).withMinute(59).withSecond(59).withNano(999); // Assuming non-leap year
+
+        List<Orders> successfulOrdersForYear = ordersRepository.findSuccessfulOrdersThisYear(
+                startOfYear, endOfYear, true);
+
+        return successfulOrdersForYear.stream()
+                .mapToLong(Orders::getQuantity)
+                .sum();
+    }
+
+
     private List<OrdersDto> convertToOrdersDtoList(List<Orders> orders) {
 
 
@@ -189,9 +262,10 @@ public class OrdersServiceImpl implements OrdersService {
             // Check if a payment record exists for this order
             Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
             if (payment != null && payment.getSuccess()) {
-                ordersDto.setPaymentStatus(true);
+
+                ordersDto.setSuccess(true);
             } else {
-                ordersDto.setPaymentStatus(false);
+                ordersDto.setSuccess(false);
             }
 
             // Add the converted OrdersDto to the list
@@ -230,12 +304,32 @@ public class OrdersServiceImpl implements OrdersService {
         // Check if a payment record exists for this order
         Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
         if (payment != null && payment.getSuccess()) {
-            ordersDto.setPaymentStatus(true);
+
+            ordersDto.setSuccess(true);
+
         } else {
-            ordersDto.setPaymentStatus(false);
+            ordersDto.setSuccess(false);
         }
 
         return ordersDto;
+    }
+
+    @Override
+    public double calculateTotalPriceOfZoo() {
+        List<Orders> orders = ordersRepository.findAll();
+
+        double totalPrice = 0.0;
+
+        for (Orders order : orders) {
+            if (order.getOrderPayments() != null && order.getOrderPayments().getSuccess()) {
+                double ticketPrice = order.getTicket().getTicketPrice();
+                int quantity = order.getQuantity();
+                double orderTotal = quantity * ticketPrice;
+                totalPrice += orderTotal;
+            }
+        }
+
+        return totalPrice;
     }
 }
 
