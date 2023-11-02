@@ -458,7 +458,7 @@ public class ManageController {
     }
     //ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE
 
-    //**Upload Animal Image by id**//
+    //**Upload and  Update Animal Image by id**//
     @PostMapping("/{animalId}/upload-animalImg")
     public ResponseEntity<String> uploadImageAnimal(
             @PathVariable Integer animalId,
