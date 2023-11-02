@@ -221,7 +221,7 @@ public class AccountServiceImpl implements AccountService {
             if(acc.getRole().getRoleID().equals("ZT")){
                 workList = trainerScheduleRepository.findTrainerScheduleById(employees.getEmpId());
 
-                // neu co lcih thi xoa het lich
+                // neu co lich thi xoa het lich
                 if(workList !=null && workList.size() >0){
                     for(TrainerSchedule ts : workList) {
                         trainerScheduleRepository.deleteById(ts.getTrainerScheduleId());
@@ -230,6 +230,8 @@ public class AccountServiceImpl implements AccountService {
             }
             //deactive
             acc.setActive(false);
+            employees.setActive(false);
+            employeesRepository.save(employees);
             accountRepository.save(acc);
             return "The account " + email + " has been successfully deactivated";
         }

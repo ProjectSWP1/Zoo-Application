@@ -188,7 +188,7 @@ public class OrdersServiceImpl implements OrdersService {
 
             // Check if a payment record exists for this order
             Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
-            if (payment != null && payment.isStatus()) {
+            if (payment != null && payment.getSuccess()) {
                 ordersDto.setPaymentStatus(true);
             } else {
                 ordersDto.setPaymentStatus(false);
@@ -229,7 +229,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         // Check if a payment record exists for this order
         Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
-        if (payment != null && payment.isStatus()) {
+        if (payment != null && payment.getSuccess()) {
             ordersDto.setPaymentStatus(true);
         } else {
             ordersDto.setPaymentStatus(false);
@@ -237,9 +237,6 @@ public class OrdersServiceImpl implements OrdersService {
 
         return ordersDto;
     }
-
-
-
 }
 
 
