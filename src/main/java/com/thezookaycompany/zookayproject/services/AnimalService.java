@@ -32,9 +32,8 @@ public interface AnimalService {
     List<Animal> findAllByAgeAsc();
     List<Animal> findAllByAgeDesc();
 
-    void uploadAnimalImage(Integer animalId, MultipartFile animalImgFile) throws IOException;
+    void uploadAnimalImage(Integer animalId, byte[] imageBytes, String format) throws IOException;
     void deleteAnimalImage(Integer animalId);
-    void updateAnimalImage(Integer animalId, MultipartFile newAnimalImgFile) throws IOException;
     byte[] getAnimalImageById(Integer animalId);
 
     long countAnimals();

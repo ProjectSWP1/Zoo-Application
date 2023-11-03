@@ -32,7 +32,7 @@ public class Animal {
     private double height;
 
     @Lob
-    @Column(name = "imageAnimal", columnDefinition = "BLOB")
+    @Column(name = "imageAnimal", columnDefinition = "LONGBLOB")
     private byte[] imageAnimal;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -130,5 +130,8 @@ public class Animal {
 
     public void setImageAnimal(byte[] imageAnimal) {
         this.imageAnimal = imageAnimal;
+    }
+
+    public void setImageFormat(String jpg) {
     }
 }

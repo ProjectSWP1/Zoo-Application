@@ -458,13 +458,23 @@ public class ManageController {
     }
     //ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE
 
-    //**Upload Animal Image by id**//
+    //**Upload and  Update Animal Image by id**//
     @PostMapping("/{animalId}/upload-animalImg")
     public ResponseEntity<String> uploadImageAnimal(
             @PathVariable Integer animalId,
-            @RequestParam("animalImgFile") MultipartFile animalImgFile) {
+            @RequestParam("animalImgFile") MultipartFile animalImgFile,
+            @RequestParam(required = false) String format) {
         try {
-            animalService.uploadAnimalImage(animalId, animalImgFile);
+            byte[] imageBytes = animalImgFile.getBytes();
+            animalService.uploadAnimalImage(animalId, imageBytes, format);
+            HttpHeaders headers = new HttpHeaders();
+
+            if (format != null && format.equalsIgnoreCase("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            }
+
             return ResponseEntity.ok("Animal image uploaded successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -503,19 +513,4 @@ public class ManageController {
         }
     }
 
-    //**Update Animal Img by id**//
-    @PutMapping("/{animalId}/update-animalImg")
-    public ResponseEntity<String> updateAnimalImage(
-            @PathVariable Integer animalId,
-            @RequestParam("newAnimalImgFile") MultipartFile newAnimalImgFile) {
-        try {
-            animalService.updateAnimalImage(animalId, newAnimalImgFile);
-            return ResponseEntity.ok("Animal image updated successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating animal image: " + e.getMessage());
-
-
-        }
-    }
 }
