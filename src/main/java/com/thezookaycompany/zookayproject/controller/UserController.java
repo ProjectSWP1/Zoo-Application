@@ -19,7 +19,8 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-
+    @Autowired
+    private TicketService ticketService;
 
     @Autowired
     private AccountService accountService;
@@ -178,5 +179,36 @@ public class UserController {
     @GetMapping("/get-newest-news")
     public List<ZooNews> getNewestNews() {
         return zooNewsService.getNewestNews();
+    }
+
+    //----------------------GET TICKET-----------------------
+
+    //Tìm Ticket dựa vào TicketID
+    @GetMapping("/get-ticket/{ticketId}")
+    Ticket findTicketByTicketID(@PathVariable("ticketId") String ticketId) {
+        return ticketService.findTicketByTicketID(ticketId);
+    }
+    //Tìm tất cả ticket đang có
+
+    @GetMapping("/get-ticket")
+    public List<Ticket> getAllTickets() {
+        return ticketService.findAllTicket();
+    }
+
+    //Hàm này lấy tất cả Ticket dựa vào description keyword
+    @GetMapping("/get-ticket-desc/{keyword}")
+    public List<Ticket> getTicketByDescription(@PathVariable String keyword) {
+        return ticketService.getTicketByDescriptionKeyword(keyword);
+    }
+    //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
+    @GetMapping("/get-ticket/ascending")
+    public List<Ticket> getTicketByTicketPriceAscending() {
+        return ticketService.findAllByTicketPriceAsc();
+    }
+
+    //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự GIẢM DẦN//
+    @GetMapping("/get-ticket/descending")
+    public List<Ticket> getTicketByTicketPriceDescending() {
+        return ticketService.findAllByTicketPriceDesc();
     }
 }
