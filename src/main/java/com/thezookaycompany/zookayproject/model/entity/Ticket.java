@@ -1,8 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -30,7 +28,7 @@ public class Ticket {
     //user book ngày tham quan Zoo
     @Column(nullable = true)
     @Temporal(TemporalType.DATE)
-    private Date expDate;
+    private Date visitDate;
 
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     @JsonBackReference
@@ -49,12 +47,12 @@ public class Ticket {
 //    @JoinColumn(name = "orderID", nullable = true)
 //    private Orders orderDetail;
 
-    public Date getExpDate() {
-        return expDate;
+    public Date getVisitDate() {
+        return visitDate;
     }
 
-    public void setExpDate(Date expDate) {
-        this.expDate = expDate;
+    public void setVisitDate(Date expDate) {
+        this.visitDate = expDate;
     }
 
     public String getTicketId() {

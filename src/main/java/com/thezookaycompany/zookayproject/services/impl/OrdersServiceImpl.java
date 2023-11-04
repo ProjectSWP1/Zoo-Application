@@ -93,7 +93,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         //******** gọi ticket ra cập nhật expDate save và truyền vào entity orders
         Ticket ticket = ticketRepository.findTicketByTicketId(ordersDto.getTicketId());
-        ticket.setExpDate(ordersDto.getExpDate());
+        ticket.setVisitDate(ordersDto.getVisitDate());
         ticketRepository.save(ticket);
         orders.setQuantity(ordersDto.getTicketQuantity());
         orders.setTicket(ticket);
@@ -110,7 +110,7 @@ public class OrdersServiceImpl implements OrdersService {
         orders.setDescription(ordersDto.getDescription());
 
         Ticket ticket = ticketRepository.findTicketByTicketId(ordersDto.getTicketId());
-        ticket.setExpDate(ordersDto.getExpDate());
+        ticket.setVisitDate(ordersDto.getVisitDate());
         ticketRepository.save(ticket);
 
         orders.setQuantity(ordersDto.getTicketQuantity());
@@ -251,7 +251,7 @@ public class OrdersServiceImpl implements OrdersService {
 
             // Get expDate from the associated Ticket
             if (order.getTicket() != null) {
-                ordersDto.setExpDate(order.getTicket().getExpDate());
+                ordersDto.setVisitDate(order.getTicket().getVisitDate());
                 ordersDto.setTicketId(order.getTicket().getTicketId());
 
                 // Calculate totalOrder as quantity * ticket price
@@ -293,7 +293,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         // Get expDate from the associated Ticket
         if (order.getTicket() != null) {
-            ordersDto.setExpDate(order.getTicket().getExpDate());
+            ordersDto.setVisitDate(order.getTicket().getVisitDate());
             ordersDto.setTicketId(order.getTicket().getTicketId());
 
             // Calculate totalOrder as quantity * ticket price

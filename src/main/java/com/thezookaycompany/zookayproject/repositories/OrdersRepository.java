@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.repositories;
 
 import com.thezookaycompany.zookayproject.model.entity.Cage;
+import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
 import jakarta.persistence.criteria.Order;
 import org.aspectj.weaver.ast.Or;
@@ -25,7 +26,9 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
      @Query("SELECT o FROM Orders o WHERE o.orderPayments.isSuccess = :isSuccess")
      List<Orders> findOrdersByPaymentSuccess(@Param("isSuccess") boolean isSuccess);
 
-
+     // trả về tất cả order theo member
+     @Query("SELECT o FROM Orders o where o.member.email = : email")
+     List<Orders> findOrdersByMember_Email(@Param("email") String email);
      @Query("SELECT o FROM Orders o WHERE o.orderDate BETWEEN :startOfDay AND :endOfDay AND o.orderPayments.isSuccess = :isSuccess")
      List<Orders> findOrdersByOrderDateBetweenAndOrderPaymentsSuccess(
              @Param("startOfDay") LocalDateTime startOfDay,

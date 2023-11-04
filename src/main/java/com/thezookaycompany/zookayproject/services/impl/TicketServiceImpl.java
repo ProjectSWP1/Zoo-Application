@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -47,7 +46,7 @@ public class TicketServiceImpl implements TicketService {
             newTicket.setTicketId(ticketDto.getTicketId());
             newTicket.setTicketPrice(ticketDto.getTicketPrice());
             newTicket.setDescription(ticketDto.getDescription());
-            newTicket.setExpDate(ticketDto.getExpDate());
+            newTicket.setVisitDate(ticketDto.getExpDate());
 
             // Save the new ticket to the database
             ticketRepository.save(newTicket);
@@ -76,7 +75,7 @@ public class TicketServiceImpl implements TicketService {
                 // Update the ticket properties with data from the DTO
                 existingTicket.setTicketPrice(ticketDto.getTicketPrice());
                 existingTicket.setDescription(ticketDto.getDescription());
-                existingTicket.setExpDate(expDate);
+                existingTicket.setVisitDate(expDate);
                 // Update other properties as needed
 
                 // Save the updated ticket to the database

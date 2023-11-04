@@ -2,8 +2,11 @@ package com.thezookaycompany.zookayproject.services.impl;
 
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
+import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.Orders;
 import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
@@ -23,7 +26,7 @@ import java.time.LocalDateTime;
 public class EmailServiceImpl implements EmailService {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private OrdersRepository ordersRepository;
     @Autowired
     private JavaMailSender javaMailSender;
     @Autowired
@@ -61,6 +64,50 @@ public class EmailServiceImpl implements EmailService {
 
         javaMailSender.send(mimeMessage);
     }
+    /*
+    Subject: Ticket Purchase Confirmation
+
+Hello [User's Name],
+
+Thank you for purchasing tickets to visit our zoo. Below are the details of your tickets:
+
+Ticket ID: [Ticket ID]
+Visit Date: [Visit Date]
+Location: [Zoo Location]
+
+Please note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.
+
+We look forward to welcoming you to our zoo and hope you have an enjoyable experience.
+
+Sincerely,
+[Your Name]
+[Your Zoo Name]
+
+     */
+
+    @Override
+    public void sendAfterPaymentEmail(OrdersDto ordersDto) throws MessagingException {
+        Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        mimeMessageHelper.setTo(orders.getEmail());
+        mimeMessageHelper.setSubject("[ZooKay] Ticket Purchase Confirmation");
+
+        String mailContent = "Hello [NAME]\n" +
+                "Thank you for purchasing tickets to visit our zoo. Below are the details of your tickets:\n";
+        mailContent += "<p><b> Ticket ID: </b>"+orders.getTicket().getTicketId()+"</p>";
+        mailContent += "<p><b> Visit Date: </b>"+orders.getTicket().getVisitDate()+"</p>";
+        mailContent += "<p><b> Location: </b>Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Thành phố Hồ Chí Minh 700000</p>";
+        mailContent +="Please note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.\n" +
+                "\n" +
+                "We look forward to welcoming you to our zoo and hope you have an enjoyable experience.\n" +
+                "\n" +
+                "Sincerely,\n" +
+                "[Your Name]\n" +
+                "ZOOKAY";
+        mimeMessageHelper.setText(mailContent,true);
+        javaMailSender.send(mimeMessage);
+    }
 
 
     @Override
@@ -75,7 +122,7 @@ public class EmailServiceImpl implements EmailService {
 
        // String link = "http://localhost:8080/user/verify?email="+accountDto.getEmail()+"&otp="+otp;
 
-        // ** SAU DEPLOY SẼ SỬA LẠI LINK VỚI FORMAT HTML **
+        // ** SAU DEPLOY SẼ SỬA LẠI LINK **
         String content = "Hello,\n" +
                 "\n" +
                 "Thank you for registering an account with us. To complete the registration process and verify your email address, please follow the steps below:\n" +

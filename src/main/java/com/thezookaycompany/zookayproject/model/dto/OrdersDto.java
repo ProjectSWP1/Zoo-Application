@@ -15,7 +15,7 @@ public class OrdersDto {
 
     private String phoneNumber;
 
-    private Date expDate;
+    private Date visitDate;
 
     private String ticketId;
 
@@ -25,12 +25,12 @@ public class OrdersDto {
 
     private boolean isSuccess;
 
-    public Date getExpDate() {
-        return expDate;
+    public Date getVisitDate() {
+        return visitDate;
     }
 
-    public void setExpDate(Date expDate) {
-        this.expDate = expDate;
+    public void setVisitDate(Date visitDate) {
+        this.visitDate = visitDate;
     }
 
 

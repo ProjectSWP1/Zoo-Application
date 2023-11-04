@@ -3,7 +3,9 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.billingportal.Session;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.dto.PaymentResponse;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
@@ -17,6 +19,8 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -43,11 +47,8 @@ public class PaymentServiceImpl implements PaymentService {
 
 
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
-        Payment payment = paymentRepository.findPaymentByOrder(orders);
-        if(payment != null){
-            return null;
-        }
         Ticket ticket = ticketRepository.findTicketByTicketId(orders.getTicket().getTicketId());
+
         //tinh tong tien order
         double totalOrderPrice = ticket.getTicketPrice() * orders.getQuantity();
         PaymentIntentCreateParams params =
@@ -69,16 +70,23 @@ public class PaymentServiceImpl implements PaymentService {
         // Create a PaymentIntent with the order amount and currency
         PaymentIntent paymentIntent = PaymentIntent.create(params);
         return new PaymentResponse(paymentIntent.getClientSecret(),paymentIntent.getId());
-
     }
 
     @Override
     public String confirmPayment(OrdersDto ordersDto, PaymentResponse paymentResponse) throws StripeException {
         PaymentIntent retrieve = PaymentIntent.retrieve(paymentResponse.getIntentId());
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
+        Payment payment = new Payment();
         if(retrieve.getStatus()!=null){
-            Payment payment = new Payment();
+
             payment.setSuccess(true);
+            payment.setOrder(orders);
+            paymentRepository.save(payment);
+            orders.setOrderPayments(payment);
+            ordersRepository.save(orders);
+        }
+        else {
+            payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
             orders.setOrderPayments(payment);
@@ -86,5 +94,29 @@ public class PaymentServiceImpl implements PaymentService {
         }
         return "Purchased successfully";
     }
+
+    @Override
+    public void handlePaymentFailed(OrdersDto ordersDto) {
+        Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
+        if(orders!= null) {
+            Payment payment = new Payment();
+            orders.setDescription(orders.getDescription().concat("PENDIND PAYMENT - PURCHASED CANCELLED"));
+            payment.setSuccess(false);
+            payment.setOrder(orders);
+            paymentRepository.save(payment);
+            orders.setOrderPayments(payment);
+            ordersRepository.save(orders);
+        }
+    }
+
+    @Override
+    public boolean checkPaymentStatus(OrdersDto ordersDto) {
+        Payment payment = paymentRepository.findPaymentByOrder(ordersRepository.findOrdersByOrderID(ordersDto.getOrderID()));
+        if(payment.getSuccess() != null && payment.getSuccess()) {
+            return payment.getSuccess();
+        }
+        return payment.getSuccess();
+    }
+
 
 }

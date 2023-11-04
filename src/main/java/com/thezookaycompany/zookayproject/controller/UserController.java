@@ -5,6 +5,7 @@ import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,17 +78,16 @@ public class UserController {
 
     @PostMapping("/send-email")
    // @PreAuthorize("hasRole('Member')")
-    public String processSendMailWithToken(@RequestBody AccountDto accountDto){
+    public ResponseEntity<String> processSendMailWithToken(@RequestBody AccountDto accountDto){
 
         //send mail with token
-
             Account account = accountService.getUserByEmail(accountDto.getEmail());
             if(account !=null){
                 emailService.sendVertificationEmail(account);
             } else {
-                return "Account's not found!";
+               ResponseEntity.status(404);
             }
-        return "Please check your mail to get Verification OTP";
+        return ResponseEntity.ok("Please check your mail to get Verification OTP");
     }
 
     @PutMapping("/verify")
@@ -146,19 +146,35 @@ public class UserController {
         return zooAreaService.findAllZooArea();
     }
 
+
+
     //PAYMENT---------------------------------------------------------------------------
     @PostMapping("/create-payment-intent")
-    public ResponseEntity<String> createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
+    public PaymentResponse createPaymentIntent(@RequestBody OrdersDto ordersDto) throws StripeException {
+        return paymentService.createPaymentIntent(ordersDto);
+    }
+
+
+    @PutMapping("/confirm-payment")
+    public ResponseEntity<String> confirmPayment (@RequestBody OrdersDto ordersDto, @RequestBody PaymentResponse paymentResponse) throws MessagingException {
         String message= "";
-        PaymentResponse paymentResponse = paymentService.createPaymentIntent(ordersDto);
         if (paymentResponse!= null){
-            message =paymentService.confirmPayment(ordersDto,paymentResponse);
+            try {
+                message =paymentService.confirmPayment(ordersDto,paymentResponse);
+            } catch (StripeException e) {
+                if(!paymentService.checkPaymentStatus(ordersDto)){
+                    message= "Purchased failed. Please try again later";
+                } else {
+                    // gui mail neu da pthanh toan
+                    emailService.sendAfterPaymentEmail(ordersDto);
+                }
+
+            }
         } else {
             message = "OrderId has been paid";
         }
         return ResponseEntity.ok(message);
     }
-
     //-------------------------------------------------------
 
 
