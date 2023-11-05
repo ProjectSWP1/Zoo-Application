@@ -57,7 +57,7 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
     public String removeFeedingSchedule(Integer feedScheduleId) {
         if(feedingScheduleRepository.existsById(feedScheduleId)) {
             feedingScheduleRepository.deleteById(feedScheduleId);
-            return "Successfully deleted feeding schedule with ID "+ feedScheduleId;
+            return "Deleted feeding schedule with ID "+ feedScheduleId + " successfully.";
         }
         return "Not found feeding schedule ID " + feedScheduleId;
     }
