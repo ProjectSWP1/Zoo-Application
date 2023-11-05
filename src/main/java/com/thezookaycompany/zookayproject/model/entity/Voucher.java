@@ -20,6 +20,17 @@ public class Voucher {
     @Column(name = "Coupon", nullable = false)
     private double coupon;
 
+    public Boolean getExpired() {
+        return isExpired;
+    }
+
+    public void setExpired(Boolean expired) {
+        isExpired = expired;
+    }
+
+    @Column(name = "isExpired", nullable = false)
+    private Boolean isExpired;
+
     public double getCoupon() {
         return coupon;
     }

@@ -83,14 +83,17 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
         if(feedingScheduleDto.getFeedScheduleId() != null) {
             if(feedingScheduleRepository.existsById(feedingScheduleDto.getFeedScheduleId())) {
                 FeedingSchedule feedingSchedule = new FeedingSchedule();
+                feedingSchedule.setFeedScheduleId(feedingScheduleDto.getFeedScheduleId());
                 feedingSchedule.setDescription(feedingScheduleDto.getDescription());
                 feedingSchedule.setQuantity(feedingScheduleDto.getQuantity());
                 feedingSchedule.setFood(animalFoodRepository.findById(feedingScheduleDto.getFoodId()).get());
                 feedingSchedule.setSpecies(animalSpeciesRepository.findById(feedingScheduleDto.getSpeciesId()).get());
 
                 feedingScheduleRepository.save(feedingSchedule);
+                return "Feeding Schedules updated successfully";
+            } else {
+                return "Feeding Schedule ID is not found";
             }
-            return "Feeding Schedule ID is not found";
         }
         return "Invalid input field: feeding schedule ID";
     }
