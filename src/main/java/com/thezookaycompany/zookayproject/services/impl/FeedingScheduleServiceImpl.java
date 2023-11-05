@@ -104,6 +104,11 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
     }
 
     @Override
+    public FeedingSchedule getFeedingScheduleByID(Integer id) {
+        return feedingScheduleRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public List<FeedingSchedule> getFeedingSchedulesByFoodId(Integer foodId) {
         return feedingScheduleRepository.findByFood_FoodId(foodId);
     }

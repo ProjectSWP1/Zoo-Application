@@ -331,6 +331,11 @@ public class ManageController {
         return feedingScheduleServices.getFeedingSchedulesByFoodId(foodId);
     }
 
+    @GetMapping("/get-feedingSchedule/{feedingScheduleId}")
+    public FeedingSchedule getFeedingScheduleByID(@PathVariable Integer feedingScheduleId) {
+        return feedingScheduleServices.g
+    }
+
     @GetMapping("/get-feedingSchedule-by-speciesId/{speciesId}")
     public List<FeedingSchedule> getFeedingScheduleBySpeciesId(@PathVariable Integer speciesId) {
         return feedingScheduleServices.getFeedingSchedulesBySpeciesId(speciesId);
