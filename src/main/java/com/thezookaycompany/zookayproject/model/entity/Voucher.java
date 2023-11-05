@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.Date;
+
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "voucherId")
@@ -20,16 +22,11 @@ public class Voucher {
     @Column(name = "Coupon", nullable = false)
     private double coupon;
 
-    public Boolean getExpired() {
-        return isExpired;
-    }
+    @Column(name = "description")
+    private String description;
 
-    public void setExpired(Boolean expired) {
-        isExpired = expired;
-    }
-
-    @Column(name = "isExpired", nullable = false)
-    private Boolean isExpired;
+    @Column(name = "expirationDate")
+    private Date expirationDate;
 
     public double getCoupon() {
         return coupon;
@@ -55,4 +52,19 @@ public class Voucher {
         this.ticket = ticket;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }

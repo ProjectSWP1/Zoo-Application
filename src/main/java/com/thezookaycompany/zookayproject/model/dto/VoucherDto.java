@@ -1,9 +1,15 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
+import java.util.Date;
+
 public class VoucherDto {
     private String voucherId;
     private String ticketId;
     public double coupon;
+
+    public String description;
+
+    public Date expirationDate;
 
     public VoucherDto() {
     }
@@ -41,5 +47,21 @@ public class VoucherDto {
 
     public void setTicketId(String ticketId) {
         this.ticketId = ticketId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }
