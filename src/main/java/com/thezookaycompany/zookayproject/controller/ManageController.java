@@ -333,7 +333,7 @@ public class ManageController {
 
     @GetMapping("/get-feedingSchedule/{feedingScheduleId}")
     public FeedingSchedule getFeedingScheduleByID(@PathVariable Integer feedingScheduleId) {
-        return feedingScheduleServices.g
+        return feedingScheduleServices.getFeedingScheduleByID(feedingScheduleId);
     }
 
     @GetMapping("/get-feedingSchedule-by-speciesId/{speciesId}")
