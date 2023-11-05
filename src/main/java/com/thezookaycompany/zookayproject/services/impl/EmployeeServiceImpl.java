@@ -224,16 +224,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void uploadQualificationImage(int employeeId, MultipartFile qualificationFile) throws IOException {
+    public void uploadQualificationImage(int employeeId, byte[] imageBytes, String format) throws IOException {
         Employees employee = employeesRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
 
-        if (qualificationFile != null && !qualificationFile.isEmpty()) {
-            byte[] qualificationData = qualificationFile.getBytes();
-            employee.setQualification(qualificationData);
+        if (imageBytes != null && imageBytes.length > 0) {
+            employee.setQualification(imageBytes);
+
+            // Handle the format based on the parameter
+            if (format != null && format.equalsIgnoreCase("jpg")) {
+                employee.setQualificationFormat("jpg");
+            } else {
+                employee.setQualificationFormat("png"); // Default to PNG if format is not specified or not "jpg"
+            }
+
             employeesRepository.save(employee);
         }
     }
+
+
 
     @Override
     public byte[] getQualificationImageById(int employeeId) {

@@ -39,6 +39,8 @@ public class VoucherServiceImpl implements VoucherService {
         newVoucher.setVoucherId(voucherDto.getVoucherId());
         newVoucher.setTicket(ticket1);
         newVoucher.setCoupon(voucherDto.getCoupon());
+        newVoucher.setDescription(voucherDto.getDescription());
+        newVoucher.setExpirationDate(voucherDto.getExpirationDate());
         voucherRepository.save(newVoucher);
         return "New voucher has been added successfully";
     }
@@ -55,6 +57,8 @@ public class VoucherServiceImpl implements VoucherService {
         existingVoucher.setVoucherId(voucherDto.getVoucherId());
         existingVoucher.setTicket(ticket1);
         existingVoucher.setCoupon(voucherDto.getCoupon());
+        existingVoucher.setDescription(voucherDto.getDescription());
+        existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
         voucherRepository.save(existingVoucher);
         return "Voucher updated successfully";
     }else{

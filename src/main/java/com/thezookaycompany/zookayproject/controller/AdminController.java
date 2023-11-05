@@ -6,16 +6,14 @@ import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
-import com.thezookaycompany.zookayproject.services.AccountService;
-import com.thezookaycompany.zookayproject.services.EmployeeService;
-import com.thezookaycompany.zookayproject.services.TicketService;
-import com.thezookaycompany.zookayproject.services.VoucherService;
+import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -28,7 +26,8 @@ public class AdminController {
     private AccountService accountService;
     @Autowired
     private VoucherService voucherService;
-
+    @Autowired
+    private OrdersService ordersService;
     @GetMapping("/")
     public String adminAccess() {
         return "Admin accessed";
@@ -261,5 +260,14 @@ public class AdminController {
         } catch (InvalidVoucherException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Voucher not found with ID: " + voucherId);
         }
+    }
+    //Find order
+    @GetMapping("/all")
+    public List<OrdersDto> getAllOrdersDetail() {
+        return ordersService.getAllOrdersDetail();
+    }
+    @GetMapping("/{orderID}")
+    public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
+        return ordersService.getOrderDetailsById(orderID);
     }
 }

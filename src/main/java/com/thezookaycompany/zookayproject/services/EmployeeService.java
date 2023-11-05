@@ -31,7 +31,7 @@ public interface EmployeeService {
     // Update employees
     String updateEmployees(EmployeesDto employeesDto);
 
-    void uploadQualificationImage(int employeeId, MultipartFile qualificationFile) throws IOException;
+    void uploadQualificationImage(int employeeId, byte[] imageBytes, String format) throws IOException;
     byte[] getQualificationImageById(int employeeId);
     void deleteQualificationImage(int employeeId);
     void updateQualificationImage(int employeeId, MultipartFile newQualificationFile) throws IOException;
