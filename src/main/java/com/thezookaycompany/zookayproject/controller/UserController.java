@@ -125,6 +125,14 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @GetMapping("/get-member-by-email/{email}")
+    public Member getMemberByEmail(@PathVariable String email) {
+        return memberServices.findMemberByEmail(email);
+    }
+
+
     @Autowired
     private ZooAreaRepository zooAreaRepository;
 

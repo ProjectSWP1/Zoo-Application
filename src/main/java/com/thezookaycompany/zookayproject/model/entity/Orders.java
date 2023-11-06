@@ -29,9 +29,6 @@ public class Orders {
     @Column(nullable = false, length = 30)
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
-    // add quantity
-
-
     //@OneToOne(mappedBy = "order")
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
