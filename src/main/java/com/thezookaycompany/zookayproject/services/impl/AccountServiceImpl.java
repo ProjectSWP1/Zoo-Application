@@ -391,7 +391,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean isExpiredToken(Account account) {
-        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (10 *60)){
+        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
             account.setResetPwdToken(null);
             accountRepository.save(account);
             return true;

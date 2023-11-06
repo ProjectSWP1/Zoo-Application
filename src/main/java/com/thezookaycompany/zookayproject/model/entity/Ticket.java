@@ -34,11 +34,9 @@ public class Ticket {
     @JsonBackReference
     private Voucher ticketVouchers;
 
-
     @Column(name = "description")
     private String description;
-
-
+    
     @OneToMany(mappedBy = "ticket")
     @JsonBackReference
     private Set<Orders> ticketInOrders;

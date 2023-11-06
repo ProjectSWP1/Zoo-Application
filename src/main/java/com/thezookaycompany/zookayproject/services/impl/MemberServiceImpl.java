@@ -72,6 +72,10 @@ public class MemberServiceImpl implements MemberServices {
         return memberRepository.findMemberByPhoneNumber(phoneNumber);
     }
 
+    @Override
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findMemberByEmail(email);
+    }
 
 
     @Override

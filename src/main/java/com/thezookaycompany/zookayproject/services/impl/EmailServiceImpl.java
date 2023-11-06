@@ -13,6 +13,7 @@ import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -89,23 +90,27 @@ Sincerely,
     public void sendAfterPaymentEmail(OrdersDto ordersDto) throws MessagingException {
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(orders.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Ticket Purchase Confirmation");
 
-        String mailContent = "Hello [NAME]\n" +
-                "Thank you for purchasing tickets to visit our zoo. Below are the details of your tickets:\n";
+        String mailContent = "Hello [NAME]<br/>" +
+                "Thank you for purchasing tickets to visit our zoo. Below are the details of your tickets:<br/>";
         mailContent += "<p><b> Ticket ID: </b>"+orders.getTicket().getTicketId()+"</p>";
         mailContent += "<p><b> Visit Date: </b>"+orders.getTicket().getVisitDate()+"</p>";
-        mailContent += "<p><b> Location: </b>Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức, Thành phố Hồ Chí Minh 700000</p>";
-        mailContent +="Please note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.\n" +
-                "\n" +
-                "We look forward to welcoming you to our zoo and hope you have an enjoyable experience.\n" +
-                "\n" +
-                "Sincerely,\n" +
-                "[Your Name]\n" +
+        mailContent += "<p><b> Location: </b>Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi Minh City </p>";
+        mailContent += "<hr> <img src='cid:qr'/><br/>";
+        mailContent +="\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.\n" +
+                "<br/>" +
+                "We look forward to welcoming you to our zoo and hope you have an enjoyable experience.<br/>" +
+                "<br/>" +
+                "Sincerely,<br/>" +
+                "[Your Name]<br/>" +
                 "ZOOKAY";
+
         mimeMessageHelper.setText(mailContent,true);
+        ClassPathResource resource = new ClassPathResource("qr.png");
+        mimeMessageHelper.addInline("qr",resource);
         javaMailSender.send(mimeMessage);
     }
 

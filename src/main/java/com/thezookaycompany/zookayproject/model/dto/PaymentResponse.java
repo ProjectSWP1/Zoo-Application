@@ -10,6 +10,10 @@ public class PaymentResponse {
         this.intentId = intentId;
     }
 
+    public PaymentResponse(String intentId) {
+        this.intentId = intentId;
+    }
+
     public String getClientSecret() {
         return clientSecret;
     }

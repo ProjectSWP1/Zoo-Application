@@ -73,8 +73,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String confirmPayment(OrdersDto ordersDto, PaymentResponse paymentResponse) throws StripeException {
-        PaymentIntent retrieve = PaymentIntent.retrieve(paymentResponse.getIntentId());
+    public String confirmPayment(OrdersDto ordersDto, String intendId) throws StripeException {
+        PaymentIntent retrieve = PaymentIntent.retrieve(intendId);
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
         Payment payment = new Payment();
         if(retrieve.getStatus()!=null){
@@ -82,15 +82,16 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setSuccess(true);
             payment.setOrder(orders);
             paymentRepository.save(payment);
-            orders.setOrderPayments(payment);
-            ordersRepository.save(orders);
+          //  orders.setOrderPayments(payment);
+           // ordersRepository.save(orders);
         }
         else {
             payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
-            orders.setOrderPayments(payment);
-            ordersRepository.save(orders);
+           // orders.setOrderPayments(payment);
+           // ordersRepository.save(orders);
+            return "Purchased failed";
         }
         return "Purchased successfully";
     }

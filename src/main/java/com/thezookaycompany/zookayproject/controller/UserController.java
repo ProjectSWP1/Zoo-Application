@@ -125,6 +125,14 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
+    @GetMapping("/get-member-by-email/{email}")
+    public Member getMemberByEmail(@PathVariable String email) {
+        return memberServices.findMemberByEmail(email);
+    }
+
+
     @Autowired
     private ZooAreaRepository zooAreaRepository;
 
@@ -154,22 +162,26 @@ public class UserController {
         return paymentService.createPaymentIntent(ordersDto);
     }
 
+    @GetMapping("/test-send-email-payment")
+    public ResponseEntity<String> sendEmailAfterPayment (@RequestBody OrdersDto ordersDto) throws MessagingException {
+        emailService.sendAfterPaymentEmail(ordersDto);
+        return ResponseEntity.ok("ok");
+    }
 
     @PutMapping("/confirm-payment")
-    public ResponseEntity<String> confirmPayment (@RequestBody OrdersDto ordersDto, @RequestBody PaymentResponse paymentResponse) throws MessagingException {
+    public ResponseEntity<String> confirmPayment (@RequestBody OrdersDto ordersDto) throws MessagingException, StripeException {
         String message= "";
-        if (paymentResponse!= null){
-            try {
-                message =paymentService.confirmPayment(ordersDto,paymentResponse);
-            } catch (StripeException e) {
+        if (ordersDto.getIntentId()!= null){
+
+                message =paymentService.confirmPayment(ordersDto,ordersDto.getIntentId());
                 if(!paymentService.checkPaymentStatus(ordersDto)){
                     message= "Purchased failed. Please try again later";
                 } else {
+                    System.out.println();
                     // gui mail neu da pthanh toan
                     emailService.sendAfterPaymentEmail(ordersDto);
                 }
 
-            }
         } else {
             message = "OrderId has been paid";
         }

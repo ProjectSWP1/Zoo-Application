@@ -22,7 +22,7 @@ public class AnimalSpecies {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer speciesId;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = true, length = 30)
     private String name;
 
     @Column(nullable = false, length = 100)

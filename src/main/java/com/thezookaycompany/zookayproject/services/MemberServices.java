@@ -13,5 +13,6 @@ public interface MemberServices {
     Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember);
     List<Member> getAllMember();
     Member findMemberByPhoneNumber (String phoneNumber);
+    Member findMemberByEmail(String email);
 
 }

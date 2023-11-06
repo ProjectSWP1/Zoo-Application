@@ -19,7 +19,7 @@ public interface OrdersService {
     List<Orders> findOrdersByDescriptionContainingKeyword(String keyword);
 
     String createOrders (OrdersDto ordersDto);
-
+    List<Orders> findOrdersByEmail(String email);
     String createMemberOrders (OrdersDto ordersDto, Account account);
     String createGuestOrders (OrdersDto ordersDto);
 

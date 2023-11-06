@@ -13,7 +13,6 @@ import jakarta.persistence.ManyToOne;
 
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "feedScheduleId")
 public class FeedingSchedule {
 
     @Id
@@ -27,11 +26,11 @@ public class FeedingSchedule {
     @Column(nullable = false)
     private Integer quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "FoodID", nullable = false)
     private AnimalFood food;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "SpeciesID", nullable = false)
     private AnimalSpecies species;
 

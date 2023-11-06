@@ -29,9 +29,6 @@ public class Orders {
     @Column(nullable = false, length = 30)
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
-    // add quantity
-
-
     //@OneToOne(mappedBy = "order")
     @OneToOne(cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
@@ -42,7 +39,7 @@ public class Orders {
 //    private Set<Ticket> orderDetailTickets;
 
     // các vé trong 1 ngày là giống nhau và mỗi ngày mỗi khác => và 1 order chỉ có thể đặt 1 loại vé cho 1 ngày
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketId", nullable = true)
     private Ticket ticket;
 
@@ -60,6 +57,7 @@ public class Orders {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = true)
+    @JsonBackReference
     private Member member;
 
 
