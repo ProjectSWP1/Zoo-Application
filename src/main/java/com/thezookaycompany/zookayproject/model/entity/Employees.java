@@ -48,7 +48,7 @@ public class Employees {
 
 
     @Lob
-    @Column(name = "qualification", columnDefinition = "BLOB")
+    @Column(name = "qualification", columnDefinition = "LONGBLOB")
     private byte[] qualification;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -156,5 +156,9 @@ public class Employees {
     }
 
     public void setQualificationFormat(String jpg) {
+    }
+
+    public Boolean getActive() {
+        return active;
     }
 }

@@ -134,4 +134,14 @@ public class Animal {
 
     public void setImageFormat(String jpg) {
     }
+
+    public void setImageAnimalBase64(String imageBase64) {
+    }
+
+    public void setCage(String cage) {
+
+    }
+
+    public void setCageID(String cage) {
+    }
 }

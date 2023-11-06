@@ -9,11 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @CrossOrigin("*")
@@ -399,14 +401,15 @@ public class ManageController {
 
     //**Upload Qualification Image by id**//
 
-    @PostMapping("/{employeeId}/upload-qualification")
-    public ResponseEntity<String> uploadQualification(
-            @PathVariable int employeeId,
+    @PostMapping("/{empId}/upload-qualification")
+    public ResponseEntity<String> uploadQualificationImage(
+            @PathVariable Integer empId,
             @RequestParam("qualificationFile") MultipartFile qualificationFile,
             @RequestParam(required = false) String format) {
+
         try {
             byte[] imageBytes = qualificationFile.getBytes();
-            employeeService.uploadQualificationImage(employeeId, imageBytes, format);
+            employeeService.uploadQualificationImage(empId, imageBytes, format);
             HttpHeaders headers = new HttpHeaders();
 
             if (format != null && format.equalsIgnoreCase("jpg")) {
@@ -421,6 +424,9 @@ public class ManageController {
                     .body("Error uploading qualification image: " + e.getMessage());
         }
     }
+
+
+
 
 
     //**Get Qualification Image by id**//
@@ -510,5 +516,45 @@ public class ManageController {
                     .body("Error deleting animal image: " + e.getMessage());
         }
     }
+    //find animal by groups
+    @GetMapping("/byGroups/{groups}")
+    public List<Object[]> getAnimalImageAndNameByGroups(@PathVariable String groups) {
+        return animalService.findAnimalImageAndNameByGroups(groups);
+    }
+
+    //
+
+    @GetMapping("/animals-by-groups")
+    public ResponseEntity<List<Animal>> getListAnimalsImageAndNameByGroups(@RequestParam String groups) {
+        // Get all animals from the specified group.
+        List<Animal> animals = animalService.getAnimalsBySpeciesGroups(groups);
+
+        // Create a list to store the animal image and name.
+        List<Animal> animalList = new ArrayList<>();
+
+        for (Animal animal : animals) {
+            byte[] image = animal.getImageAnimal();
+            String name = animal.getName();
+            String cage = (animal.getCage() != null) ? animal.getCage().getCageID() : null;
+
+            // Convert the image to a base64 encoded string.
+            String imageBase64 = Base64.getEncoder().encodeToString(image);
+
+            // Add the animal image and name to the list.
+            Animal animalData = new Animal();
+            animalData.setName(name);
+            animalData.setImageAnimalBase64(imageBase64);
+            animalData.setCageID(cage); // Đảm bảo bạn sử dụng setter của trường CageID
+            animalList.add(animalData);
+        }
+
+        return new ResponseEntity<>(animalList, HttpStatus.OK);
+    }
+
+
+
+
+
+
 
 }
