@@ -1,5 +1,6 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -27,6 +28,7 @@ public class AnimalFood {
     private String description;
 
     @OneToMany(mappedBy = "food")
+    @JsonBackReference
     private Set<FeedingSchedule> foodFeedingSchedules;
 
     public Integer getFoodId() {

@@ -154,4 +154,7 @@ public class Employees {
     public void setQualification(byte[] qualification) {
         this.qualification = qualification;
     }
+
+    public void setQualificationFormat(String jpg) {
+    }
 }

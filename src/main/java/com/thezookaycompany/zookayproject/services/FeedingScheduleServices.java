@@ -11,6 +11,7 @@ public interface FeedingScheduleServices {
     String removeFeedingSchedule(Integer feedScheduleId);
     String updateFeedingSchedule(FeedingScheduleDto feedingScheduleDto);
     List<FeedingSchedule> listAllFeedingSchedule();
+    FeedingSchedule getFeedingScheduleByID(Integer id);
     List<FeedingSchedule> getFeedingSchedulesByFoodId(Integer foodId);
     List<FeedingSchedule> getFeedingSchedulesBySpeciesId(Integer speciesId);
     List<FeedingSchedule> getFeedingSchedulesByDescQuantity();

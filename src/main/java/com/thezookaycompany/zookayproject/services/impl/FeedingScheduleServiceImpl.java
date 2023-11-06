@@ -57,7 +57,7 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
     public String removeFeedingSchedule(Integer feedScheduleId) {
         if(feedingScheduleRepository.existsById(feedScheduleId)) {
             feedingScheduleRepository.deleteById(feedScheduleId);
-            return "Successfully deleted feeding schedule with ID "+ feedScheduleId;
+            return "Deleted feeding schedule with ID "+ feedScheduleId + " successfully.";
         }
         return "Not found feeding schedule ID " + feedScheduleId;
     }
@@ -83,14 +83,17 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
         if(feedingScheduleDto.getFeedScheduleId() != null) {
             if(feedingScheduleRepository.existsById(feedingScheduleDto.getFeedScheduleId())) {
                 FeedingSchedule feedingSchedule = new FeedingSchedule();
+                feedingSchedule.setFeedScheduleId(feedingScheduleDto.getFeedScheduleId());
                 feedingSchedule.setDescription(feedingScheduleDto.getDescription());
                 feedingSchedule.setQuantity(feedingScheduleDto.getQuantity());
                 feedingSchedule.setFood(animalFoodRepository.findById(feedingScheduleDto.getFoodId()).get());
                 feedingSchedule.setSpecies(animalSpeciesRepository.findById(feedingScheduleDto.getSpeciesId()).get());
 
                 feedingScheduleRepository.save(feedingSchedule);
+                return "Feeding Schedules updated successfully";
+            } else {
+                return "Feeding Schedule ID is not found";
             }
-            return "Feeding Schedule ID is not found";
         }
         return "Invalid input field: feeding schedule ID";
     }
@@ -98,6 +101,11 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
     @Override
     public List<FeedingSchedule> listAllFeedingSchedule() {
         return feedingScheduleRepository.findAll();
+    }
+
+    @Override
+    public FeedingSchedule getFeedingScheduleByID(Integer id) {
+        return feedingScheduleRepository.findById(id).orElse(null);
     }
 
     @Override

@@ -331,6 +331,11 @@ public class ManageController {
         return feedingScheduleServices.getFeedingSchedulesByFoodId(foodId);
     }
 
+    @GetMapping("/get-feedingSchedule/{feedingScheduleId}")
+    public FeedingSchedule getFeedingScheduleByID(@PathVariable Integer feedingScheduleId) {
+        return feedingScheduleServices.getFeedingScheduleByID(feedingScheduleId);
+    }
+
     @GetMapping("/get-feedingSchedule-by-speciesId/{speciesId}")
     public List<FeedingSchedule> getFeedingScheduleBySpeciesId(@PathVariable Integer speciesId) {
         return feedingScheduleServices.getFeedingSchedulesBySpeciesId(speciesId);
@@ -402,15 +407,26 @@ public class ManageController {
     @PostMapping("/{employeeId}/upload-qualification")
     public ResponseEntity<String> uploadQualification(
             @PathVariable int employeeId,
-            @RequestParam("qualificationFile") MultipartFile qualificationFile) {
+            @RequestParam("qualificationFile") MultipartFile qualificationFile,
+            @RequestParam(required = false) String format) {
         try {
-            employeeService.uploadQualificationImage(employeeId, qualificationFile);
+            byte[] imageBytes = qualificationFile.getBytes();
+            employeeService.uploadQualificationImage(employeeId, imageBytes, format);
+            HttpHeaders headers = new HttpHeaders();
+
+            if (format != null && format.equalsIgnoreCase("jpg")) {
+                headers.setContentType(MediaType.IMAGE_JPEG);
+            } else {
+                headers.setContentType(MediaType.IMAGE_PNG);
+            }
+
             return ResponseEntity.ok("Qualification image uploaded successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error uploading qualification image: " + e.getMessage());
         }
     }
+
 
     //**Get Qualification Image by id**//
     @GetMapping("/{employeeId}/qualification-image")
@@ -443,19 +459,6 @@ public class ManageController {
         }
     }
 
-    //**Update Qualification Image by id**//
-    @PutMapping("/{employeeId}/update-qualification")
-    public ResponseEntity<String> updateQualificationImage(
-            @PathVariable int employeeId,
-            @RequestParam("newQualificationFile") MultipartFile newQualificationFile) {
-        try {
-            employeeService.updateQualificationImage(employeeId, newQualificationFile);
-            return ResponseEntity.ok("Qualification image updated successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error updating qualification image: " + e.getMessage());
-        }
-    }
     //ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE//ANIMAL IMAGE
 
     //**Upload and  Update Animal Image by id**//

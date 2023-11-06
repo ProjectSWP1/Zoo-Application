@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
+import java.util.Date;
+
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "voucherId")
@@ -19,6 +21,12 @@ public class Voucher {
     private Ticket ticket;
     @Column(name = "Coupon", nullable = false)
     private double coupon;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "expirationDate")
+    private Date expirationDate;
 
     public double getCoupon() {
         return coupon;
@@ -44,4 +52,19 @@ public class Voucher {
         this.ticket = ticket;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }
