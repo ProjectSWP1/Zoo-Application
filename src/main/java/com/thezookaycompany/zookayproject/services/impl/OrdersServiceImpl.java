@@ -83,9 +83,7 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public List<Orders> findOrdersByEmail(String email) {
-        if(email ==null){
-            return null;
-        }
+
         return ordersRepository.findOrdersByEmail(email);
     }
 

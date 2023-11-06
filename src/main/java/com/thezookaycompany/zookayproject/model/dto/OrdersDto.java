@@ -33,7 +33,9 @@ public class OrdersDto {
         this.visitDate = visitDate;
     }
 
-
+    public OrdersDto(String email) {
+        this.email = email;
+    }
 
     public String getTicketId() {
         return ticketId;

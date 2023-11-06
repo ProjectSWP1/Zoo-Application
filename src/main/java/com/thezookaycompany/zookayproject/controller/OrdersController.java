@@ -71,9 +71,9 @@ public class OrdersController {
     }
     // ham tra ve list order find by email  desc sau đó chọn ra cái đầu tiên
     //note: make sure to /create-order successfully
-    @GetMapping("/find-order-by-email")
-        public Orders findLatestOrderByEmail (@RequestBody AccountDto accountDto){
-        List<Orders> list = ordersService.findOrdersByEmail(accountDto.getEmail());
+    @GetMapping("/find-order-by-email/{email}")
+        public Orders findLatestOrderByEmail (@PathVariable("email") String email){
+        List<Orders> list = ordersService.findOrdersByEmail(email);
         Orders orders = new Orders();
         if (list !=null && list.size()>0){
             orders =list.get(0);

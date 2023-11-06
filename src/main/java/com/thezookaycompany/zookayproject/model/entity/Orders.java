@@ -42,7 +42,7 @@ public class Orders {
 //    private Set<Ticket> orderDetailTickets;
 
     // các vé trong 1 ngày là giống nhau và mỗi ngày mỗi khác => và 1 order chỉ có thể đặt 1 loại vé cho 1 ngày
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ticketId", nullable = true)
     private Ticket ticket;
 
@@ -60,6 +60,7 @@ public class Orders {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "phoneNumber", nullable = true)
+    @JsonBackReference
     private Member member;
 
 
