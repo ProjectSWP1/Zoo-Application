@@ -82,6 +82,14 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
+    public List<Orders> findOrdersByEmail(String email) {
+        if(email ==null){
+            return null;
+        }
+        return ordersRepository.findOrdersByEmail(email);
+    }
+
+    @Override
     public String createMemberOrders(OrdersDto ordersDto, Account account) {
         Orders orders = new Orders();
         orders.setOrderDate(LocalDateTime.now());

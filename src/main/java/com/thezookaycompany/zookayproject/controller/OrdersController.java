@@ -1,6 +1,7 @@
 package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.exception.PaymentNotSuccessfulException;
+import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
@@ -67,6 +68,17 @@ public class OrdersController {
     @GetMapping("/{orderID}/orderDetails")
     public List<Map<String, Object>> listOrderDetailsTicket(@PathVariable Integer orderID) throws PaymentNotSuccessfulException {
         return ordersService.listOrderDetailsTicket(orderID);
+    }
+    // ham tra ve list order find by email  desc sau đó chọn ra cái đầu tiên
+    //note: make sure to /create-order successfully
+    @PostMapping("/find-order-by-email")
+        public Orders findLatestOrderByEmail (@RequestBody AccountDto accountDto){
+        List<Orders> list = ordersService.findOrdersByEmail(accountDto.getEmail());
+        Orders orders = new Orders();
+        if (list !=null && list.size()>0){
+            orders =list.get(0);
+        }
+        return orders;
     }
 
     //EXAMPLE CREATE ORDER // DÙNG CÁI NÀY
