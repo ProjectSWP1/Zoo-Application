@@ -95,7 +95,12 @@ public class OrdersServiceImpl implements OrdersService {
         // tinh totalOrderPrice
         // set member nguoi dat order
         orders.setEmail(account.getEmail());
-        orders.setMember(memberRepository.findMemberByEmail(account.getEmail()));
+        String email = account.getEmail();
+        Member member = memberRepository.findMemberByEmail(email);
+        if(member == null){
+            System.out.println("djtme thg hải lỗi r");
+        }
+      // orders.setMember();
 
         //******** gọi ticket ra cập nhật expDate save và truyền vào entity orders
         Ticket ticket = ticketRepository.findTicketByTicketId(ordersDto.getTicketId());

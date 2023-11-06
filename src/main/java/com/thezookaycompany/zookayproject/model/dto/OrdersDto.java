@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 public class OrdersDto {
+
+    private String intentId;
     private Integer orderID;
     private String description;
     
@@ -62,7 +64,18 @@ public class OrdersDto {
         this.totalOrder = totalOrder;
     }
 
+    public String getIntentId() {
+        return intentId;
+    }
 
+    public void setIntentId(String intentId) {
+        this.intentId = intentId;
+    }
+
+    public OrdersDto(String intentId, Integer orderID) {
+        this.intentId = intentId;
+        this.orderID = orderID;
+    }
 
     public OrdersDto(String description, LocalDateTime orderDate, String email, String phoneNumber) {
         this.description = description;
