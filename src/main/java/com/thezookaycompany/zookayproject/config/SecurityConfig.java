@@ -56,6 +56,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/forgot/**").permitAll();
                     auth.requestMatchers("/order/**").permitAll();
                     auth.requestMatchers("/staff/**").permitAll();
+                    auth.requestMatchers("/voucher/**").hasRole("Member");
                     auth.requestMatchers("/admin/**").hasRole("Admin");
                     auth.requestMatchers("/dashboard/**").hasRole("Admin");
                     auth.requestMatchers("/staff/**").hasAnyRole("Admin", "Staff");

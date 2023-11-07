@@ -10,6 +10,7 @@ public interface VoucherService {
     String updateVoucher(VoucherDto voucherDto);
     String deleteVoucher(String id);
     List<Voucher> getAllVoucher();
-
+    Voucher findVoucherByID(String voucherID);
+    String applyVoucherToTicket(String voucherID, String ticketID);
 
 }

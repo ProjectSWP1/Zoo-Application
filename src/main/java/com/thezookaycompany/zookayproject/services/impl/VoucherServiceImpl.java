@@ -77,4 +77,26 @@ public class VoucherServiceImpl implements VoucherService {
     public List<Voucher> getAllVoucher() {
         return voucherRepository.findAll();
     }
+
+    @Override
+    public Voucher findVoucherByID(String voucherID) {
+        return voucherRepository.findById(voucherID).orElse(null);
+    }
+
+    @Override
+    public String applyVoucherToTicket(String voucherId, String ticketId) {
+        if(voucherId == null || voucherId.isEmpty() || !voucherRepository.existsById(voucherId)) {
+            return "Voucher ID is not found";
+        }
+        if(ticketId == null || ticketId.isEmpty() || !ticketRepository.existsById(ticketId)) {
+            return "Ticket ID is not found";
+        }
+        Voucher voucher = voucherRepository.findById(voucherId).orElse(null);
+        if(voucher == null) {
+            return "Voucher is not found";
+        }
+        voucher.setTicket(ticketRepository.getReferenceById(ticketId));
+
+        return "This voucher has been applied successfully";
+    }
 }
