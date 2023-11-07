@@ -15,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -224,8 +221,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void uploadQualificationImage(int employeeId, byte[] imageBytes, String format) throws IOException {
-        Employees employee = employeesRepository.findById(employeeId)
+    public void uploadQualificationImage(Integer empId, byte[] imageBytes, String format) throws IOException {
+        Employees employee = employeesRepository.findById(empId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
 
         if (imageBytes != null && imageBytes.length > 0) {
@@ -239,8 +236,14 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
 
             employeesRepository.save(employee);
+        } else {
+            // Handle the case where imageBytes is null or empty
+            throw new IllegalArgumentException("Image is missing or empty.");
         }
     }
+
+
+
 
 
 
@@ -278,6 +281,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public long countEmployees() {
         return employeesRepository.count();
+    }
+
+    @Override
+    public Optional<Employees> findEmployeeById(Integer empId) {
+        return employeesRepository.findById(empId);
     }
 
     private boolean isValid(EmployeesDto employeesDto) {

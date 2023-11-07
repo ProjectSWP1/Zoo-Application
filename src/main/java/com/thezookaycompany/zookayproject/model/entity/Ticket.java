@@ -26,9 +26,9 @@ public class Ticket {
     private Double ticketPrice;
 
     //user book ngày tham quan Zoo
-    @Column(nullable = true)
-    @Temporal(TemporalType.DATE)
-    private Date visitDate;
+        @Column(nullable = true)
+        @Temporal(TemporalType.DATE)
+        private Date visitDate;
 
     @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
     @JsonBackReference

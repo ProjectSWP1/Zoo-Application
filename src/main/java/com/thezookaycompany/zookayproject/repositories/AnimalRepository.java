@@ -38,5 +38,11 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
     @Query("SELECT a FROM Animal a ORDER BY a.age DESC")
     List<Animal> findAllByAgeDesc();
 
+    @Query("SELECT a.imageAnimal, a.name FROM Animal a WHERE a.species.groups = :groups")
+    List<Object[]> findAnimalImageAndNameByGroups(String groups);
+
+    @Query("SELECT a FROM Animal a WHERE a.species.groups = :groups")
+    List<Animal> findAnimalsBySpeciesGroups(String groups);
+
 
 }

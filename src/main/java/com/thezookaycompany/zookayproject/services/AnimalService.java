@@ -39,4 +39,7 @@ public interface AnimalService {
     long countAnimals();
     long countAnimalSpecies();
 
+    List<Object[]> findAnimalImageAndNameByGroups(String groups);
+    List<Animal> getAnimalsBySpeciesGroups(String groups);
+
 }

@@ -331,4 +331,14 @@ public class AnimalServiceImpl implements AnimalService {
         return animalSpeciesRepository.count();
     }
 
+    @Override
+    public List<Object[]> findAnimalImageAndNameByGroups(String groups) {
+        return animalRepository.findAnimalImageAndNameByGroups(groups);
+    }
+
+    @Override
+    public List<Animal> getAnimalsBySpeciesGroups(String groups) {
+        return animalRepository.findAnimalsBySpeciesGroups(groups);
+    }
+
 }

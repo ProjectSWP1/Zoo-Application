@@ -1,11 +1,13 @@
 package com.thezookaycompany.zookayproject.services;
 
 import com.thezookaycompany.zookayproject.model.dto.EmployeesDto;
+import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeService {
     // Lấy toàn bộ Employee (kể cả đã nghỉ việc)
@@ -31,10 +33,13 @@ public interface EmployeeService {
     // Update employees
     String updateEmployees(EmployeesDto employeesDto);
 
-    void uploadQualificationImage(int employeeId, byte[] imageBytes, String format) throws IOException;
+    void uploadQualificationImage(Integer empId, byte[] imageBytes, String format) throws IOException;
+
     byte[] getQualificationImageById(int employeeId);
     void deleteQualificationImage(int employeeId);
     void updateQualificationImage(int employeeId, MultipartFile newQualificationFile) throws IOException;
 
     long countEmployees();
+
+    Optional<Employees> findEmployeeById(Integer empId);
 }
