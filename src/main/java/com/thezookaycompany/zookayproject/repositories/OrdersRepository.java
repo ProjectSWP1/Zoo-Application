@@ -29,6 +29,9 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
      // trả về tất cả order theo member
      @Query("SELECT o FROM Orders o WHERE o.email = :email ORDER BY o.orderID DESC")
      List<Orders> findOrdersByEmail(@Param("email") String email);
+
+     @Query("SELECT o FROM Orders o WHERE o.email = :email ORDER BY o.orderID asc ")
+     List<Orders> findOrdersByEmailAsc(@Param("email") String email);
      @Query("SELECT o FROM Orders o where o.member.email = : email")
      List<Orders> findOrdersByMember_Email(@Param("email") String email);
      @Query("SELECT o FROM Orders o WHERE o.orderDate BETWEEN :startOfDay AND :endOfDay AND o.orderPayments.isSuccess = :isSuccess")

@@ -18,6 +18,7 @@ public interface OrdersService {
     List<Orders> findAllByOrderIDDesc();
     List<Orders> findOrdersByDescriptionContainingKeyword(String keyword);
 
+    List<Orders> findOrdersByemailAsc(String email);
     String createOrders (OrdersDto ordersDto);
     List<Orders> findOrdersByEmail(String email);
     String createMemberOrders (OrdersDto ordersDto, Account account);

@@ -149,6 +149,12 @@ public class OrdersServiceImpl implements OrdersService {
     public List<Orders> findOrdersByDescriptionContainingKeyword(String keyword) {
         return ordersRepository.findOrdersByDescriptionContainingKeyword(keyword);
     }
+
+    @Override
+    public List<Orders> findOrdersByemailAsc(String email) {
+        return ordersRepository.findOrdersByEmailAsc(email);
+    }
+
     @Transactional()
     public List<OrdersDto> getAllOrdersDetail() {
 

@@ -5,8 +5,10 @@ import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
+import com.thezookaycompany.zookayproject.model.entity.Payment;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.OrdersService;
+import com.thezookaycompany.zookayproject.services.PaymentService;
 import com.thezookaycompany.zookayproject.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +25,8 @@ import java.util.Optional;
 public class OrdersController {
     private final String SUCCESS_RESPONSE = "success";
 
+    @Autowired
+    private PaymentService paymentService;
     @Autowired
     private TokenService tokenService;
     @Autowired
@@ -82,7 +86,7 @@ public class OrdersController {
     }
     @GetMapping("/find-orders-by-email/{email}")
     public List<Orders> findAllOrdersByEmail (@PathVariable("email") String email){
-        List<Orders> list = ordersService.findOrdersByEmail(email);
+        List<Orders> list = ordersService.findOrdersByemailAsc(email);
         if (list !=null && list.size()>0){
             return list;
         }
@@ -91,6 +95,10 @@ public class OrdersController {
         }
     }
 
+    @GetMapping("/test-payment/{orderID}")
+    public Payment findPaymentByOrderId (@PathVariable("orderID") String orderID){
+       return paymentService.findPaymentByOrderID(orderID);
+    }
     //EXAMPLE CREATE ORDER // DÙNG CÁI NÀY
     @PostMapping("/create-order")
     public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto,@RequestHeader("Authorization") String bearerJwt) {

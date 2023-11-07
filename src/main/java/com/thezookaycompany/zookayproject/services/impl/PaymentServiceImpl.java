@@ -82,18 +82,25 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setSuccess(true);
             payment.setOrder(orders);
             paymentRepository.save(payment);
-          //  orders.setOrderPayments(payment);
-           // ordersRepository.save(orders);
+            orders.setOrderPayments(payment);
+            ordersRepository.save(orders);
         }
         else {
             payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
-           // orders.setOrderPayments(payment);
-           // ordersRepository.save(orders);
+            orders.setOrderPayments(payment);
+            ordersRepository.save(orders);
             return "Purchased failed";
         }
         return "Purchased successfully";
+    }
+
+    @Override
+    public Payment findPaymentByOrderID(String orderId) {
+        Payment payment = paymentRepository.findPaymentByOrder_OrderID(Integer.parseInt(orderId)).orElse(null);
+            //    paymentRepository.findPaymentByOrder_OrderID();
+                return payment;
     }
 
     @Override

@@ -8,16 +8,9 @@ import com.thezookaycompany.zookayproject.services.EmailService;
 import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.security.auth.login.AccountNotFoundException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/forgot")

@@ -1,14 +1,13 @@
 package com.thezookaycompany.zookayproject.services.impl;
 
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
-import com.thezookaycompany.zookayproject.repositories.AccountRepository;
 import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
+import com.thezookaycompany.zookayproject.utils.DateFormatToSimpleDateFormat;
 import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -18,10 +17,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-import javax.security.auth.login.AccountNotFoundException;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -94,14 +89,15 @@ Sincerely,
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(orders.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Ticket Purchase Confirmation");
+        String visitDate = DateFormatToSimpleDateFormat.formatDateToSimpleDate(orders.getTicket().getVisitDate());
 
         String mailContent = "Hello "+name+"<br/>" +
                 "Thank you for purchasing tickets to visit our zoo. Below are the details of your order:<br/>";
         mailContent += "<p><b> Order ID: </b>"+orders.getOrderID()+"</p>";
         mailContent += "<p><b> Ticket ID: </b>"+orders.getTicket().getTicketId()+"</p>";
         mailContent += "<p><b> Quantity: </b>"+orders.getQuantity()+"</p>";
-        mailContent += "<p><b> Visit Date: </b>"+orders.getTicket().getVisitDate()+"</p>";
-        mailContent += "<p><b> Total order: </b>"+orders.getTicket().getTicketPrice() * orders.getQuantity()+"</p>";
+        mailContent += "<p><b> Visit Date: </b>"+visitDate+"</p>";
+        mailContent += "<p><b> Total order: </b>"+orders.getTicket().getTicketPrice() * orders.getQuantity()+" VND</p>";
         mailContent += "<p><b> Location: </b>Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi Minh City </p>";
         mailContent +="\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.\n" +
                 "<br/>" +
@@ -109,7 +105,8 @@ Sincerely,
                 "<br/>" +
                 "Sincerely,<br/>" +
                 "ZOOKAY <br/>";
-        mailContent += "<hr> <img src='cid:icon'/><br/>";
+        mailContent += "<hr> <img src='cid:icon' style='max-width: 100px; display: block; margin: 0 auto;'/><br/>";
+
 
         mimeMessageHelper.setText(mailContent,true);
         ClassPathResource resource = new ClassPathResource("zookay_icon.png");

@@ -31,7 +31,7 @@ public class Orders {
     private String email; // nếu phone number không có sẽ là khách hàng chưa đăng ký còn ko lấy từ Member
 
     //@OneToOne(mappedBy = "order")
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "order")
     @PrimaryKeyJoinColumn
     private Payment orderPayments; // tạo tạm thời trước rồi tạo payment để bắt đầu giao dịch
 
