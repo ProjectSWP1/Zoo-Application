@@ -167,6 +167,12 @@ public class UserController {
         emailService.sendAfterPaymentEmail(ordersDto);
         return ResponseEntity.ok("ok");
     }
+    @PutMapping("/cancel-payment/{orderID}")
+    public ResponseEntity<String> cancelPayment(@PathVariable("orderID")String orderId) {
+
+        String message= paymentService.handlePaymentFailed(orderId);
+        return ResponseEntity.ok(message);
+    }
 
     @PutMapping("/confirm-payment")
     public ResponseEntity<String> confirmPayment (@RequestBody OrdersDto ordersDto) throws MessagingException, StripeException {

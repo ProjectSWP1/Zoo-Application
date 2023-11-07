@@ -10,7 +10,7 @@ public interface PaymentService {
     PaymentResponse createPaymentIntent (OrdersDto ordersDto) throws StripeException;
     String confirmPayment (OrdersDto ordersDto, String intendId) throws StripeException;
 
-    void handlePaymentFailed(OrdersDto ordersDto);
+    String handlePaymentFailed(String orderId);
     boolean checkPaymentStatus (OrdersDto ordersDto);
 
 }

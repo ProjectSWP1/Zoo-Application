@@ -97,17 +97,18 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void handlePaymentFailed(OrdersDto ordersDto) {
-        Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
+    public String handlePaymentFailed(String orderId) {
+        Orders orders = ordersRepository.findOrdersByOrderID(Integer.parseInt(orderId));
         if(orders!= null) {
             Payment payment = new Payment();
             orders.setDescription(orders.getDescription().concat("PENDIND PAYMENT - PURCHASED CANCELLED"));
             payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
-            orders.setOrderPayments(payment);
-            ordersRepository.save(orders);
+          //  orders.setOrderPayments(payment);
+           // ordersRepository.save(orders);
         }
+        return "Cancelled Payment - Purchased failed";
     }
 
     @Override
