@@ -97,7 +97,7 @@ Sincerely,
         mailContent += "<p><b> Ticket ID: </b>"+orders.getTicket().getTicketId()+"</p>";
         mailContent += "<p><b> Quantity: </b>"+orders.getQuantity()+"</p>";
         mailContent += "<p><b> Visit Date: </b>"+visitDate+"</p>";
-        mailContent += "<p><b> Total order: </b>"+orders.getTicket().getTicketPrice() * orders.getQuantity()+" VND</p>";
+        mailContent += "<p><b> Total price paid: </b>"+orders.getTicket().getTicketPrice() * orders.getQuantity()+" VND</p>";
         mailContent += "<p><b> Location: </b>Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi Minh City </p>";
         mailContent +="\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use it to verify and validate your entry.\n" +
                 "<br/>" +
