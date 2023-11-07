@@ -101,7 +101,11 @@ public class PaymentServiceImpl implements PaymentService {
         Orders orders = ordersRepository.findOrdersByOrderID(Integer.parseInt(orderId));
         if(orders!= null) {
             Payment payment = new Payment();
-            orders.setDescription(orders.getDescription().concat("PENDIND PAYMENT - PURCHASED CANCELLED"));
+            if(orders.getDescription() == null && orders.getDescription().isEmpty()){
+                orders.setDescription("PENDIND PAYMENT - PURCHASED CANCELLED");
+            } else {
+                orders.setDescription(orders.getDescription().concat(" PENDIND PAYMENT - PURCHASED CANCELLED"));
+            }
             payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
