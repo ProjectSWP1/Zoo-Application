@@ -80,6 +80,16 @@ public class OrdersController {
         }
         return orders;
     }
+    @GetMapping("/find-orders-by-email/{email}")
+    public List<Orders> findAllOrdersByEmail (@PathVariable("email") String email){
+        List<Orders> list = ordersService.findOrdersByEmail(email);
+        if (list !=null && list.size()>0){
+            return list;
+        }
+        else {
+            return null;
+        }
+    }
 
     //EXAMPLE CREATE ORDER // DÙNG CÁI NÀY
     @PostMapping("/create-order")

@@ -89,28 +89,31 @@ Sincerely,
     @Override
     public void sendAfterPaymentEmail(OrdersDto ordersDto) throws MessagingException {
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
+        String name = orders.getEmail().trim().split("@")[0];
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(orders.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Ticket Purchase Confirmation");
 
-        String mailContent = "Hello [NAME]<br/>" +
-                "Thank you for purchasing tickets to visit our zoo. Below are the details of your tickets:<br/>";
+        String mailContent = "Hello "+name+"<br/>" +
+                "Thank you for purchasing tickets to visit our zoo. Below are the details of your order:<br/>";
+        mailContent += "<p><b> Order ID: </b>"+orders.getOrderID()+"</p>";
         mailContent += "<p><b> Ticket ID: </b>"+orders.getTicket().getTicketId()+"</p>";
+        mailContent += "<p><b> Quantity: </b>"+orders.getQuantity()+"</p>";
         mailContent += "<p><b> Visit Date: </b>"+orders.getTicket().getVisitDate()+"</p>";
+        mailContent += "<p><b> Total order: </b>"+orders.getTicket().getTicketPrice() * orders.getQuantity()+"</p>";
         mailContent += "<p><b> Location: </b>Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi Minh City </p>";
-        mailContent += "<hr> <img src='cid:qr'/><br/>";
         mailContent +="\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.\n" +
                 "<br/>" +
                 "We look forward to welcoming you to our zoo and hope you have an enjoyable experience.<br/>" +
                 "<br/>" +
                 "Sincerely,<br/>" +
-                "[Your Name]<br/>" +
-                "ZOOKAY";
+                "ZOOKAY <br/>";
+        mailContent += "<hr> <img src='cid:icon'/><br/>";
 
         mimeMessageHelper.setText(mailContent,true);
-        ClassPathResource resource = new ClassPathResource("qr.png");
-        mimeMessageHelper.addInline("qr",resource);
+        ClassPathResource resource = new ClassPathResource("zookay_icon.png");
+        mimeMessageHelper.addInline("icon",resource);
         javaMailSender.send(mimeMessage);
     }
 
