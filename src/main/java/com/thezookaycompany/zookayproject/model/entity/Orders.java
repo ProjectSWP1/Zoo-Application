@@ -20,7 +20,7 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderID;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = true, length = 200)
     private String description;
 
     @Column(nullable = false)

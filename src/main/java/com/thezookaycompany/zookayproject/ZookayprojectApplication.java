@@ -30,12 +30,13 @@ public class ZookayprojectApplication {
 	CommandLineRunner run(RoleRepository roleRepository, AccountRepository accountRepository, MemberRepository memberRepository, PasswordEncoder passwordEncoder, AccountService accountService) {
 		return args -> {
 
-			if(roleRepository.existsById("AD")) {
+			if(!roleRepository.existsById("AD")) {
 
 				Role adminRole = roleRepository.save(new Role("AD", "Admin"));
 				roleRepository.save(new Role("MB", "Member"));
 				roleRepository.save(new Role("ZT", "Trainer"));
 				roleRepository.save(new Role("ST", "Staff"));
+
 			}
 
 			// Bỏ vào comment nếu như đã xong
@@ -55,7 +56,7 @@ public class ZookayprojectApplication {
 
 			AccountDto accountDto = new AccountDto("employee1@zookay.com", "employee1", "123123", "0909820888");
 			MemberDto memberDto = new MemberDto("0909820888", "Thanh Pho Ho Chi Minh", 24, "employee1@zookay.com", "Male", "Nguyen Van Tu", "08/12/1994");
-			accountService.admin_addAccount(accountDto, memberDto, "ZT", "A0001");
+			accountService.admin_addAccount(accountDto, memberDto, "ZT", "1");
 
 			// Tạo account cho Staff
 			AccountDto accountDto2 = new AccountDto("employee2@zookay.com", "employee2", "123123", "0909820444");
