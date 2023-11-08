@@ -13,10 +13,13 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -27,6 +30,7 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender javaMailSender;
     @Autowired
     private AccountService accountService;
+    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/";
     @Override
     public void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException {
 
@@ -109,8 +113,10 @@ Sincerely,
 
 
         mimeMessageHelper.setText(mailContent,true);
-        ClassPathResource resource = new ClassPathResource("zookay_icon.png");
-        mimeMessageHelper.addInline("icon",resource);
+
+        FileSystemResource fileSystemResource =
+                new FileSystemResource(new File(QR_CODE_IMAGE_PATH+orders.getOrderID()+"-QRCODE.png"));
+        mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
         javaMailSender.send(mimeMessage);
     }
 
