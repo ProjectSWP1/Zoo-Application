@@ -10,7 +10,7 @@ import java.util.List;
 public interface MemberServices {
     void addMember(AccountDto accountDto, MemberDto memberDto);
 
-    Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember);
+    MemberDto updateMemberByPhoneNumber(String phoneNumber, Member updatedMember);
     List<Member> getAllMember();
     Member findMemberByPhoneNumber (String phoneNumber);
     Member findMemberByEmail(String email);

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Set;
 
 @Service
 
@@ -40,7 +41,7 @@ public class VoucherServiceImpl implements VoucherService {
         Voucher newVoucher = new Voucher();
         Orders order1 = ordersRepository.getReferenceById(voucherDto.getOrderId());
         newVoucher.setVoucherId(voucherDto.getVoucherId());
-        newVoucher.setOrder(order1);
+        newVoucher.setOrdersVoucher((List<Orders>) order1);
         newVoucher.setCoupon(voucherDto.getCoupon());
         newVoucher.setDescription(voucherDto.getDescription());
         newVoucher.setExpirationDate(voucherDto.getExpirationDate());
@@ -58,7 +59,7 @@ public class VoucherServiceImpl implements VoucherService {
         if (existingVoucher != null){
             //update
         existingVoucher.setVoucherId(voucherDto.getVoucherId());
-        existingVoucher.setOrder(order1);
+        existingVoucher.setOrdersVoucher((List<Orders>) order1);
         existingVoucher.setCoupon(voucherDto.getCoupon());
         existingVoucher.setDescription(voucherDto.getDescription());
         existingVoucher.setExpirationDate(voucherDto.getExpirationDate());

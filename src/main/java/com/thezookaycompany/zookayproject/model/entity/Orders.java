@@ -61,8 +61,8 @@ public class Orders {
     @JsonBackReference
     private Member member;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name = "voucherId")
     private Voucher orderVoucher;
 
 

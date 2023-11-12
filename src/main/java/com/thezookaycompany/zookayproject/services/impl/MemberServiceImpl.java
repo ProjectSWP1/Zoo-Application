@@ -79,20 +79,36 @@ public class MemberServiceImpl implements MemberServices {
 
 
     @Override
-    public Member updateMemberByPhoneNumber(String phoneNumber, Member updatedMember) {
+    public MemberDto updateMemberByPhoneNumber(String phoneNumber, Member updatedMember) {
         Member existingMember = findMemberByPhoneNumber(phoneNumber);
         if (existingMember != null) {
-            // Cập nhật thông tin của thành viên có số điện thoại cụ thể
+            // Update only non-null fields
             existingMember.setName(updatedMember.getName());
             existingMember.setEmail(updatedMember.getEmail());
             existingMember.setAddress(updatedMember.getAddress());
-            existingMember.setAge(0);
             existingMember.setDob(updatedMember.getDob());
             existingMember.setGender(updatedMember.getGender());
-            // Lưu thông tin cập nhật vào cơ sở dữ liệu
-            return memberRepository.save(existingMember);
+
+            // Save the updated member
+            Member savedMember = memberRepository.save(existingMember);
+
+            // Convert the updated member to DTO and return
+            return convertMemberToDto(savedMember);
         }
-        return null; // Trả về null nếu không tìm thấy thành viên
+        return null; // Return null if the member with the given phoneNumber is not found
+    }
+
+    // Helper method to convert Member to MemberDto
+    private MemberDto convertMemberToDto(Member member) {
+        return new MemberDto(
+                member.getPhoneNumber(),
+                member.getAddress(),
+                member.getAge(),  // Assuming you want to include age in the DTO
+                member.getEmail(),
+                member.getGender(),
+                member.getName(),
+                member.getDob().toString() // Convert Date to String for DTO
+        );
     }
 
 

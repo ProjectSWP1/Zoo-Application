@@ -1,11 +1,14 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -16,9 +19,11 @@ public class Voucher {
     @Column(name = "VoucherID", nullable = true, updatable = false, length = 5) // voucherID để null
     private String voucherId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "OrderID", nullable = false)
-    private Orders order;
+    @OneToMany(mappedBy = "orderVoucher")
+    @JsonBackReference
+    private List<Orders> ordersVoucher;
+
+
     @Column(name = "Coupon", nullable = false)
     private double coupon;
 
@@ -44,12 +49,12 @@ public class Voucher {
         this.voucherId = voucherId;
     }
 
-    public Orders getOrder() {
-        return order;
+    public List<Orders> getOrdersVoucher() {
+        return ordersVoucher;
     }
 
-    public void setOrder(Orders order) {
-        this.order = order;
+    public void setOrdersVoucher(List<Orders> ordersVoucher) {
+        this.ordersVoucher = ordersVoucher;
     }
 
     public String getDescription() {
