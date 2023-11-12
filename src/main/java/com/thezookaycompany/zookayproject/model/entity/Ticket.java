@@ -30,9 +30,7 @@ public class Ticket {
         @Temporal(TemporalType.DATE)
         private Date visitDate;
 
-    @OneToOne(mappedBy = "ticket", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private Voucher ticketVouchers;
+
 
     @Column(name = "description")
     private String description;
@@ -60,24 +58,9 @@ public class Ticket {
     public void setTicketId(final String ticketId) {
         this.ticketId = ticketId;
     }
-
-    public Double getTicketPrice() {
-        if (ticketVouchers != null && ticketVouchers.getCoupon() != 0) {
-            return ticketPrice * ticketVouchers.getCoupon();
-        } else {
-            return ticketPrice;
-        }
-    }
+    
     public void setTicketPrice(final Double ticketPrice) {
         this.ticketPrice = ticketPrice;
-    }
-
-    public Voucher getTicketVouchers() {
-        return ticketVouchers;
-    }
-
-    public void setTicketVouchers(final Voucher ticketVouchers) {
-        this.ticketVouchers = ticketVouchers;
     }
 
     public Set<Orders> getTicketInOrders() {
@@ -92,5 +75,9 @@ public class Ticket {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Double getTicketPrice() {
+        return ticketPrice;
     }
 }

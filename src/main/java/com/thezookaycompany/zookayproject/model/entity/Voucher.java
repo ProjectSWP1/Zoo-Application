@@ -17,8 +17,8 @@ public class Voucher {
     private String voucherId;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "TicketID", nullable = false)
-    private Ticket ticket;
+    @JoinColumn(name = "OrderID", nullable = false)
+    private Orders order;
     @Column(name = "Coupon", nullable = false)
     private double coupon;
 
@@ -44,12 +44,12 @@ public class Voucher {
         this.voucherId = voucherId;
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public Orders getOrder() {
+        return order;
     }
 
-    public void setTicket(final Ticket ticket) {
-        this.ticket = ticket;
+    public void setOrder(Orders order) {
+        this.order = order;
     }
 
     public String getDescription() {

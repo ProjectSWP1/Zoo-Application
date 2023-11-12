@@ -61,6 +61,10 @@ public class Orders {
     @JsonBackReference
     private Member member;
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private Voucher orderVoucher;
+
 
     public Ticket getTicket() {
         return ticket;
@@ -115,5 +119,13 @@ public class Orders {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    public Voucher getOrderVoucher() {
+        return orderVoucher;
+    }
+
+    public void setOrderVoucher(Voucher orderVoucher) {
+        this.orderVoucher = orderVoucher;
     }
 }

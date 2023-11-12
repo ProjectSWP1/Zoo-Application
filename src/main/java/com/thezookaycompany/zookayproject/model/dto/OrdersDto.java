@@ -27,6 +27,10 @@ public class OrdersDto {
 
     private boolean isSuccess;
 
+    private String voucherId;
+
+
+
     public Date getVisitDate() {
         return visitDate;
     }
@@ -153,5 +157,14 @@ public class OrdersDto {
     public void setTicketPrice(Double ticketPrice) {
         this.ticketPrice = ticketPrice;
     }
+
+    public String getVoucherId() {
+        return voucherId;
+    }
+
+    public void setVoucherId(String voucherId) {
+        this.voucherId = voucherId;
+    }
+
 }
 

@@ -4,8 +4,10 @@ import com.thezookaycompany.zookayproject.exception.InvalidAnimalException;
 import com.thezookaycompany.zookayproject.exception.InvalidVoucherException;
 import com.thezookaycompany.zookayproject.model.dto.VoucherDto;
 import com.thezookaycompany.zookayproject.model.entity.Animal;
+import com.thezookaycompany.zookayproject.model.entity.Orders;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
 import com.thezookaycompany.zookayproject.model.entity.Voucher;
+import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.repositories.VoucherRepository;
 import com.thezookaycompany.zookayproject.services.VoucherService;
@@ -19,9 +21,10 @@ import java.util.List;
 
 public class VoucherServiceImpl implements VoucherService {
     @Autowired
-    private TicketRepository ticketRepository;
+    private OrdersRepository ordersRepository;
     @Autowired
     private VoucherRepository voucherRepository;
+
 
     @Override
     public String createVoucher(VoucherDto voucherDto) {
@@ -31,13 +34,13 @@ public class VoucherServiceImpl implements VoucherService {
         if(voucherRepository.existsById(voucherDto.getVoucherId())) {
             return "This voucher id has already existed";
         }
-        if(!ticketRepository.existsById(voucherDto.getTicketId())) {
-            return "This ticket id does not existed";
+        if(!ordersRepository.existsById(voucherDto.getOrderId())) {
+            return "This order id does not existed";
         }
         Voucher newVoucher = new Voucher();
-        Ticket ticket1 = ticketRepository.getReferenceById(voucherDto.getTicketId());
+        Orders order1 = ordersRepository.getReferenceById(voucherDto.getOrderId());
         newVoucher.setVoucherId(voucherDto.getVoucherId());
-        newVoucher.setTicket(ticket1);
+        newVoucher.setOrder(order1);
         newVoucher.setCoupon(voucherDto.getCoupon());
         newVoucher.setDescription(voucherDto.getDescription());
         newVoucher.setExpirationDate(voucherDto.getExpirationDate());
@@ -51,11 +54,11 @@ public class VoucherServiceImpl implements VoucherService {
             return "Voucher ID field is empty or the length is greater than 5 characters";
         }
         Voucher existingVoucher = voucherRepository.findById(voucherDto.getVoucherId()).orElse(null);
-        Ticket ticket1 = ticketRepository.getReferenceById(voucherDto.getTicketId());
+        Orders order1 = ordersRepository.getReferenceById(voucherDto.getOrderId());
         if (existingVoucher != null){
             //update
         existingVoucher.setVoucherId(voucherDto.getVoucherId());
-        existingVoucher.setTicket(ticket1);
+        existingVoucher.setOrder(order1);
         existingVoucher.setCoupon(voucherDto.getCoupon());
         existingVoucher.setDescription(voucherDto.getDescription());
         existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
@@ -84,19 +87,9 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
-    public String applyVoucherToTicket(String voucherId, String ticketId) {
-        if(voucherId == null || voucherId.isEmpty() || !voucherRepository.existsById(voucherId)) {
-            return "Voucher ID is not found";
-        }
-        if(ticketId == null || ticketId.isEmpty() || !ticketRepository.existsById(ticketId)) {
-            return "Ticket ID is not found";
-        }
-        Voucher voucher = voucherRepository.findById(voucherId).orElse(null);
-        if(voucher == null) {
-            return "Voucher is not found";
-        }
-        voucher.setTicket(ticketRepository.getReferenceById(ticketId));
-
-        return "This voucher has been applied successfully";
+    public String applyVoucherToTicket(String voucherID, String ticketID) {
+        return null;
     }
+
+
 }

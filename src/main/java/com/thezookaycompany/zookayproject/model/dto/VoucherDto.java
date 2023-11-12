@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class VoucherDto {
     private String voucherId;
-    private String ticketId;
+    private Integer orderId;
     public double coupon;
 
     public String description;
@@ -14,15 +14,12 @@ public class VoucherDto {
     public VoucherDto() {
     }
 
-    public VoucherDto(String voucherId, String ticketId) {
-        this.voucherId = voucherId;
-        this.ticketId = ticketId;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public VoucherDto(String voucherId, String ticketId, double coupon) {
-        this.voucherId = voucherId;
-        this.ticketId = ticketId;
-        this.coupon = coupon;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public double getCoupon() {
@@ -41,13 +38,6 @@ public class VoucherDto {
         this.voucherId = voucherId;
     }
 
-    public String getTicketId() {
-        return ticketId;
-    }
-
-    public void setTicketId(String ticketId) {
-        this.ticketId = ticketId;
-    }
 
     public String getDescription() {
         return description;

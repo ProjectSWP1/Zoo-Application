@@ -258,6 +258,7 @@ public class OrdersServiceImpl implements OrdersService {
             ordersDto.setEmail(order.getEmail());
             ordersDto.setTicketQuantity(order.getQuantity());
             ordersDto.setTicketPrice(order.getTicket().getTicketPrice());
+            ordersDto.setVoucherId(order.getOrderVoucher().getVoucherId());
 
 
 
@@ -272,7 +273,7 @@ public class OrdersServiceImpl implements OrdersService {
                 ordersDto.setTicketId(order.getTicket().getTicketId());
 
                 // Calculate totalOrder as quantity * ticket price
-                double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice();
+                double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice() * order.getOrderVoucher().getCoupon();
                 ordersDto.setTotalOrder(totalOrder);
             }
 
@@ -302,6 +303,7 @@ public class OrdersServiceImpl implements OrdersService {
         ordersDto.setEmail(order.getEmail());
         ordersDto.setTicketQuantity(order.getQuantity());
         ordersDto.setTicketPrice(order.getTicket().getTicketPrice());
+        ordersDto.setVoucherId(order.getOrderVoucher().getVoucherId());
 
         // Get phoneNumber from the associated Member
         if (order.getMember() != null) {
@@ -314,7 +316,7 @@ public class OrdersServiceImpl implements OrdersService {
             ordersDto.setTicketId(order.getTicket().getTicketId());
 
             // Calculate totalOrder as quantity * ticket price
-            double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice();
+            double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice() * order.getOrderVoucher().getCoupon();
             ordersDto.setTotalOrder(totalOrder);
         }
 
