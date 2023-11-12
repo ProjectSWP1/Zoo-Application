@@ -5,6 +5,7 @@ import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
+import com.thezookaycompany.zookayproject.utils.TicketQRCodeGenerator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,13 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
+    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/";
+
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private OrdersService ordersService;
 
     @Autowired
     private AccountService accountService;
@@ -174,6 +180,7 @@ public class UserController {
         return ResponseEntity.ok(message);
     }
 
+
     @PutMapping("/confirm-payment")
     public ResponseEntity<String> confirmPayment (@RequestBody OrdersDto ordersDto) throws MessagingException, StripeException {
         String message= "";
@@ -183,8 +190,8 @@ public class UserController {
                 if(!paymentService.checkPaymentStatus(ordersDto)){
                     message= "Purchased failed. Please try again later";
                 } else {
-                    System.out.println();
                     // gui mail neu da pthanh toan
+                    Orders orders = ordersService.findOrdersByOrderID(ordersDto.getOrderID());
                     emailService.sendAfterPaymentEmail(ordersDto);
                 }
 
