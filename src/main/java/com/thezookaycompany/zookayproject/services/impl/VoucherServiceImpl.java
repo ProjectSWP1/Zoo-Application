@@ -1,20 +1,15 @@
 package com.thezookaycompany.zookayproject.services.impl;
 
-import com.thezookaycompany.zookayproject.exception.InvalidAnimalException;
 import com.thezookaycompany.zookayproject.exception.InvalidVoucherException;
 import com.thezookaycompany.zookayproject.model.dto.VoucherDto;
-import com.thezookaycompany.zookayproject.model.entity.Animal;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
-import com.thezookaycompany.zookayproject.model.entity.Ticket;
 import com.thezookaycompany.zookayproject.model.entity.Voucher;
 import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
-import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.repositories.VoucherRepository;
 import com.thezookaycompany.zookayproject.services.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.List;
 
 @Service

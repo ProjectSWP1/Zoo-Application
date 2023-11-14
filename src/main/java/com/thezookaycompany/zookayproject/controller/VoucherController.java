@@ -11,25 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 public class VoucherController {
 
-    private final String SUCCESS_RESPONSE = "success";
-
     @Autowired
     private VoucherService voucherService;
 
     @GetMapping("/id/{voucherID}")
     public Voucher getVoucherByID(@PathVariable String voucherID) {
         return voucherService.findVoucherByID(voucherID);
-    }
-
-    // Áp dụng Voucher vào vé
-    @PutMapping("/apply-to-ticket/{ticketId}/{voucherID}")
-    public ResponseEntity<String> addVoucherToTicket(@PathVariable String voucherID, @PathVariable String ticketId) {
-        String response = voucherService.applyVoucherToTicket(voucherID, ticketId);
-        if(response.equals(SUCCESS_RESPONSE)) {
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.badRequest().body(response);
-        }
     }
 
 }

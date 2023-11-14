@@ -15,6 +15,8 @@ public class OrdersDto {
 
     private String email;
 
+    private String voucherId;
+
     private String phoneNumber;
 
     private Date visitDate;
@@ -26,9 +28,6 @@ public class OrdersDto {
     private Integer ticketQuantity;
 
     private boolean isSuccess;
-
-    private String voucherId;
-
 
 
     public Date getVisitDate() {
