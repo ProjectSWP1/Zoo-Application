@@ -51,10 +51,18 @@ public class PaymentServiceImpl implements PaymentService {
 
         //tinh tong tien order
         double totalOrderPrice = ticket.getTicketPrice() * orders.getQuantity();
+
+        // Check if the order has a voucher
+        if (orders.getOrderVoucher() != null) {
+            // Adjust the total order price based on the voucher discount
+            totalOrderPrice -= totalOrderPrice * orders.getOrderVoucher().getCoupon();
+        }
+
+
         PaymentIntentCreateParams params =
                 PaymentIntentCreateParams.builder()
                         // createPayment for product cost how much...
-                        .setAmount((long)totalOrderPrice)
+                        .setAmount((long) totalOrderPrice)
                         .setCurrency("vnd")
                         .putMetadata("productName", ticket.getTicketId())
                         .setDescription("Paid for orderId: "+ orders.getOrderID())

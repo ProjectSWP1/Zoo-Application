@@ -10,6 +10,8 @@ import com.thezookaycompany.zookayproject.services.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -79,7 +81,23 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public Voucher findVoucherByID(String voucherID) {
-        return voucherRepository.findById(voucherID).orElse(null);
+        Voucher voucher = voucherRepository.findById(voucherID).orElse(null);
+
+        // Check if the voucher is not null and has not expired
+        if (voucher != null && !isVoucherExpired(voucher)) {
+            return voucher;
+        }
+
+        // Voucher is either null or expired
+        return null;
+    }
+
+    private boolean isVoucherExpired(Voucher voucher) {
+        Date expirationDate = voucher.getExpirationDate();
+        Date currentDate = new Date();
+
+        // Compare the expiration date with the current date
+        return expirationDate != null && currentDate.after(expirationDate);
     }
 
     @Override

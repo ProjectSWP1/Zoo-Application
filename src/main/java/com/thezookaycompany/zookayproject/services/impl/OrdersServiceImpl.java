@@ -9,6 +9,7 @@ import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.repositories.PaymentRepository;
 import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.OrdersService;
+import com.thezookaycompany.zookayproject.services.VoucherService;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Autowired
     private PaymentRepository paymentRepository;
+
+    @Autowired
+    private VoucherService voucherService;
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -89,7 +93,13 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public String createMemberOrders(OrdersDto ordersDto, Account account) {
+
         Orders orders = new Orders();
+
+        if(ordersDto.getVoucherId() != null) {
+            Voucher voucher = voucherService.findVoucherByID(ordersDto.getVoucherId());
+            orders.setOrderVoucher(voucher);
+        }
         orders.setOrderDate(LocalDateTime.now());
         orders.setDescription(ordersDto.getDescription());
         // tinh totalOrderPrice
