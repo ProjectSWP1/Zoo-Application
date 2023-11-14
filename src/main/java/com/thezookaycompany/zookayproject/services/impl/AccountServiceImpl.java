@@ -211,6 +211,9 @@ public class AccountServiceImpl implements AccountService {
     public String deactivateAccount(String email) {
         Account acc = accountRepository.findById(email).orElse(null);
         Employees employees = employeesRepository.findEmployeesByEmail(acc);
+        if(employees == null) {
+            return "This account has never been as an employee!";
+        }
         Set<TrainerSchedule> workList= new HashSet<>();
         if(acc != null) {
             if(!acc.isActive()) {
