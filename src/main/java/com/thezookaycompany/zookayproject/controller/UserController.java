@@ -13,6 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 
@@ -121,15 +124,41 @@ public class UserController {
         return memberServices.findMemberByPhoneNumber(phoneNumber);
     }
     @PutMapping("/update/{phoneNumber}")
-    public ResponseEntity<Member> updateMemberByPhoneNumber(
+    public ResponseEntity<MemberDto> updateMemberByPhoneNumber(
             @PathVariable String phoneNumber,
-            @RequestBody Member updatedMember) {
-        Member updated = memberServices.updateMemberByPhoneNumber(phoneNumber,updatedMember);
+            @RequestBody MemberDto updatedMemberDto) {
+
+        // Convert MemberDto to Member entity
+        Member updatedMember = convertDtoToMember(updatedMemberDto);
+
+        // Update the member
+        MemberDto updated = memberServices.updateMemberByPhoneNumber(phoneNumber, updatedMember);
+
         if (updated != null) {
             return ResponseEntity.ok(updated);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    private Member convertDtoToMember(MemberDto memberDto) {
+        Member member = new Member();
+        member.setPhoneNumber(memberDto.getPhoneNumber());
+        member.setAddress(memberDto.getAddress());
+        member.setAge(memberDto.getAge()); // Assuming you have age in the DTO
+        member.setEmail(memberDto.getEmail());
+        member.setGender(memberDto.getGender());
+        member.setName(memberDto.getName());
+
+        // Convert String to Date for the entity
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date dob = dateFormat.parse(memberDto.getDob());
+            member.setDob(dob);
+        } catch (ParseException e) {
+            throw new RuntimeException("Error parsing date", e);
+        }
+
+        return member;
     }
 
     @PreAuthorize("hasRole('ROLE_MEMBER')")
@@ -139,8 +168,6 @@ public class UserController {
     }
 
 
-    @Autowired
-    private ZooAreaRepository zooAreaRepository;
 
     @GetMapping("/zoo-area/id/{zooAreaId}")
     ZooArea findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
