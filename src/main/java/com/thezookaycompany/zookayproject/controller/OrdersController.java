@@ -37,12 +37,12 @@ public class OrdersController {
 
 
 //    DÙNG CÁI NÀY
-    @GetMapping("/all")
+    @GetMapping("/get-all-order")
     public List<OrdersDto> getAllOrdersDetail() {
         return ordersService.getAllOrdersDetail();
     }
     //    DÙNG CÁI NÀY
-    @GetMapping("/{orderID}")
+    @GetMapping("/get-order/{orderID}")
     public Orders getOrderDetailsById(@PathVariable Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }

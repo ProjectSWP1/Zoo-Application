@@ -263,11 +263,11 @@ public class AdminController {
         }
     }
     //Find order
-    @GetMapping("/all")
+    @GetMapping("/get-all-order")
     public List<OrdersDto> getAllOrdersDetail() {
         return ordersService.getAllOrdersDetail();
     }
-    @GetMapping("/{orderID}")
+    @GetMapping("/get-order/{orderID}")
     public Orders getOrderDetailsById(@PathVariable Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
