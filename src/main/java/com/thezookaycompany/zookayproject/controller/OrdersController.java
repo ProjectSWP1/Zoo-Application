@@ -37,13 +37,13 @@ public class OrdersController {
 
 
 //    DÙNG CÁI NÀY
-    @GetMapping("/all")
+    @GetMapping("/get-all-order")
     public List<OrdersDto> getAllOrdersDetail() {
         return ordersService.getAllOrdersDetail();
     }
     //    DÙNG CÁI NÀY
-    @GetMapping("/{orderID}")
-    public Orders getOrderDetailsById(@PathVariable Integer orderID) {
+    @GetMapping("/get-order/{orderID}")
+    public Orders getOrderDetailsById(@PathVariable("orderID") Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
     // ham tra ve list order find by email  desc sau đó chọn ra cái đầu tiên

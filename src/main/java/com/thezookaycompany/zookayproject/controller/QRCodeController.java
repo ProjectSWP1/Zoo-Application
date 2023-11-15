@@ -10,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/qrcode")
 public class QRCodeController {
-    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/";
+    private static final String QR_CODE_IMAGE_PATH = System.getProperty("user.dir") + "/qrcodes/";
 
     @Autowired
     private OrdersService ordersService;
