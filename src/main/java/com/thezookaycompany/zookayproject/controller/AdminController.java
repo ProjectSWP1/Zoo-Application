@@ -270,4 +270,21 @@ public class AdminController {
     public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
+    @PostMapping("/gen-ticket/{price}")
+    public ResponseEntity<?> genTicketForWeeks(@PathVariable Integer price) {
+        String response = ticketService.genTicket(price);
+        if (response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @PostMapping("/gen-voucher/{coupon}")
+    public ResponseEntity<?> genVoucherForWeeks(@PathVariable Double coupon) {
+        String response = voucherService.genVoucher(coupon);
+        if (response.contains(SUCCESS_RESPONSE)) {
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.badRequest().body(response);
+    }
 }

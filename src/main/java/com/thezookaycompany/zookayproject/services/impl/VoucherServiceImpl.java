@@ -10,7 +10,9 @@ import com.thezookaycompany.zookayproject.services.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -103,6 +105,55 @@ public class VoucherServiceImpl implements VoucherService {
     @Override
     public String applyVoucherToTicket(String voucherID, String ticketID) {
         return null;
+    }
+
+    @Override
+    public String genVoucher(Double coupon) {
+        if(coupon == null || coupon > 1 || coupon < 0) {
+            return "The coupon of voucher must be above zero and below one";
+        }
+        try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            for (int i = 0; i < 7; i++) {
+                // Generate Voucher
+                String voucherId = generateCustomVoucherId();
+
+                Voucher newVoucher = new Voucher();
+                newVoucher.setVoucherId(voucherId);
+                newVoucher.setCoupon(coupon);
+                newVoucher.setExpirationDate(calendar.getTime());
+                // Set other voucher properties if needed
+
+                // Save the new voucher to the database
+                voucherRepository.save(newVoucher);
+
+                // Print or log the generated voucher
+                System.out.println("Generated Voucher: " + newVoucher.toString());
+
+                // Move to the next day
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+            }
+
+            return "Vouchers generated successfully for the next 7 days";
+        } catch (Exception e) {
+            // Handle any exceptions appropriately
+            return "Failed to generate vouchers. Error: " + e.getMessage();
+        }
+    }
+
+    private String generateCustomVoucherId() {
+        // Generate a random 5-character voucher ID using characters and numbers
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder voucherId = new StringBuilder();
+
+        for (int i = 0; i < 5; i++) {
+            int index = (int) (Math.random() * characters.length());
+            voucherId.append(characters.charAt(index));
+        }
+
+        return voucherId.toString();
     }
 
 

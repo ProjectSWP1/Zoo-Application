@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 @Repository
 @EnableJpaRepositories
@@ -18,4 +19,5 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
     List<Ticket> findAllByTicketPriceAsc();
     @Query("SELECT t FROM Ticket t ORDER BY t.ticketPrice DESC")
     List<Ticket> findAllByTicketPriceDesc();
+    List<Ticket> findByVisitDateGreaterThanEqual(Date visitDate);
 }
