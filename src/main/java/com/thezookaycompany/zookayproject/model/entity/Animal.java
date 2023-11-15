@@ -32,7 +32,7 @@ public class Animal {
     private double height;
 
     @Lob
-    @Column(name = "imageAnimal", columnDefinition = "LONGBLOB")
+    @Column(name = "imageAnimal", columnDefinition = "VARBINARY(MAX)")
     private byte[] imageAnimal;
 
     @ManyToOne(fetch = FetchType.EAGER)

@@ -43,7 +43,6 @@ public class MainController {
         return ResponseEntity.badRequest().body(response);
     }
     //Create Voucher with Voucher ID generated on FE
-
     @PostMapping("/create-voucher")
     public ResponseEntity<String> createAnimalVoucher(@RequestBody VoucherDto voucherDto) {
         String response = voucherService.createVoucher(voucherDto);

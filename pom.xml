@@ -102,6 +102,12 @@
 			<artifactId>javase</artifactId>
 			<version>3.4.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>12.3.0.jre17-preview</version>
+		</dependency>
 
 
 
