@@ -48,7 +48,7 @@ public class SecurityConfig {
         // URL Role based http configuration
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors((cors) -> cors.configurationSource(corsConfigurer()))
+                .cors((cors) -> corsConfigurer())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/home/**").permitAll();
                     auth.requestMatchers("/user/**").permitAll();
