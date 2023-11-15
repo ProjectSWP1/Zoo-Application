@@ -184,6 +184,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
         }
 
+        Employees managedByEmp = employeesRepository.findById(employeesDto.getManagedByEmpID()).orElse(null);
+
         Date doB;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -197,9 +199,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             return "The email does not exist in Account";
         }
 
+
         employees.setName(employeesDto.getName());
         employees.setAddress(employeesDto.getAddress());
         employees.setActive(employeesDto.isActive());
+        employees.setManagedByEmp(managedByEmp);
         employees.setDoB(doB);
         employees.setPhoneNumber(employeesDto.getPhone_number()); // Phone number này ko ràng buộc với Member, employees vẫn có thể có số dt khác với cột member
         //Thay đổi luôn Member
