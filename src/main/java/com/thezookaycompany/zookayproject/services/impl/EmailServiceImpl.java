@@ -30,7 +30,8 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender javaMailSender;
     @Autowired
     private AccountService accountService;
-    private static final String QR_CODE_IMAGE_PATH = "./src/main/resources/";
+    private static final String QR_CODE_IMAGE_PATH = System.getProperty("user.dir") + "/qrcodes/";
+
     @Override
     public void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException {
 
