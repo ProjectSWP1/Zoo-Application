@@ -40,20 +40,7 @@ public class EmailServiceImpl implements EmailService {
         mimeMessageHelper.setTo(account.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Please reset your password");
 
-        //               **** CHỈNH SỬA LINK HREF SAU *****
-//        String content = "" +
-//                " <div style=\"display: inline-block; border: 1px solid #ccc; padding: 20px; border-radius: 5px; text-align: center;\">\n" +
-//                "        <h3 style=\"color: #122316;\">ZooKay Password Reset</h3>\n" +
-//                "        <p style=\"font-size: 16px; margin-bottom: 20px;\">We heard that you lost your ZooKay password. Sorry about that!</p>\n" +
-//                "\n" +
-//                "        <p style=\"font-size: 16px; margin-bottom: 20px;\">But don't worry! You can use the following button to reset your password:</p>\n" +
-//                "        <a href=\"http://localhost:8080/#\" style=\"text-decoration: none;\"><button style=\"background-color: #22a168; color: #fff; border: none; padding: 10px 20px; text-align: center; font-size: 16px; margin: 10px 0; cursor: pointer;\">Reset your password</button></a>\n" +
-//                "\n" +
-//                "        <p style=\"font-size: 16px; margin-bottom: 20px;\">If you don't use this link within 3 hours, it will expire. To get a new password reset link, visit:</p>\n" +
-//                "        <p><a href=\"http://localhost:8080/baitedhaha\" style=\"color: #007BFF; text-decoration: none;\">https://ZookayOfficial.com/password_reset</a></p>\n" +
-//                "\n" +
-//                "        <p>Thanks,<br>The ZooKay Devs Team</p>\n" +
-//                "    </div>".formatted(accountDto.getEmail(),true);
+
         String content1 ="Hello, we are Zookay Dev Teams, we heard that you lost your ZooKay password. Sorry about that!\n" +
                 "But don't worry! You can use the following link to reset your password:\n" +
                  resetPwdLink +"\n "+
@@ -131,9 +118,6 @@ Sincerely,
         simpleMailMessage.setTo(account.getEmail());
         simpleMailMessage.setSubject("[ZooKay] Verify Your Email Address");
 
-       // String link = "http://localhost:8080/user/verify?email="+accountDto.getEmail()+"&otp="+otp;
-
-        // ** SAU DEPLOY SẼ SỬA LẠI LINK **
         String content = "Hello,\n" +
                 "\n" +
                 "Thank you for registering an account with us. To complete the registration process and verify your email address, please follow the steps below:\n" +

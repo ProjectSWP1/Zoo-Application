@@ -39,7 +39,7 @@ public class ForgotPasswordController {
         // Sau này có deploy có URL sẽ chỉnh lại sau
         // Tạo đường dẫn
 
-        String resetPwdLink = "http://localhost:3000/resetpassword?token=" + token;
+        String resetPwdLink = "https://zookay-web.vercel.app/resetpassword?token=" + token;
         // Gửi email với đường dẫn
         emailService.sendEmailResetPwd(account, resetPwdLink);
 

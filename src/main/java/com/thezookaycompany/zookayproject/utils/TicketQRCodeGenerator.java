@@ -14,7 +14,7 @@ import java.nio.file.Path;
 
 // For Ticket QR Generators after Payment Receipt Sent
 public class TicketQRCodeGenerator {
-    private String url = "http://localhost:3000";
+    private String url = "https://zookay-web.vercel.app";
 
     public void generateQRCodeImage(Orders orders, int width, int height, String filePath) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
