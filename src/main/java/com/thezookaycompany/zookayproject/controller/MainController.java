@@ -23,7 +23,7 @@ public class MainController {
     private VoucherService voucherService;
     private final String SUCCESS_RESPONSE = "success";
 
-    @RequestMapping("/hello")
+    @GetMapping("/hello")
     public String home() {
         return "hello there";
     }
