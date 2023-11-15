@@ -18,7 +18,7 @@ import java.nio.file.Path;
 // For Ticket QR Generators after Payment Receipt Sent
 public class TicketQRCodeGenerator {
     private String url = "https://zookay-web.vercel.app";
-    private String azureStorageConnectionString = "DefaultEndpointsProtocol=https;AccountName=cs110032002f9d9b454;AccountKey=Z64dIy9oQoDQLvHCWEJfWtaL5uBk5WkVOhguqSbw14+ol1NI3iz/4pApTiTJd1D1FxLtSluoD7Fc+AStTc7KjA==;EndpointSuffix=core.windows.net";
+    private String azureStorageConnectionString = "BlobEndpoint=https://cs110032002f9d9b454.blob.core.windows.net/;QueueEndpoint=https://cs110032002f9d9b454.queue.core.windows.net/;FileEndpoint=https://cs110032002f9d9b454.file.core.windows.net/;TableEndpoint=https://cs110032002f9d9b454.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-11-16T02:32:58Z&st=2023-11-15T18:32:58Z&spr=https&sig=OEte5R%2FyOSg9zzfl3LeLUmfcxqNc5qnev8lYF8noHOE%3D";
     private String containerName = "qrcode";
 
     public void generateQRCodeImage(Orders orders, int width, int height, String filePath) throws WriterException, IOException {
