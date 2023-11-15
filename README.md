@@ -1,5 +1,11 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 [![Build and deploy JAR app to Azure Web App - zookay](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml/badge.svg)](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml)
+
+[![Build and deploy JAR app to Azure Web App - zookay](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml/badge.svg)](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml)
+
+[![Build and deploy JAR app to Azure Web App - zookay](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml/badge.svg)](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml)
+
+[![Build and deploy JAR app to Azure Web App - zookay](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml/badge.svg)](https://github.com/ProjectSWP1/Zoo-Application/actions/workflows/master_zookay.yml)
 <a name="readme-top"></a>
 
 
