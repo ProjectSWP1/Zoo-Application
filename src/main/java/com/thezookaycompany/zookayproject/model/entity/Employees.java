@@ -48,7 +48,7 @@ public class Employees {
 
 
     @Lob
-    @Column(name = "qualification", columnDefinition = "LONGBLOB")
+    @Column(name = "qualification", columnDefinition = "VARBINARY(MAX)")
     private byte[] qualification;
 
     @ManyToOne(fetch = FetchType.EAGER)
