@@ -268,7 +268,7 @@ public class AdminController {
         return ordersService.getAllOrdersDetail();
     }
     @GetMapping("/get-order/{orderID}")
-    public Orders getOrderDetailsById(@PathVariable Integer orderID) {
+    public Orders getOrderDetailsById(@PathVariable("orderID") Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
     @PostMapping("/gen-ticket/{price}")
