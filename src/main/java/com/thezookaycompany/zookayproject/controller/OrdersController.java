@@ -75,7 +75,7 @@ public class OrdersController {
 
     //EXAMPLE CREATE ORDER // DÙNG CÁI NÀY
     @PostMapping("/create-order")
-    public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto,@RequestHeader("Authorization") String bearerJwt) {
+    public ResponseEntity<String> createOrder(@RequestBody OrdersDto ordersDto,@RequestParam("token") String bearerJwt) {
         String response ="";
         if(bearerJwt != null && !bearerJwt.isEmpty()){
             String jwt =bearerJwt.replace("Bearer ","");
