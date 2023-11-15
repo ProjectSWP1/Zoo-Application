@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -49,7 +50,8 @@ public class SecurityConfig {
         // URL Role based http configuration
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors((cors) -> corsConfigurer())
+                .cors(Customizer.withDefaults())
+               // .cors((cors) -> corsConfigurer())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/home/**").permitAll();
                     auth.requestMatchers("/user/**").permitAll();
@@ -85,19 +87,19 @@ public class SecurityConfig {
 
         return http.build();
     }
-    @Bean
-    CorsConfigurationSource corsConfigurer() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://zookay-web.vercel.app"));
-        configuration.setAllowedOrigins(Collections.singletonList("https://zookay.azurewebsites.net/"));
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
-        return urlBasedCorsConfigurationSource;
-
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurer() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of("https://zookay-web.vercel.app"));
+//        configuration.setAllowedOrigins(Collections.singletonList("https://zookay.azurewebsites.net/"));
+//        configuration.addAllowedHeader("*");
+//        configuration.addAllowedMethod("*");
+//        configuration.setAllowCredentials(true);
+//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", configuration);
+//        return urlBasedCorsConfigurationSource;
+//
+//    }
 
     @Bean
     public AuthenticationManager authManager(UserDetailsService detailsService) {
