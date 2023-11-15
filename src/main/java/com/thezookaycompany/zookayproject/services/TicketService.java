@@ -22,4 +22,6 @@ public interface TicketService {
 
     List<Ticket> findAllByTicketPriceDesc();
 
+    String genTicket(Integer price);
+
 }

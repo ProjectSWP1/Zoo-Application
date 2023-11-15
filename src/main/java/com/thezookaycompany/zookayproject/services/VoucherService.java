@@ -12,5 +12,6 @@ public interface VoucherService {
     List<Voucher> getAllVoucher();
     Voucher findVoucherByID(String voucherID);
     String applyVoucherToTicket(String voucherID, String ticketID);
+    String genVoucher(Double coupon);
 
 }

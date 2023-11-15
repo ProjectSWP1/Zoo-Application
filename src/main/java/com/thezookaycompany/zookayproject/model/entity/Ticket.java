@@ -30,7 +30,16 @@ public class Ticket {
         @Temporal(TemporalType.DATE)
         private Date visitDate;
 
-
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId='" + ticketId + '\'' +
+                ", ticketPrice=" + ticketPrice +
+                ", visitDate=" + visitDate +
+                ", description='" + description + '\'' +
+                ", ticketInOrders=" + ticketInOrders +
+                '}';
+    }
 
     @Column(name = "description")
     private String description;
