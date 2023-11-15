@@ -96,14 +96,14 @@ Sincerely,
                 "<br/>" +
                 "Sincerely,<br/>" +
                 "ZOOKAY <br/>";
-        mailContent += "<hr> <img src='cid:icon' style='max-width: 100px; display: block; margin: 0 auto;'/><br/>";
+       // mailContent += "<hr> <img src='cid:icon' style='max-width: 100px; display: block; margin: 0 auto;'/><br/>";
 
 
         mimeMessageHelper.setText(mailContent,true);
 
-        FileSystemResource fileSystemResource =
-                new FileSystemResource(new File(QR_CODE_IMAGE_PATH+orders.getOrderID()+"-QRCODE.png"));
-        mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
+//        FileSystemResource fileSystemResource =
+//                new FileSystemResource(new File(QR_CODE_IMAGE_PATH+orders.getOrderID()+"-QRCODE.png"));
+       // mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
         javaMailSender.send(mimeMessage);
     }
 
