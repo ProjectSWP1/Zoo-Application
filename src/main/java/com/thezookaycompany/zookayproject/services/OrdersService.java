@@ -24,8 +24,10 @@ public interface OrdersService {
     String createMemberOrders (OrdersDto ordersDto, Account account);
     String createGuestOrders (OrdersDto ordersDto);
 
+
     List<OrdersDto> getAllOrdersDetail();
-    Optional<OrdersDto> getOrderDetailsById(Integer orderID);
+    Orders getOrderDetailsById(Integer orderID);
+
     long countSoldTickets();
 
 

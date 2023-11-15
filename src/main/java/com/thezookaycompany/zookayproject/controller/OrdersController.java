@@ -43,7 +43,7 @@ public class OrdersController {
     }
     //    DÙNG CÁI NÀY
     @GetMapping("/{orderID}")
-    public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
+    public Orders getOrderDetailsById(@PathVariable Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
     // ham tra ve list order find by email  desc sau đó chọn ra cái đầu tiên

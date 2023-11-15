@@ -86,7 +86,6 @@ public class UserController {
     }
 
     @PostMapping("/send-email")
-   // @PreAuthorize("hasRole('Member')")
     public ResponseEntity<String> processSendMailWithToken(@RequestBody AccountDto accountDto){
 
         //send mail with token

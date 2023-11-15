@@ -5,6 +5,7 @@ import com.thezookaycompany.zookayproject.exception.InvalidVoucherException;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
+import com.thezookaycompany.zookayproject.model.entity.Orders;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
 import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -267,7 +268,7 @@ public class AdminController {
         return ordersService.getAllOrdersDetail();
     }
     @GetMapping("/{orderID}")
-    public Optional<OrdersDto> getOrderDetailsById(@PathVariable Integer orderID) {
+    public Orders getOrderDetailsById(@PathVariable Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
     @PostMapping("/gen-ticket/{price}")

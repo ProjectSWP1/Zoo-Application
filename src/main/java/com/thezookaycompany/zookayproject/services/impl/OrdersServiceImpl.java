@@ -171,16 +171,11 @@ public class OrdersServiceImpl implements OrdersService {
         List<Orders> orders = ordersRepository.findAll(); // Use the method provided by your repository to fetch all orders
         return convertToOrdersDtoList(orders);
     }
-    @Transactional()
-    public Optional<OrdersDto> getOrderDetailsById(Integer orderID) {
-        Optional<Orders> order = ordersRepository.findById(orderID);
+    @Override
+    public Orders getOrderDetailsById(Integer orderID) {
+        Orders order = ordersRepository.findById(orderID).orElse(null);
 
-        if (order.isPresent()) {
-            OrdersDto ordersDto = convertToOrdersDto(order.get());
-            return Optional.of(ordersDto);
-        } else {
-            return Optional.empty();
-        }
+        return order;
     }
 
     @Override
