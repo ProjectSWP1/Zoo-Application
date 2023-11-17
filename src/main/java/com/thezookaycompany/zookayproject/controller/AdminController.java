@@ -75,7 +75,7 @@ public class AdminController {
 
 
     @DeleteMapping("/delete-account/{email}")
-    public ResponseEntity<?> removeAccount(@PathVariable String email) {
+    public ResponseEntity<?> removeAccount(@PathVariable("email") String email) {
         String response = accountService.removeAccount(email);
         if(response.contains("success")) {
             return ResponseEntity.ok(response);
@@ -85,7 +85,7 @@ public class AdminController {
     }
 
     @PutMapping("/deactivate-account/{email}")
-    public ResponseEntity<?> deactivateAccount(@PathVariable String email) {
+    public ResponseEntity<?> deactivateAccount(@PathVariable("email") String email) {
         String response = accountService.deactivateAccount(email);
         if(response.contains("success")) {
             return ResponseEntity.ok(response);
@@ -108,7 +108,7 @@ public class AdminController {
 
     //Hàm này lấy tất cả Ticket dựa vào description keyword
     @GetMapping("/get-ticket-desc/{keyword}")
-    public List<Ticket> getTicketByDescription(@PathVariable String keyword) {
+    public List<Ticket> getTicketByDescription(@PathVariable("keyword") String keyword) {
         return ticketService.getTicketByDescriptionKeyword(keyword);
     }
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
@@ -156,7 +156,7 @@ public class AdminController {
     }
     //Hàm này xóa Ticket : REMOVE//
     @DeleteMapping("/remove-ticket/{ticketId}")
-    public ResponseEntity<String> removeTicket(@PathVariable String ticketId) {
+    public ResponseEntity<String> removeTicket(@PathVariable("ticketId") String ticketId) {
         try {
             String deletedTicketId = ticketService.removeTicket(ticketId);
             return ResponseEntity.ok("Deleted Ticket id: " + deletedTicketId);
@@ -184,7 +184,7 @@ public class AdminController {
     }
 
     @GetMapping("/employeesByZooArea/{zooAreaID}")
-    public ResponseEntity<?> getEmployeesByZooArea(@PathVariable String zooAreaID) {
+    public ResponseEntity<?> getEmployeesByZooArea(@PathVariable("zooAreaID") String zooAreaID) {
         List<Employees> employeesList = employeeService.getEmployeesManageZooArea(zooAreaID);
 
         if (employeesList != null && !employeesList.isEmpty()) {
@@ -208,7 +208,7 @@ public class AdminController {
 
     // Deactive 1 employee
     @PutMapping("/deactivateEmployees/{empID}")
-    public ResponseEntity<String> deactivateEmployees(@PathVariable Integer empID) {
+    public ResponseEntity<String> deactivateEmployees(@PathVariable("empID") Integer empID) {
         String response = employeeService.deactivateEmployees(empID);
 
         if (response.contains("disabled")) {
@@ -254,7 +254,7 @@ public class AdminController {
         }
     }
     @DeleteMapping("/delete-voucher/{voucherId}")
-    public ResponseEntity<String> removeVoucher(@PathVariable String voucherId) {
+    public ResponseEntity<String> removeVoucher(@PathVariable("voucherId") String voucherId) {
         try {
             String deletedVoucherId = voucherService.deleteVoucher(voucherId);
             return ResponseEntity.ok("Voucher removed successfully with id: " + deletedVoucherId);
@@ -272,7 +272,7 @@ public class AdminController {
         return ordersService.getOrderDetailsById(orderID);
     }
     @PostMapping("/gen-ticket/{price}")
-    public ResponseEntity<?> genTicketForWeeks(@PathVariable Integer price) {
+    public ResponseEntity<?> genTicketForWeeks(@PathVariable("price") Integer price) {
         String response = ticketService.genTicket(price);
         if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(response);
@@ -281,7 +281,7 @@ public class AdminController {
     }
 
     @PostMapping("/gen-voucher/{coupon}")
-    public ResponseEntity<?> genVoucherForWeeks(@PathVariable Double coupon) {
+    public ResponseEntity<?> genVoucherForWeeks(@PathVariable("coupon") Double coupon) {
         String response = voucherService.genVoucher(coupon);
         if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(response);
