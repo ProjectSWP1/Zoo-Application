@@ -271,9 +271,9 @@ public class AdminController {
     public Orders getOrderDetailsById(@PathVariable("orderID") Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
-    @PostMapping("/gen-ticket/{price}")
-    public ResponseEntity<?> genTicketForWeeks(@PathVariable("price") Integer price) {
-        String response = ticketService.genTicket(price);
+    @PostMapping("/gen-ticket/{price}/{childrenPrice}")
+    public ResponseEntity<?> genTicketForWeeks(@PathVariable("price") Integer price, @PathVariable("childrenPrice") Integer childrenPrice) {
+        String response = ticketService.genTicket(price, childrenPrice);
         if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.ok(response);
         }

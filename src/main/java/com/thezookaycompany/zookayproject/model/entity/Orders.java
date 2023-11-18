@@ -37,8 +37,21 @@ public class Orders {
     @JoinColumn(name = "ticketId", nullable = true)
     private Ticket ticket;
 
+    // SỐ lượng vé người lớn
     @Column(name = "quantity", nullable = true)
     private int quantity;
+
+    public int getChildrenQuantity() {
+        return childrenQuantity;
+    }
+
+    public void setChildrenQuantity(int childrenQuantity) {
+        this.childrenQuantity = childrenQuantity;
+    }
+
+    // So luong ve tre em
+    @Column(name = "childrenQuantity", nullable = true)
+    private int childrenQuantity;
 
     public int getQuantity() {
         return quantity;

@@ -22,8 +22,21 @@ public class Ticket {
     @Column(name = "TicketID", nullable = false, updatable = false, length = 4)
     private String ticketId;
 
+    // Price giá vé người lớn
     @Column(nullable = false, name="TicketPrice")
     private Double ticketPrice;
+
+    public Double getChildrenTicketPrice() {
+        return childrenTicketPrice;
+    }
+
+    public void setChildrenTicketPrice(Double childrenTicketPrice) {
+        this.childrenTicketPrice = childrenTicketPrice;
+    }
+
+    // Price giá vé trẻ em
+    @Column(nullable = true, name = "childrenTicketPrice")
+    private Double childrenTicketPrice;
 
     //user book ngày tham quan Zoo
         @Column(nullable = true)

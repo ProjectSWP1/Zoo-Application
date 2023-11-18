@@ -47,6 +47,7 @@ public class TicketServiceImpl implements TicketService {
             newTicket.setTicketPrice(ticketDto.getTicketPrice());
             newTicket.setDescription(ticketDto.getDescription());
             newTicket.setVisitDate(ticketDto.getExpDate());
+            newTicket.setChildrenTicketPrice(ticketDto.getChildrenTicketPrice());
 
             // Save the new ticket to the database
             ticketRepository.save(newTicket);
@@ -133,7 +134,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public String genTicket(Integer price) {
+    public String genTicket(Integer price, Integer childrenPrice) {
         if(price == null) {
             return "You cannot leave empty price";
         }
@@ -148,6 +149,7 @@ public class TicketServiceImpl implements TicketService {
                 Ticket newTicket = new Ticket();
                 newTicket.setTicketId(ticketId);
                 newTicket.setTicketPrice(Double.valueOf(price)); // Assuming price is in Integer
+                newTicket.setChildrenTicketPrice(Double.valueOf((childrenPrice)));
                 newTicket.setVisitDate(calendar.getTime());
                 // Set other ticket properties if needed
 
