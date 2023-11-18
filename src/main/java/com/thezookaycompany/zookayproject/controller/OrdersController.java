@@ -38,7 +38,7 @@ public class OrdersController {
 
 //    DÙNG CÁI NÀY
     @GetMapping("/get-all-order")
-    public List<OrdersDto> getAllOrdersDetail() {
+    public List<Orders> getAllOrdersDetail() {
         return ordersService.getAllOrdersDetail();
     }
     //    DÙNG CÁI NÀY

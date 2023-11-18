@@ -25,7 +25,7 @@ public interface OrdersService {
     String createGuestOrders (OrdersDto ordersDto);
 
 
-    List<OrdersDto> getAllOrdersDetail();
+    List<Orders> getAllOrdersDetail();
     Orders getOrderDetailsById(Integer orderID);
 
     long countSoldTickets();

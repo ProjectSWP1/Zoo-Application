@@ -170,6 +170,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (employeesRepository.findById(employeesDto.getManagedByEmpID()).isEmpty()) {
                 return "Not found Employee ID manager";
             }
+
+            if(employeesDto.getManagedByEmpID() == employeesDto.getEmpID()) {
+                return "You cannot update self-managing employees";
+            }
         }
         // Nếu employees này có Zoo Area thì check zoo Area có tồn tại hay ko. Co' thi set luon
         if (employeesDto.getZoo_areaID() != null) {

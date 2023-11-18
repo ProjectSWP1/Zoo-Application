@@ -165,11 +165,9 @@ public class OrdersServiceImpl implements OrdersService {
         return ordersRepository.findOrdersByEmailAsc(email);
     }
 
-    @Transactional()
-    public List<OrdersDto> getAllOrdersDetail() {
-
-        List<Orders> orders = ordersRepository.findAll(); // Use the method provided by your repository to fetch all orders
-        return convertToOrdersDtoList(orders);
+    @Override
+    public List<Orders> getAllOrdersDetail() {
+        return ordersRepository.findAll();
     }
     @Override
     public Orders getOrderDetailsById(Integer orderID) {
