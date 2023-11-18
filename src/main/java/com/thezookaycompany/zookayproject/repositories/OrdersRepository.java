@@ -61,5 +61,4 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
              @Param("isSuccess") boolean isSuccess
      );
 
-
 }
