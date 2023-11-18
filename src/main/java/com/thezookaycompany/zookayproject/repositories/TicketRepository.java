@@ -20,4 +20,10 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
     @Query("SELECT t FROM Ticket t ORDER BY t.ticketPrice DESC")
     List<Ticket> findAllByTicketPriceDesc();
     List<Ticket> findByVisitDateGreaterThanEqual(Date visitDate);
+
+    @Query("SELECT t FROM Ticket t ORDER BY t.visitDate ASC")
+    List<Ticket> findAllOrderByVisitDateAsc();
+
+    @Query("SELECT t FROM Ticket t ORDER BY t.visitDate DESC")
+    List<Ticket> findAllOrderByVisitDateDesc();
 }

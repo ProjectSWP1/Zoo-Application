@@ -108,7 +108,7 @@ public class OrdersServiceImpl implements OrdersService {
         String email = account.getEmail();
         Member member = memberRepository.findMemberByEmail(email);
         if(member == null){
-            System.out.println("djtme thg hải lỗi r");
+            System.out.println("Cannot found this email");
         }
       // orders.setMember();
 
@@ -117,6 +117,9 @@ public class OrdersServiceImpl implements OrdersService {
         ticket.setVisitDate(ordersDto.getVisitDate());
         ticketRepository.save(ticket);
         orders.setQuantity(ordersDto.getTicketQuantity());
+        if (ordersDto.getTicketChildrenQuantity() > 0) {
+            orders.setChildrenQuantity(ordersDto.getTicketChildrenQuantity());
+        }
         orders.setTicket(ticket);
         ordersRepository.save(orders);
         return "Order's created successfully";
@@ -135,6 +138,9 @@ public class OrdersServiceImpl implements OrdersService {
         ticketRepository.save(ticket);
 
         orders.setQuantity(ordersDto.getTicketQuantity());
+        if (ordersDto.getTicketChildrenQuantity() > 0) {
+            orders.setChildrenQuantity(ordersDto.getTicketChildrenQuantity());
+        }
         orders.setTicket(ticket);
         ordersRepository.save(orders);
         return "Order's created successfully";
@@ -158,6 +164,11 @@ public class OrdersServiceImpl implements OrdersService {
     @Override
     public List<Orders> findOrdersByDescriptionContainingKeyword(String keyword) {
         return ordersRepository.findOrdersByDescriptionContainingKeyword(keyword);
+    }
+
+    @Override
+    public List<Orders> findSuccessOrdersByEmail(String email) {
+        return ordersRepository.findOrdersByEmailAndOrderPayments_IsSuccess(email, true);
     }
 
     @Override
@@ -244,96 +255,6 @@ public class OrdersServiceImpl implements OrdersService {
         return successfulOrdersForYear.stream()
                 .mapToLong(Orders::getQuantity)
                 .sum();
-    }
-
-
-    private List<OrdersDto> convertToOrdersDtoList(List<Orders> orders) {
-
-
-        List<OrdersDto> ordersDtoList = new ArrayList<>();
-
-        for (Orders order : orders) {
-            OrdersDto ordersDto = new OrdersDto();
-            // Set properties of OrdersDto from the corresponding properties of Orders
-            ordersDto.setOrderID(order.getOrderID());
-            ordersDto.setDescription(order.getDescription());
-            ordersDto.setOrderDate(order.getOrderDate());
-            ordersDto.setEmail(order.getEmail());
-            ordersDto.setTicketQuantity(order.getQuantity());
-            ordersDto.setTicketPrice(order.getTicket().getTicketPrice());
-            ordersDto.setVoucherId(order.getOrderVoucher().getVoucherId());
-
-
-
-            // Get phoneNumber from the associated Member
-            if (order.getMember() != null) {
-                ordersDto.setPhoneNumber(order.getMember().getPhoneNumber());
-            }
-
-            // Get expDate from the associated Ticket
-            if (order.getTicket() != null) {
-                ordersDto.setVisitDate(order.getTicket().getVisitDate());
-                ordersDto.setTicketId(order.getTicket().getTicketId());
-
-                // Calculate totalOrder as quantity * ticket price
-                double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice() * order.getOrderVoucher().getCoupon();
-                ordersDto.setTotalOrder(totalOrder);
-            }
-
-            // Check if a payment record exists for this order
-            Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
-            if (payment != null && payment.getSuccess()) {
-
-                ordersDto.setSuccess(true);
-            } else {
-                ordersDto.setSuccess(false);
-            }
-
-            // Add the converted OrdersDto to the list
-            ordersDtoList.add(ordersDto);
-        }
-
-        return ordersDtoList;
-    }
-
-    private OrdersDto convertToOrdersDto(Orders order) {
-        OrdersDto ordersDto = new OrdersDto();
-
-        // Set properties of OrdersDto from the corresponding properties of Orders
-        ordersDto.setOrderID(order.getOrderID());
-        ordersDto.setDescription(order.getDescription());
-        ordersDto.setOrderDate(order.getOrderDate());
-        ordersDto.setEmail(order.getEmail());
-        ordersDto.setTicketQuantity(order.getQuantity());
-        ordersDto.setTicketPrice(order.getTicket().getTicketPrice());
-        ordersDto.setVoucherId(order.getOrderVoucher().getVoucherId());
-
-        // Get phoneNumber from the associated Member
-        if (order.getMember() != null) {
-            ordersDto.setPhoneNumber(order.getMember().getPhoneNumber());
-        }
-
-        // Get expDate from the associated Ticket
-        if (order.getTicket() != null) {
-            ordersDto.setVisitDate(order.getTicket().getVisitDate());
-            ordersDto.setTicketId(order.getTicket().getTicketId());
-
-            // Calculate totalOrder as quantity * ticket price
-            double totalOrder = order.getQuantity() * order.getTicket().getTicketPrice() * order.getOrderVoucher().getCoupon();
-            ordersDto.setTotalOrder(totalOrder);
-        }
-
-        // Check if a payment record exists for this order
-        Payment payment = paymentRepository.findPaymentByOrder_OrderID(order.getOrderID()).orElse(null);
-        if (payment != null && payment.getSuccess()) {
-
-            ordersDto.setSuccess(true);
-
-        } else {
-            ordersDto.setSuccess(false);
-        }
-
-        return ordersDto;
     }
 
     @Override

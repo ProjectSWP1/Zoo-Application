@@ -49,15 +49,8 @@ public class PaymentServiceImpl implements PaymentService {
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
         Ticket ticket = ticketRepository.findTicketByTicketId(orders.getTicket().getTicketId());
 
-        //tinh tong tien order
-        double totalOrderPrice = ticket.getTicketPrice() * orders.getQuantity();
-
-        // Check if the order has a voucher
-        if (orders.getOrderVoucher() != null) {
-            // Adjust the total order price based on the voucher discount
-            totalOrderPrice -= totalOrderPrice * orders.getOrderVoucher().getCoupon();
-        }
-
+        // Tính tổng tiền
+        double totalOrderPrice = getTotalOrderPrice(ordersDto, ticket, orders);
 
         PaymentIntentCreateParams params =
                 PaymentIntentCreateParams.builder()
@@ -78,6 +71,25 @@ public class PaymentServiceImpl implements PaymentService {
         // Create a PaymentIntent with the order amount and currency
         PaymentIntent paymentIntent = PaymentIntent.create(params);
         return new PaymentResponse(paymentIntent.getClientSecret(),paymentIntent.getId());
+    }
+
+    private static double getTotalOrderPrice(OrdersDto ordersDto, Ticket ticket, Orders orders) {
+        double totalOrderPrice = 0.0;
+        if(orders.getChildrenQuantity() > 0) {
+            //tinh tong tien order voi ve tre em
+            totalOrderPrice = (ticket.getTicketPrice() * orders.getQuantity()) + (ticket.getChildrenTicketPrice() * orders.getChildrenQuantity());
+        } else {
+            //tinh tong tien order binh thuong neu chi co ve nguoi lon
+            totalOrderPrice = ticket.getTicketPrice() * orders.getQuantity();
+        }
+
+
+        // Check if the order has a voucher
+        if (orders.getOrderVoucher() != null) {
+            // Adjust the total order price based on the voucher discount
+            totalOrderPrice -= totalOrderPrice * orders.getOrderVoucher().getCoupon();
+        }
+        return totalOrderPrice;
     }
 
     @Override

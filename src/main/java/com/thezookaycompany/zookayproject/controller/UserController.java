@@ -278,4 +278,16 @@ public class UserController {
     public List<Ticket> getTicketByTicketPriceDescending() {
         return ticketService.findAllByTicketPriceDesc();
     }
+
+    @GetMapping("/by-visit-date-asc")
+    public ResponseEntity<List<Ticket>> getTicketsByVisitDateAsc() {
+        List<Ticket> tickets = ticketService.getAllTicketsOrderByVisitDateAsc();
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
+
+    @GetMapping("/by-visit-date-desc")
+    public ResponseEntity<List<Ticket>> getTicketsByVisitDateDesc() {
+        List<Ticket> tickets = ticketService.getAllTicketsOrderByVisitDateDesc();
+        return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
 }

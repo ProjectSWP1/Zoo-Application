@@ -1,15 +1,8 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.stripe.model.Coupon;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Formula;
 
-import java.util.Date;
-import java.util.Set;
 import java.time.LocalDateTime;
 
 
@@ -44,8 +37,21 @@ public class Orders {
     @JoinColumn(name = "ticketId", nullable = true)
     private Ticket ticket;
 
+    // SỐ lượng vé người lớn
     @Column(name = "quantity", nullable = true)
     private int quantity;
+
+    public int getChildrenQuantity() {
+        return childrenQuantity;
+    }
+
+    public void setChildrenQuantity(int childrenQuantity) {
+        this.childrenQuantity = childrenQuantity;
+    }
+
+    // So luong ve tre em
+    @Column(name = "childrenQuantity", nullable = true)
+    private int childrenQuantity;
 
     public int getQuantity() {
         return quantity;

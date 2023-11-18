@@ -6,6 +6,23 @@ public class TicketDto {
     private String ticketId;
     private double ticketPrice;
 
+    public TicketDto(String ticketId, double ticketPrice, double childrenTicketPrice, Date bookDate) {
+        this.ticketId = ticketId;
+        this.ticketPrice = ticketPrice;
+        this.childrenTicketPrice = childrenTicketPrice;
+        this.expDate = bookDate;
+    }
+
+    public double getChildrenTicketPrice() {
+        return childrenTicketPrice;
+    }
+
+    public void setChildrenTicketPrice(double childrenTicketPrice) {
+        this.childrenTicketPrice = childrenTicketPrice;
+    }
+
+    private double childrenTicketPrice;
+
     private Date expDate;
 
     private String description;

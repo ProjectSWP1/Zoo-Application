@@ -27,6 +27,26 @@ public class OrdersDto {
 
     private Integer ticketQuantity;
 
+    private Double ticketChildrenPrice;
+
+    public Double getTicketChildrenPrice() {
+        return ticketChildrenPrice;
+    }
+
+    public void setTicketChildrenPrice(Double ticketChildrenPrice) {
+        this.ticketChildrenPrice = ticketChildrenPrice;
+    }
+
+    public Integer getTicketChildrenQuantity() {
+        return ticketChildrenQuantity;
+    }
+
+    public void setTicketChildrenQuantity(Integer ticketChildrenQuantity) {
+        this.ticketChildrenQuantity = ticketChildrenQuantity;
+    }
+
+    private Integer ticketChildrenQuantity;
+
     private boolean isSuccess;
 
 

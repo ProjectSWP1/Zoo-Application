@@ -22,6 +22,10 @@ public interface TicketService {
 
     List<Ticket> findAllByTicketPriceDesc();
 
-    String genTicket(Integer price);
+    String genTicket(Integer price, Integer childrenPrice);
+
+    List<Ticket> getAllTicketsOrderByVisitDateAsc();
+
+    List<Ticket> getAllTicketsOrderByVisitDateDesc();
 
 }
