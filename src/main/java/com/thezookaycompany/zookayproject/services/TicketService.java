@@ -24,4 +24,8 @@ public interface TicketService {
 
     String genTicket(Integer price);
 
+    List<Ticket> getAllTicketsOrderByVisitDateAsc();
+
+    List<Ticket> getAllTicketsOrderByVisitDateDesc();
+
 }
