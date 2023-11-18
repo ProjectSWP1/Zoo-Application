@@ -75,7 +75,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private static double getTotalOrderPrice(OrdersDto ordersDto, Ticket ticket, Orders orders) {
         double totalOrderPrice = 0.0;
-        if(ordersDto.getTicketChildrenPrice() != null || ordersDto.getTicketChildrenPrice() > 0) {
+        if(orders.getChildrenQuantity() > 0) {
             //tinh tong tien order voi ve tre em
             totalOrderPrice = (ticket.getTicketPrice() * orders.getQuantity()) + (ticket.getChildrenTicketPrice() * orders.getChildrenQuantity());
         } else {
