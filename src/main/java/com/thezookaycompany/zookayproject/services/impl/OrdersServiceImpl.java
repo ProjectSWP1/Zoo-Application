@@ -117,8 +117,8 @@ public class OrdersServiceImpl implements OrdersService {
         ticket.setVisitDate(ordersDto.getVisitDate());
         ticketRepository.save(ticket);
         orders.setQuantity(ordersDto.getTicketQuantity());
-        if (ordersDto.getTicketChildrenQuantity() != null || ordersDto.getTicketChildrenQuantity() > 0) {
-            orders.setChildrenQuantity(orders.getChildrenQuantity());
+        if (ordersDto.getTicketChildrenQuantity() > 0) {
+            orders.setChildrenQuantity(ordersDto.getTicketChildrenQuantity());
         }
         orders.setTicket(ticket);
         ordersRepository.save(orders);
@@ -138,8 +138,8 @@ public class OrdersServiceImpl implements OrdersService {
         ticketRepository.save(ticket);
 
         orders.setQuantity(ordersDto.getTicketQuantity());
-        if (ordersDto.getTicketChildrenQuantity() != null || ordersDto.getTicketChildrenQuantity() > 0) {
-            orders.setChildrenQuantity(orders.getChildrenQuantity());
+        if (ordersDto.getTicketChildrenQuantity() > 0) {
+            orders.setChildrenQuantity(ordersDto.getTicketChildrenQuantity());
         }
         orders.setTicket(ticket);
         ordersRepository.save(orders);
