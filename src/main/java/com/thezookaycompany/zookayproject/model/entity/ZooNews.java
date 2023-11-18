@@ -32,8 +32,9 @@ public class ZooNews {
     @Column(nullable = false, name = "dateCreated")
     @Temporal(TemporalType.DATE)
     private Date dateCreated;
-    @Column
-    private Integer empId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empId", nullable = false)
+    private Employees employeesNews;
 
     public Integer getNewsId() {
         return newsId;
@@ -59,12 +60,11 @@ public class ZooNews {
         this.description = description;
     }
 
-    public Integer getEmpId() {
-        return empId;
+    public Employees getEmployeesNews() {
+        return employeesNews;
     }
 
-    public void setEmpId(final Integer empId) {
-        this.empId = empId;
+    public void setEmployeesNews(Employees employeesNews) {
+        this.employeesNews = employeesNews;
     }
-
 }

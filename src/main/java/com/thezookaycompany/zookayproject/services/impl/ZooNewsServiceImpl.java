@@ -2,6 +2,7 @@ package com.thezookaycompany.zookayproject.services.impl;
 
 import com.thezookaycompany.zookayproject.model.dto.ZooNewsDto;
 import com.thezookaycompany.zookayproject.model.entity.ZooNews;
+import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooNewsRepository;
 import com.thezookaycompany.zookayproject.services.ZooNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class ZooNewsServiceImpl implements ZooNewsService {
 
     @Autowired
     private ZooNewsRepository zooNewsRepository;
+    @Autowired
+    private EmployeesRepository employeesRepository;
 
     @Override
     public String postNews(ZooNewsDto zooNewsDto) {
@@ -34,7 +37,7 @@ public class ZooNewsServiceImpl implements ZooNewsService {
         ZooNews zooNews = new ZooNews();
         zooNews.setContent(zooNewsDto.getContent());
         zooNews.setDescription(zooNewsDto.getDescription());
-        zooNews.setEmpId(zooNewsDto.getEmpId());
+        zooNews.setEmployeesNews(employeesRepository.getReferenceById(zooNewsDto.getEmpId()));
         zooNews.setDateCreated(Date.from(Instant.now()));
 
         zooNewsRepository.save(zooNews);

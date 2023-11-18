@@ -9,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -181,5 +179,19 @@ public class TicketServiceImpl implements TicketService {
         }
 
         return ticketId.toString();
+    }
+
+    @Override
+    public List<Ticket> getAllTicketsOrderByVisitDateAsc() {
+        List<Ticket> tickets = ticketRepository.findAllOrderByVisitDateAsc();
+        Collections.sort(tickets, Comparator.comparing(Ticket::getVisitDate));
+        return tickets;
+    }
+
+    @Override
+    public List<Ticket> getAllTicketsOrderByVisitDateDesc() {
+        List<Ticket> tickets = ticketRepository.findAllOrderByVisitDateDesc();
+        Collections.sort(tickets, Comparator.comparing(Ticket::getVisitDate).reversed());
+        return tickets;
     }
 }
