@@ -69,6 +69,11 @@ public class OrdersController {
         }
     }
 
+    @GetMapping("/find-success-orders-by-email/{email}")
+    public List<Orders> findAllSuccessfulOrdersByEmail(@PathVariable("email") String email) {
+        return ordersService.findSuccessOrdersByEmail(email);
+    }
+
     @GetMapping("/test-payment/{orderID}")
     public Payment findPaymentByOrderId (@PathVariable("orderID") String orderID){
        return paymentService.findPaymentByOrderID(orderID);

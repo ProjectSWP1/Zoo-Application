@@ -18,6 +18,8 @@ public interface OrdersService {
     List<Orders> findAllByOrderIDDesc();
     List<Orders> findOrdersByDescriptionContainingKeyword(String keyword);
 
+    List<Orders> findSuccessOrdersByEmail(String email);
+
     List<Orders> findOrdersByemailAsc(String email);
     String createOrders (OrdersDto ordersDto);
     List<Orders> findOrdersByEmail(String email);

@@ -61,5 +61,7 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
              @Param("isSuccess") boolean isSuccess
      );
 
+     List<Orders> findOrdersByEmailAndOrderPayments_IsSuccess(String email, Boolean isSuccess);
+
 
 }

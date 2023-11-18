@@ -167,6 +167,11 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
+    public List<Orders> findSuccessOrdersByEmail(String email) {
+        return ordersRepository.findOrdersByEmailAndOrderPayments_IsSuccess(email, true);
+    }
+
+    @Override
     public List<Orders> findOrdersByemailAsc(String email) {
         return ordersRepository.findOrdersByEmailAsc(email);
     }
