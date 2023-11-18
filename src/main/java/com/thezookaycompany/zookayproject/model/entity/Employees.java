@@ -46,6 +46,16 @@ public class Employees {
         this.active = active;
     }
 
+    @OneToMany(mappedBy = "employeesNews")
+    private Set<ZooNews> newsOfEmployee ;
+
+    public Set<ZooNews> getNewsOfEmployee() {
+        return newsOfEmployee;
+    }
+
+    public void setNewsOfEmployee(Set<ZooNews> newsOfEmployee) {
+        this.newsOfEmployee = newsOfEmployee;
+    }
 
     @Lob
     @Column(name = "qualification", columnDefinition = "VARBINARY(MAX)")
