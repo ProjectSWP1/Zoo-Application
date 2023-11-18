@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -27,8 +26,10 @@ public class OrdersController {
 
     @Autowired
     private PaymentService paymentService;
+
     @Autowired
     private TokenService tokenService;
+
     @Autowired
     private OrdersService ordersService;
 
@@ -37,7 +38,7 @@ public class OrdersController {
 
 
 //    DÙNG CÁI NÀY
-    @GetMapping("/get-all-order")
+    @GetMapping("/all")
     public List<Orders> getAllOrdersDetail() {
         return ordersService.getAllOrdersDetail();
     }

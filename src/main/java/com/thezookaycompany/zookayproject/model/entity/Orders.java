@@ -1,15 +1,8 @@
 package com.thezookaycompany.zookayproject.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import com.stripe.model.Coupon;
 import jakarta.persistence.*;
-import org.hibernate.annotations.Formula;
 
-import java.util.Date;
-import java.util.Set;
 import java.time.LocalDateTime;
 
 
