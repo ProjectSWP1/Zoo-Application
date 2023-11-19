@@ -46,6 +46,38 @@ public class ZooNewsServiceImpl implements ZooNewsService {
     }
 
     @Override
+    public String removeNews(ZooNewsDto zooNewsDto) {
+        if(zooNewsDto.getNewsId() == null) {
+            return "Cannot find news id";
+        }
+        ZooNews zooNews = zooNewsRepository.findById(zooNewsDto.getNewsId()).orElse(null);
+        if(zooNews == null) {
+            return "This news does not exist";
+        }
+
+        zooNewsRepository.delete(zooNews);
+        return "Removed news successfully";
+    }
+
+    @Override
+    public String updateNews(ZooNewsDto zooNewsDto) {
+        if(zooNewsDto.getNewsId() == null) {
+            return "Cannot find news id";
+        }
+        ZooNews zooNews = zooNewsRepository.findById(zooNewsDto.getNewsId()).orElse(null);
+        if(zooNews == null) {
+            return "This news does not exist";
+        }
+
+        zooNews.setDateCreated(Date.valueOf(zooNewsDto.getDateCreated()));
+        zooNews.setContent(zooNewsDto.getContent());
+        zooNews.setDescription(zooNewsDto.getDescription());
+
+        zooNewsRepository.save(zooNews);
+        return "Updated news successfully";
+    }
+
+    @Override
     public List<ZooNews> getNews() {
         return zooNewsRepository.findAll();
     }

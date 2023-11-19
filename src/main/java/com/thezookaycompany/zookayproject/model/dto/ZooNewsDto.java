@@ -1,6 +1,16 @@
 package com.thezookaycompany.zookayproject.model.dto;
 
 public class ZooNewsDto {
+
+    public Integer getNewsId() {
+        return newsId;
+    }
+
+    public void setNewsId(Integer newsId) {
+        this.newsId = newsId;
+    }
+
+    private Integer newsId;
     private String content;
     private String description;
     private Integer empId;
