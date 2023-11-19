@@ -47,6 +47,7 @@ public class Employees {
     }
 
     @OneToMany(mappedBy = "employeesNews")
+    @JsonBackReference
     private Set<ZooNews> newsOfEmployee ;
 
     public Set<ZooNews> getNewsOfEmployee() {
