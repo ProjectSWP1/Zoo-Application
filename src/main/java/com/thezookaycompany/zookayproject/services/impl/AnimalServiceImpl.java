@@ -81,6 +81,10 @@ public class AnimalServiceImpl implements AnimalService {
             return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
         }
 
+        if(cage.getCageAnimals().size() >= cage.getCapacity()) {
+            return "This cage has already been at maximum capacity";
+        }
+
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
         if(animalSpecies == null) {
             return "The animal species " + animalDto.getSpeciesId() +  " cannot be found, please try other";
@@ -139,6 +143,10 @@ public class AnimalServiceImpl implements AnimalService {
         Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
         if(cage == null) {
             return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
+        }
+
+        if(cage.getCageAnimals().size() >= cage.getCapacity()) {
+            return "This cage has already been at maximum capacity";
         }
 
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
