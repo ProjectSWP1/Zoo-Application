@@ -193,7 +193,7 @@ public class ManageController {
     public ResponseEntity<String> removeAnimalSpecies(@PathVariable Integer speciesId) {
         try {
             String deletedAnimalSpId = animalService.removeAnimalSpecies(speciesId);
-            return ResponseEntity.ok("Animal Species cage id: " + deletedAnimalSpId);
+            return ResponseEntity.ok("Animal Species id: " + deletedAnimalSpId);
         } catch (InvalidCageException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Animal Species not found with ID: " + speciesId);
         }
