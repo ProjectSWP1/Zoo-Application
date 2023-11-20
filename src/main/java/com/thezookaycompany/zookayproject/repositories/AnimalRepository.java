@@ -46,5 +46,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
     @Query("SELECT a FROM Animal a WHERE a.species.groups = :groups")
     List<Animal> findAnimalsBySpeciesGroups(String groups);
 
+    List<Animal> findAnimalsBySpecies_SpeciesId(Integer speciesId);
 
 }

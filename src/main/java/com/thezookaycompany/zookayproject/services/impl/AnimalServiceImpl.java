@@ -257,6 +257,10 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public String removeAnimalSpecies(Integer id) {
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(id).orElseThrow(() -> new InvalidAnimalException("Not found this Animal ID to delete."));
+        List<Animal> animals = animalRepository.findAnimalsBySpecies_SpeciesId(animalSpecies.getSpeciesId());
+        if(animals.isEmpty()) {
+            return "You cannot remove this species because it was constrained by animals. You may consider remove animals first.";
+        }
         animalSpeciesRepository.delete(animalSpecies);
         return String.valueOf(animalSpecies.getSpeciesId());
     }
