@@ -12,5 +12,5 @@ public interface EmailService {
     void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException;
 
     void sendAfterPaymentEmail (OrdersDto ordersDto) throws MessagingException;
-    EmailTokenResponse sendVertificationEmail (Account account) ;
+    EmailTokenResponse sendVertificationEmail (Account account) throws MessagingException;
 }
