@@ -14,6 +14,7 @@ import com.thezookaycompany.zookayproject.repositories.CageRepository;
 import com.thezookaycompany.zookayproject.services.AnimalService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,6 +60,11 @@ public class AnimalServiceImpl implements AnimalService {
 
         if(animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
             return "The name cannot be empty or greater than 21 characters";
+        }
+
+        Animal animal = animalRepository.findAnimalByName(animalDto.getName());
+        if(animal != null) {
+            return "This animal's name has already existed.";
         }
 
         if(animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {

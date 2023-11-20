@@ -16,6 +16,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
     @Query("SELECT a FROM Animal a JOIN FETCH a.species JOIN FETCH a.cage WHERE a.animalId = :animalId")
     Animal findAnimalWithSpeciesAndCage(@Param("animalId") Integer animalId);
 
+    Animal findAnimalByName(String name);
+
     @Query("SELECT a FROM Animal a WHERE LOWER(a.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Animal> findAnimalsByDescriptionContainingKeyword(@Param("keyword") String keyword);
 
