@@ -5,11 +5,9 @@ import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
 import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
 import com.thezookaycompany.zookayproject.model.entity.*;
-import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
-import com.thezookaycompany.zookayproject.repositories.AnimalSpeciesRepository;
-import com.thezookaycompany.zookayproject.repositories.CageRepository;
-import com.thezookaycompany.zookayproject.repositories.FeedingScheduleRepository;
+import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.AnimalService;
+import com.thezookaycompany.zookayproject.services.ZooAreaService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.parameters.P;
@@ -30,6 +28,8 @@ public class AnimalServiceImpl implements AnimalService {
     private AnimalRepository animalRepository;
     @Autowired
     private CageRepository cageRepository;
+    @Autowired
+    private ZooAreaRepository zooAreaRepository;
     @Autowired
     private AnimalSpeciesRepository animalSpeciesRepository;
     @Autowired
@@ -200,6 +200,11 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public Animal findAnimalWithSpeciesAndCage(Integer animalId) {
         return animalRepository.findAnimalWithSpeciesAndCage(animalId);
+    }
+
+    @Override
+    public List<Animal> findByZooAreaID(String zooAreaID) {
+        return animalRepository.findAnimalsByCage_ZooArea_ZooAreaId(zooAreaID);
     }
 
     @Override

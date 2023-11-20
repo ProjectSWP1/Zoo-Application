@@ -21,6 +21,7 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
     @Query("SELECT a FROM Animal a WHERE LOWER(a.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Animal> findAnimalsByDescriptionContainingKeyword(@Param("keyword") String keyword);
 
+    List<Animal> findAnimalsByCage_ZooArea_ZooAreaId(String zooAreaId);
 
     @Query("SELECT a FROM Animal a ORDER BY a.height ASC")
     List<Animal> findAllByHeightAsc();

@@ -19,6 +19,8 @@ public interface AnimalService {
     List<AnimalSpecies> getAllAnimalSpecies();
     Animal findAnimalWithSpeciesAndCage(Integer animalId);
 
+    List<Animal> findByZooAreaID(String zooAreaID);
+
     String createAnimalSpecies(AnimalSpeciesDto animalSpeciesDto);
     String updateAnimalSpecies(AnimalSpeciesDto animalSpeciesDto);
     String removeAnimalSpecies(Integer id);

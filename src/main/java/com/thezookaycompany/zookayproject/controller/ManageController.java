@@ -239,6 +239,11 @@ public class ManageController {
         return animalService.findAnimalWithSpeciesAndCage(animalId);
     }
 
+    @GetMapping("/get-animal-by-zooArea/{zooAreaId}")
+    public List<Animal> getAnimalByZooArea(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findByZooAreaID(zooAreaId);
+    }
+
     /////////////////////////////////////////
     /// ANIMAL FOOD FEATURES (MANAGEMENT) ///
     /////////////////////////////////////////
