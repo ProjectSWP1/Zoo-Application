@@ -12,7 +12,6 @@ import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -31,22 +30,36 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException {
 
-
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         mimeMessageHelper.setTo(account.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Please reset your password");
 
+        String content = "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div style=\"display: inline-block; border: 1px solid #ccc; padding: 20px; border-radius: 5px; text-align: center; margin: 0 auto;\">\n" +
+                "        <h3 style=\"color: #122316;\">ZooKay Password Reset</h3>\n" +
+                "        <p style=\"font-size: 16px; margin-bottom: 20px;\">We heard that you lost your ZooKay password. Sorry about that!</p>\n" +
+                "\n" +
+                "        <p style=\"font-size: 16px; margin-bottom: 20px;\">But don't worry! You can use the following button to reset your password:</p>\n" +
+                "        <a href=\""+resetPwdLink+"\" style=\"text-decoration: none;\"><button style=\"background-color: #22a168; color: #fff; border: none; padding: 10px 20px; text-align: center; font-size: 16px; margin: 10px 0; cursor: pointer;\">Reset your password</button></a>\n" +
+                "\n" +
+                "        <p style=\"font-size: 16px; margin-bottom: 20px;\">If you don't use this link within 3 hours, it will expire. To get a new password reset link, visit:</p>\n" +
+                "        <p><a href=\"https://zookay-web.vercel.app/forgotpassword\" style=\"color: #007BFF; text-decoration: none;\">Reset my password</a></p>\n" +
+                "\n" +
+                "        <p>Thanks,<br>The ZooKay Devs Team</p>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>\n";
 
-        String content1 ="Hello, we are Zookay Dev Teams, we heard that you lost your ZooKay password. Sorry about that!\n" +
-                "But don't worry! You can use the following link to reset your password:\n" +
-                 resetPwdLink +"\n "+
-                "Thanks,\n" +
-                "The ZooKay Devs Team\\n\"";
 
-        mimeMessageHelper.setText(content1);
 
+        mimeMessageHelper.setText(content, true);
         javaMailSender.send(mimeMessage);
+
     }
     /*
     Subject: Ticket Purchase Confirmation
@@ -106,35 +119,54 @@ Sincerely,
 
 
     @Override
-    public EmailTokenResponse sendVertificationEmail(Account account) {
-        //create and save otp
+    public EmailTokenResponse sendVertificationEmail(Account account) throws MessagingException {
+        // Create and save OTP
         String otp = RandomTokenGenerator.generateRandomOTP();
-        accountService.updateVerifyToken(otp,account);
+        accountService.updateVerifyToken(otp, account);
 
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(account.getEmail());
-        simpleMailMessage.setSubject("[ZooKay] Verify Your Email Address");
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        String content = "Hello,\n" +
-                "\n" +
-                "Thank you for registering an account with us. To complete the registration process and verify your email address, please follow the steps below:\n" +
-                "\n" +
-                "Here is your vertification OTP:\n"
-                + otp +
+        mimeMessageHelper.setTo(account.getEmail());
+        mimeMessageHelper.setSubject("[ZooKay] Verify Your Email Address");
 
+        String htmlContent = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "</head>\n" +
+                "<body style=\"font-family: Arial, sans-serif; background-color: #f4f4f4;\">\n" +
                 "\n" +
-                "Once you've verified your email address, you'll be able to access your account and start using our services.\n" +
+                "    <div style=\"display: inline-block; border: 1px solid #ccc; padding: 20px; border-radius: 5px; text-align: center; margin: 0 auto; max-width: 600px; background-color: #fff;\">\n" +
                 "\n" +
-                "If you didn't initiate this registration, you can safely ignore this email.\n" +
+                "        <p style=\"color: #122316;\">ZooKay - Verify Your Email</p>\n" +
                 "\n" +
-                "Thank you for joining us!\n" +
+                "        <p style=\"color: black;\">Thank you for registering an account with us. To complete the registration process and verify your email address, please follow the steps below:</p>\n" +
                 "\n" +
-                "Best regards,\n" +
-                "ZooKay Devs Team\n";
+                "        <div>\n" +
+                "            <p style=\"font-size: 16px; margin-bottom: 20px; color: black;\">Here is your verification OTP:</p>\n" +
+                "            <h3 style=\"color: #122316; margin: 0; color: black;\">"+otp+"</h3>\n" +
+                "            <p style=\"font-size: 14px; margin-bottom: 20px; font-weight: bold; color: black;\">This OTP will expire in 2 minutes.</p>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <p style=\"font-size: 16px; margin-bottom: 20px; color: black;\">Once you've verified your email address, you'll be able to access your account and start using our services.</p>\n" +
+                "\n" +
+                "        <p style=\"font-size: 16px; margin-bottom: 20px; color: black;\">If you didn't initiate this registration, you can safely ignore this email.</p>\n" +
+                "\n" +
+                "        <p style=\"color: black;\">Thank you for joining us!</p>\n" +
+                "\n" +
+                "        <p style=\"margin: 0; color: black;\">Best regards,<br>The ZooKay Devs Team</p>\n" +
+                "    </div>\n" +
+                "\n" +
+                "</body>\n" +
+                "</html>\n";
 
-        simpleMailMessage.setText(content);
-        javaMailSender.send(simpleMailMessage);
-        return new EmailTokenResponse(account.getEmail(),otp);
+        mimeMessageHelper.setText(htmlContent, true);
+
+        javaMailSender.send(mimeMessage);
+
+        return new EmailTokenResponse(account.getEmail(), otp);
     }
 
 }

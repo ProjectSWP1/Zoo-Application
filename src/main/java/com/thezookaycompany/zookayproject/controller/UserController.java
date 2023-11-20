@@ -86,7 +86,7 @@ public class UserController {
     }
 
     @PostMapping("/send-email")
-    public ResponseEntity<String> processSendMailWithToken(@RequestBody AccountDto accountDto){
+    public ResponseEntity<String> processSendMailWithToken(@RequestBody AccountDto accountDto) throws MessagingException {
 
         //send mail with token
             Account account = accountService.getUserByEmail(accountDto.getEmail());
