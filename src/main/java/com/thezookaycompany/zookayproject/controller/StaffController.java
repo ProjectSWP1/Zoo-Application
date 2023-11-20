@@ -77,6 +77,28 @@ public class StaffController {
         }
     }
 
+    @PutMapping("/editnews")
+    public ResponseEntity<String> editNews(@RequestBody ZooNewsDto zooNewsDto) {
+        String response = zooNewsService.updateNews(zooNewsDto);
+
+        if(response.contains("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
+    @DeleteMapping("/deletenews")
+    public ResponseEntity<String> removeNews(@RequestBody ZooNewsDto zooNewsDto) {
+        String response = zooNewsService.removeNews(zooNewsDto);
+
+        if(response.contains("success")) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
 
     //TRAINER SCHEDULE--------------------------------------------------------------------------------
     //view all information about trainer

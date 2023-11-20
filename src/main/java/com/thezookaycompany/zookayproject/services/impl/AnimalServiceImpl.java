@@ -4,16 +4,15 @@ import com.thezookaycompany.zookayproject.exception.InvalidAnimalException;
 import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
 import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
-import com.thezookaycompany.zookayproject.model.entity.Animal;
-import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
-import com.thezookaycompany.zookayproject.model.entity.Cage;
-import com.thezookaycompany.zookayproject.model.entity.Employees;
+import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.AnimalSpeciesRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
+import com.thezookaycompany.zookayproject.repositories.FeedingScheduleRepository;
 import com.thezookaycompany.zookayproject.services.AnimalService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,6 +32,8 @@ public class AnimalServiceImpl implements AnimalService {
     private CageRepository cageRepository;
     @Autowired
     private AnimalSpeciesRepository animalSpeciesRepository;
+    @Autowired
+    private FeedingScheduleRepository feedingScheduleRepository;
 
     @Override
     public Animal findAnimalByAnimalID(Integer animalId) {
@@ -61,6 +62,11 @@ public class AnimalServiceImpl implements AnimalService {
             return "The name cannot be empty or greater than 21 characters";
         }
 
+        Animal animal = animalRepository.findAnimalByName(animalDto.getName());
+        if(animal != null) {
+            return "This animal's name has already existed.";
+        }
+
         if(animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
             return "The cage id field cannot be empty, please fill it by format Axxxx";
         }
@@ -73,6 +79,10 @@ public class AnimalServiceImpl implements AnimalService {
         Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
         if(cage == null) {
             return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
+        }
+
+        if(cage.getCageAnimals().size() >= cage.getCapacity()) {
+            return "This cage has already been at maximum capacity";
         }
 
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
@@ -133,6 +143,10 @@ public class AnimalServiceImpl implements AnimalService {
         Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
         if(cage == null) {
             return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
+        }
+
+        if(cage.getCageAnimals().size() >= cage.getCapacity()) {
+            return "This cage has already been at maximum capacity";
         }
 
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
@@ -243,6 +257,14 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public String removeAnimalSpecies(Integer id) {
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(id).orElseThrow(() -> new InvalidAnimalException("Not found this Animal ID to delete."));
+        List<Animal> animals = animalRepository.findAnimalsBySpecies_SpeciesId(animalSpecies.getSpeciesId());
+        if(!animals.isEmpty()) {
+            return "You cannot remove this species because it was constrained by animals. You may consider to remove animals first.";
+        }
+        List<FeedingSchedule> feedingSchedules = feedingScheduleRepository.findBySpecies_SpeciesId(animalSpecies.getSpeciesId());
+        if(!feedingSchedules.isEmpty()) {
+            return "You cannot remove this species because it was constrained by feeding schedules. You may consider to remove feeding schedules first.";
+        }
         animalSpeciesRepository.delete(animalSpecies);
         return String.valueOf(animalSpecies.getSpeciesId());
     }
