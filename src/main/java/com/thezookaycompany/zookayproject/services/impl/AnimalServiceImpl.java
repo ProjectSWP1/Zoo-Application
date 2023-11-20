@@ -4,13 +4,11 @@ import com.thezookaycompany.zookayproject.exception.InvalidAnimalException;
 import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
 import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
-import com.thezookaycompany.zookayproject.model.entity.Animal;
-import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
-import com.thezookaycompany.zookayproject.model.entity.Cage;
-import com.thezookaycompany.zookayproject.model.entity.Employees;
+import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.AnimalSpeciesRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
+import com.thezookaycompany.zookayproject.repositories.FeedingScheduleRepository;
 import com.thezookaycompany.zookayproject.services.AnimalService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,8 @@ public class AnimalServiceImpl implements AnimalService {
     private CageRepository cageRepository;
     @Autowired
     private AnimalSpeciesRepository animalSpeciesRepository;
+    @Autowired
+    private FeedingScheduleRepository feedingScheduleRepository;
 
     @Override
     public Animal findAnimalByAnimalID(Integer animalId) {
@@ -258,8 +258,12 @@ public class AnimalServiceImpl implements AnimalService {
     public String removeAnimalSpecies(Integer id) {
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(id).orElseThrow(() -> new InvalidAnimalException("Not found this Animal ID to delete."));
         List<Animal> animals = animalRepository.findAnimalsBySpecies_SpeciesId(animalSpecies.getSpeciesId());
-        if(animals.isEmpty()) {
-            return "You cannot remove this species because it was constrained by animals. You may consider remove animals first.";
+        if(!animals.isEmpty()) {
+            return "You cannot remove this species because it was constrained by animals. You may consider to remove animals first.";
+        }
+        List<FeedingSchedule> feedingSchedules = feedingScheduleRepository.findBySpecies_SpeciesId(animalSpecies.getSpeciesId());
+        if(!feedingSchedules.isEmpty()) {
+            return "You cannot remove this species because it was constrained by feeding schedules. You may consider to remove feeding schedules first.";
         }
         animalSpeciesRepository.delete(animalSpecies);
         return String.valueOf(animalSpecies.getSpeciesId());
