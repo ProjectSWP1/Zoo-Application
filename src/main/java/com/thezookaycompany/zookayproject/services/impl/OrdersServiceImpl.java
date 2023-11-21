@@ -14,9 +14,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -240,8 +238,9 @@ public class OrdersServiceImpl implements OrdersService {
 
     @Override
     public long countSuccessfulTicketsOrderedThisMonth(int year, Month month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
         LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0, 0, 0);
-        LocalDateTime endOfMonth = startOfMonth.withDayOfMonth(month.maxLength()).withHour(23).withMinute(59).withSecond(59).withNano(999);
+        LocalDateTime endOfMonth = yearMonth.atEndOfMonth().atTime(23, 59, 59, 999999999);
 
         List<Orders> successfulOrdersForMonth = ordersRepository.findSuccessfulOrdersThisMonth(
                 startOfMonth, endOfMonth, true);
@@ -250,6 +249,8 @@ public class OrdersServiceImpl implements OrdersService {
                 .mapToLong(Orders::getQuantity)
                 .sum();
     }
+
+
 
     @Override
     public long countSuccessfulTicketsOrderedThisYear(int year) {
