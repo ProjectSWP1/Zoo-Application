@@ -214,8 +214,8 @@ public class AccountServiceImpl implements AccountService {
         }
         Set<TrainerSchedule> workList = new HashSet<>();
         if (acc != null) {
-            if (!acc.isActive()) {
-                return "This account has already deactivated.";
+            if (!employees.isActive()) {
+                return "This employee has already deactivated.";
             }
 
             // neu account nay la cua trainer thi xoa tat ca lich cua trainer do
