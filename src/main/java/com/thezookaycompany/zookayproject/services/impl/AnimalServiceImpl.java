@@ -280,33 +280,33 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
     @Override
-    public List<Animal> findAllByHeightAsc() {
-        return animalRepository.findAllByHeightAsc();
+    public List<Animal> findAllByHeightAsc(String zooAreaId) {
+        return animalRepository.findAllByCage_ZooArea_ZooAreaIdOrderByHeightAsc(zooAreaId);
     }
 
     @Override
-    public List<Animal> findAllByHeightDesc() {
-        return animalRepository.findAllByHeightDesc();
+    public List<Animal> findAllByHeightDesc(String zooAreaId) {
+        return animalRepository.findAllByCage_ZooArea_ZooAreaIdOrderByHeightDesc(zooAreaId);
     }
 
     @Override
-    public List<Animal> findAllByWeightAsc() {
-        return animalRepository.findAllByWeightAsc();
+    public List<Animal> findAllByWeightAsc(String zooAreaId) {
+        return animalRepository.findAllByCage_ZooArea_ZooAreaIdOrderByWeightAsc(zooAreaId);
     }
 
     @Override
-    public List<Animal> findAllByWeightDesc() {
-        return animalRepository.findAllByWeightDesc();
+    public List<Animal> findAllByWeightDesc(String zooAreaId) {
+        return animalRepository.findAllByCage_ZooArea_ZooAreaIdOrderByWeightDesc(zooAreaId);
     }
 
     @Override
-    public List<Animal> findAllByAgeAsc() {
-        return animalRepository.findAllByAgeAsc();
+    public List<Animal> findAllByAgeAsc(String zooAreaId) {
+        return animalRepository.findAllByCage_ZooArea_ZooAreaIdOrderByAgeAsc(zooAreaId);
     }
 
     @Override
-    public List<Animal> findAllByAgeDesc() {
-        return animalRepository.findAllByAgeDesc();
+    public List<Animal> findAllByAgeDesc(String zooAreaId) {
+        return animalRepository.findAllByCage_ZooArea_ZooAreaIdOrderByAgeDesc(zooAreaId);
     }
 
     @Override

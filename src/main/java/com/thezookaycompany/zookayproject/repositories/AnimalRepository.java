@@ -49,4 +49,13 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
 
     List<Animal> findAnimalsBySpecies_SpeciesId(Integer speciesId);
 
+    List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByHeightAsc(String zooAreaId);
+    List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByHeightDesc(String zooAreaId);
+
+    List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByWeightAsc(String zooAreaId);
+    List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByWeightDesc(String zooAreaId);
+
+    List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByAgeAsc(String zooAreaId);
+    List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByAgeDesc(String zooAreaId);
+
 }

@@ -204,34 +204,34 @@ public class ManageController {
         return animalService.getAllAnimalSpecies();
     }
 
-    @GetMapping("/get-animal/height-ascending")
-    public List<Animal> getAnimalsByHeightAscending() {
-        return animalService.findAllByHeightAsc();
+    @GetMapping("/get-animal/height-ascending/{zooAreaId}")
+    public List<Animal> getAnimalsByHeightAscending(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findAllByHeightAsc(zooAreaId);
     }
 
-    @GetMapping("/get-animal/height-descending")
-    public List<Animal> getAnimalsByHeightDescending() {
-        return animalService.findAllByHeightDesc();
+    @GetMapping("/get-animal/height-descending/{zooAreaId}")
+    public List<Animal> getAnimalsByHeightDescending(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findAllByHeightDesc(zooAreaId);
     }
 
-    @GetMapping("/get-animal/weight-ascending")
-    public List<Animal> getAnimalsByWeightAscending() {
-        return animalService.findAllByWeightAsc();
+    @GetMapping("/get-animal/weight-ascending/{zooAreaId}")
+    public List<Animal> getAnimalsByWeightAscending(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findAllByWeightAsc(zooAreaId);
     }
 
-    @GetMapping("/get-animal/weight-descending")
-    public List<Animal> getAnimalsByWeightDescending() {
-        return animalService.findAllByWeightDesc();
+    @GetMapping("/get-animal/weight-descending/{zooAreaId}")
+    public List<Animal> getAnimalsByWeightDescending(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findAllByWeightDesc(zooAreaId);
     }
 
-    @GetMapping("/get-animal/age-ascending")
-    public List<Animal> getAnimalsByAgeAscending() {
-        return animalService.findAllByAgeAsc();
+    @GetMapping("/get-animal/age-ascending/{zooAreaId}")
+    public List<Animal> getAnimalsByAgeAscending(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findAllByAgeAsc(zooAreaId);
     }
 
-    @GetMapping("/get-animal/age-descending")
-    public List<Animal> getAnimalsByAgeDescending() {
-        return animalService.findAllByAgeDesc();
+    @GetMapping("/get-animal/age-descending/{zooAreaId}")
+    public List<Animal> getAnimalsByAgeDescending(@PathVariable("zooAreaId") String zooAreaId) {
+        return animalService.findAllByAgeDesc(zooAreaId);
     }
 
     @GetMapping("/get-animal-with-species-and-cage/{animalId}")

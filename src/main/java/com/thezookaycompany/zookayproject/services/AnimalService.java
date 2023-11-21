@@ -27,12 +27,12 @@ public interface AnimalService {
 
     AnimalSpecies findAnimalByAnimalSpeciesID(Integer speciesId);
 
-    List<Animal> findAllByHeightAsc();
-    List<Animal> findAllByHeightDesc();
-    List<Animal> findAllByWeightAsc();
-    List<Animal> findAllByWeightDesc();
-    List<Animal> findAllByAgeAsc();
-    List<Animal> findAllByAgeDesc();
+    List<Animal> findAllByHeightAsc(String zooAreaId);
+    List<Animal> findAllByHeightDesc(String zooAreaId);
+    List<Animal> findAllByWeightAsc(String zooAreaId);
+    List<Animal> findAllByWeightDesc(String zooAreaId);
+    List<Animal> findAllByAgeAsc(String zooAreaId);
+    List<Animal> findAllByAgeDesc(String zooAreaId);
 
     void uploadAnimalImage(Integer animalId, byte[] imageBytes, String format) throws IOException;
     void deleteAnimalImage(Integer animalId);
