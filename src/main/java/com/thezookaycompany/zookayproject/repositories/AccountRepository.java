@@ -18,21 +18,16 @@ public interface AccountRepository extends JpaRepository<Account, String> {
 
     Optional<Account> findByUsername(String username);
 
-    Optional<Account> findByEmail(String email);
-
 
     @Query("SELECT a FROM Account a WHERE a.email = :email")
     Account findOneByEmail(@Param("email") String email);
 
    Account findAccountByEmail(String email);
 
-    Optional<Account> findOneByEmailAndPassword(String email, String password);
-
     Account findByResetPwdToken (String token);
 
     @Query("SELECT a FROM Account a inner join a.role r where r.RoleID = ?1")
     List<Account> findAllByRole(@Param("role") String RoleID);
-
 
     @Modifying
     @Transactional

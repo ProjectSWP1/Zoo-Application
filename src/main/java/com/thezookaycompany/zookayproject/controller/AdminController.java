@@ -2,7 +2,10 @@ package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.exception.InvalidTicketException;
 import com.thezookaycompany.zookayproject.exception.InvalidVoucherException;
-import com.thezookaycompany.zookayproject.model.dto.*;
+import com.thezookaycompany.zookayproject.model.dto.AccountDto;
+import com.thezookaycompany.zookayproject.model.dto.EmployeesDto;
+import com.thezookaycompany.zookayproject.model.dto.TicketDto;
+import com.thezookaycompany.zookayproject.model.dto.VoucherDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Employees;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
@@ -14,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -29,13 +31,14 @@ public class AdminController {
     private VoucherService voucherService;
     @Autowired
     private OrdersService ordersService;
+
     @GetMapping("/")
     public String adminAccess() {
         return "Admin accessed";
     }
 
     @GetMapping("/getAccount")
-    public List<Account> getAllAccount(){
+    public List<Account> getAllAccount() {
         return accountService.getAllAccount();
     }
 
@@ -48,8 +51,8 @@ public class AdminController {
     @PutMapping("/assignRole")
     public ResponseEntity<?> assignRoleToAccount(@RequestBody AccountDto accountDto, @RequestParam String roleId) {
         boolean isSuccess = accountService.assignRoleToAccount(accountDto, roleId);
-        if(isSuccess) {
-            return ResponseEntity.ok("The account successfully assigned to Role " + roleId+".");
+        if (isSuccess) {
+            return ResponseEntity.ok("The account successfully assigned to Role " + roleId + ".");
         } else {
             return ResponseEntity.badRequest().body("Cannot assign this account to this role. Please check the Employee has this email account or not.");
         }
@@ -66,7 +69,7 @@ public class AdminController {
     @PostMapping("/create-account")
     public ResponseEntity<?> createAccount(@RequestBody RequestWrapper requestWrapper, @RequestParam String roleId, @RequestParam String zooArea_Id) {
         String response = accountService.admin_addAccount(requestWrapper.getAccountDto(), requestWrapper.getMemberDto(), roleId, zooArea_Id);
-        if(response.contains("success")) {
+        if (response.contains("success")) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } else {
             return ResponseEntity.badRequest().body(response);
@@ -77,7 +80,7 @@ public class AdminController {
     @DeleteMapping("/delete-account/{email}")
     public ResponseEntity<?> removeAccount(@PathVariable("email") String email) {
         String response = accountService.removeAccount(email);
-        if(response.contains("success")) {
+        if (response.contains("success")) {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body(response);
@@ -87,7 +90,7 @@ public class AdminController {
     @PutMapping("/deactivate-account/{email}")
     public ResponseEntity<?> deactivateAccount(@PathVariable("email") String email) {
         String response = accountService.deactivateAccount(email);
-        if(response.contains("success")) {
+        if (response.contains("success")) {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.badRequest().body(response);
@@ -111,6 +114,7 @@ public class AdminController {
     public List<Ticket> getTicketByDescription(@PathVariable("keyword") String keyword) {
         return ticketService.getTicketByDescriptionKeyword(keyword);
     }
+
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
     @GetMapping("/get-ticket/ascending")
     public List<Ticket> getTicketByTicketPriceAscending() {
@@ -122,6 +126,7 @@ public class AdminController {
     public List<Ticket> getTicketByTicketPriceDescending() {
         return ticketService.findAllByTicketPriceDesc();
     }
+
     //Hàm này tạo Ticket mới : CREATE//
     //{
     //    "ticketId": "T023",
@@ -137,6 +142,7 @@ public class AdminController {
         }
         return ResponseEntity.badRequest().body(response);
     }
+
     //Hàm này Update Ticket : UPDATE//
     //{
     //    "ticketId": "T023",
@@ -154,6 +160,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
         }
     }
+
     //Hàm này xóa Ticket : REMOVE//
     @DeleteMapping("/remove-ticket/{ticketId}")
     public ResponseEntity<String> removeTicket(@PathVariable("ticketId") String ticketId) {
@@ -237,11 +244,12 @@ public class AdminController {
     @PostMapping("/create-voucher")
     public ResponseEntity<String> createAnimalVoucher(@RequestBody VoucherDto voucherDto) {
         String response = voucherService.createVoucher(voucherDto);
-        if(response.contains(SUCCESS_RESPONSE)) {
+        if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
         return ResponseEntity.badRequest().body(response);
     }
+
     //Update ticketID on Voucher
     @PutMapping("/update-voucher")
     public ResponseEntity<?> updateVoucher(@RequestBody VoucherDto voucherDto) {
@@ -253,6 +261,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
         }
     }
+
     @DeleteMapping("/delete-voucher/{voucherId}")
     public ResponseEntity<String> removeVoucher(@PathVariable("voucherId") String voucherId) {
         try {
@@ -262,15 +271,18 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Voucher not found with ID: " + voucherId);
         }
     }
+
     //Find order
     @GetMapping("/get-all-order")
     public List<Orders> getAllOrdersDetail() {
         return ordersService.getAllOrdersDetail();
     }
+
     @GetMapping("/get-order/{orderID}")
     public Orders getOrderDetailsById(@PathVariable("orderID") Integer orderID) {
         return ordersService.getOrderDetailsById(orderID);
     }
+
     @PostMapping("/gen-ticket/{price}/{childrenPrice}")
     public ResponseEntity<?> genTicketForWeeks(@PathVariable("price") Integer price, @PathVariable("childrenPrice") Integer childrenPrice) {
         String response = ticketService.genTicket(price, childrenPrice);

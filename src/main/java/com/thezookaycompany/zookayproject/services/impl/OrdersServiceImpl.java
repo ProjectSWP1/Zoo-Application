@@ -11,14 +11,15 @@ import com.thezookaycompany.zookayproject.repositories.TicketRepository;
 import com.thezookaycompany.zookayproject.services.OrdersService;
 import com.thezookaycompany.zookayproject.services.VoucherService;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrdersServiceImpl implements OrdersService {
@@ -40,7 +41,9 @@ public class OrdersServiceImpl implements OrdersService {
     public Orders findOrdersByOrderID(Integer orderID) {
         return ordersRepository.findOrdersByOrderID(orderID);
     }
+
     private final EntityManager entityManager;
+
     @Autowired
     public OrdersServiceImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -68,6 +71,7 @@ public class OrdersServiceImpl implements OrdersService {
             throw new OrderNotFoundException("Order not found");
         }
     }
+
     @Override
     public String createOrders(OrdersDto ordersDto) {
         // Create a new Orders instance
@@ -96,7 +100,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         Orders orders = new Orders();
 
-        if(ordersDto.getVoucherId() != null) {
+        if (ordersDto.getVoucherId() != null) {
             Voucher voucher = voucherService.findVoucherByID(ordersDto.getVoucherId());
             orders.setOrderVoucher(voucher);
         }
@@ -107,10 +111,10 @@ public class OrdersServiceImpl implements OrdersService {
         orders.setEmail(account.getEmail());
         String email = account.getEmail();
         Member member = memberRepository.findMemberByEmail(email);
-        if(member == null){
+        if (member == null) {
             System.out.println("Cannot found this email");
         }
-      // orders.setMember();
+        // orders.setMember();
 
         //******** gọi ticket ra cập nhật expDate save và truyền vào entity orders
         Ticket ticket = ticketRepository.findTicketByTicketId(ordersDto.getTicketId());
@@ -126,7 +130,7 @@ public class OrdersServiceImpl implements OrdersService {
     }
 
     @Override
-    public String createGuestOrders(OrdersDto ordersDto){
+    public String createGuestOrders(OrdersDto ordersDto) {
 
         Orders orders = new Orders();
         orders.setEmail(ordersDto.getEmail());
@@ -180,6 +184,7 @@ public class OrdersServiceImpl implements OrdersService {
     public List<Orders> getAllOrdersDetail() {
         return ordersRepository.findAll();
     }
+
     @Override
     public Orders getOrderDetailsById(Integer orderID) {
         Orders order = ordersRepository.findById(orderID).orElse(null);
@@ -198,6 +203,7 @@ public class OrdersServiceImpl implements OrdersService {
 
         return totalQuantitySold;
     }
+
     @Override
     public long countSuccessfulTicketsOrderedToday() {
         // Get the current date and time
@@ -231,6 +237,7 @@ public class OrdersServiceImpl implements OrdersService {
                 .mapToLong(Orders::getQuantity)
                 .sum();
     }
+
     @Override
     public long countSuccessfulTicketsOrderedThisMonth(int year, Month month) {
         LocalDateTime startOfMonth = LocalDateTime.of(year, month, 1, 0, 0, 0, 0);

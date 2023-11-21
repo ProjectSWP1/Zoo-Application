@@ -3,9 +3,7 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.billingportal.Session;
 import com.stripe.param.PaymentIntentCreateParams;
-import com.stripe.param.checkout.SessionCreateParams;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.dto.PaymentResponse;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
@@ -19,8 +17,6 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
@@ -37,7 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
     private String secretKey;
 
     @PostConstruct
-    public void setup (){
+    public void setup() {
         Stripe.apiKey = secretKey;
     }
 
@@ -58,7 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .setAmount((long) totalOrderPrice)
                         .setCurrency("vnd")
                         .putMetadata("productName", ticket.getTicketId())
-                        .setDescription("Paid for orderId: "+ orders.getOrderID())
+                        .setDescription("Paid for orderId: " + orders.getOrderID())
                         // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
                         .setAutomaticPaymentMethods(
                                 PaymentIntentCreateParams.AutomaticPaymentMethods
@@ -70,12 +66,12 @@ public class PaymentServiceImpl implements PaymentService {
 
         // Create a PaymentIntent with the order amount and currency
         PaymentIntent paymentIntent = PaymentIntent.create(params);
-        return new PaymentResponse(paymentIntent.getClientSecret(),paymentIntent.getId());
+        return new PaymentResponse(paymentIntent.getClientSecret(), paymentIntent.getId());
     }
 
     private static double getTotalOrderPrice(OrdersDto ordersDto, Ticket ticket, Orders orders) {
         double totalOrderPrice = 0.0;
-        if(orders.getChildrenQuantity() > 0) {
+        if (orders.getChildrenQuantity() > 0) {
             //tinh tong tien order voi ve tre em
             totalOrderPrice = (ticket.getTicketPrice() * orders.getQuantity()) + (ticket.getChildrenTicketPrice() * orders.getChildrenQuantity());
         } else {
@@ -97,15 +93,14 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentIntent retrieve = PaymentIntent.retrieve(intendId);
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
         Payment payment = new Payment();
-        if(retrieve.getStatus()!=null){
+        if (retrieve.getStatus() != null) {
 
             payment.setSuccess(true);
             payment.setOrder(orders);
             paymentRepository.save(payment);
             orders.setOrderPayments(payment);
             ordersRepository.save(orders);
-        }
-        else {
+        } else {
             payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
@@ -119,16 +114,16 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment findPaymentByOrderID(String orderId) {
         Payment payment = paymentRepository.findPaymentByOrder_OrderID(Integer.parseInt(orderId)).orElse(null);
-            //    paymentRepository.findPaymentByOrder_OrderID();
-                return payment;
+        //    paymentRepository.findPaymentByOrder_OrderID();
+        return payment;
     }
 
     @Override
     public String handlePaymentFailed(String orderId) {
         Orders orders = ordersRepository.findOrdersByOrderID(Integer.parseInt(orderId));
-        if(orders!= null) {
+        if (orders != null) {
             Payment payment = new Payment();
-            if(orders.getDescription() == null || orders.getDescription().isEmpty()){
+            if (orders.getDescription() == null || orders.getDescription().isEmpty()) {
                 orders.setDescription("PENDING PAYMENT - PURCHASED CANCELLED");
             } else {
                 orders.setDescription(orders.getDescription().concat(" PENDING PAYMENT - PURCHASED CANCELLED"));
@@ -136,8 +131,8 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setSuccess(false);
             payment.setOrder(orders);
             paymentRepository.save(payment);
-          //  orders.setOrderPayments(payment);
-           // ordersRepository.save(orders);
+            //  orders.setOrderPayments(payment);
+            // ordersRepository.save(orders);
         }
         return "Cancelled Payment - Purchased failed";
     }
@@ -145,7 +140,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public boolean checkPaymentStatus(OrdersDto ordersDto) {
         Payment payment = paymentRepository.findPaymentByOrder(ordersRepository.findOrdersByOrderID(ordersDto.getOrderID()));
-        if(payment.getSuccess() != null && payment.getSuccess()) {
+        if (payment.getSuccess() != null && payment.getSuccess()) {
             return payment.getSuccess();
         }
         return payment.getSuccess();

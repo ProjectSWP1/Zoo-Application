@@ -22,15 +22,15 @@ public class ZooNewsServiceImpl implements ZooNewsService {
 
     @Override
     public String postNews(ZooNewsDto zooNewsDto) {
-        if(zooNewsDto.getContent().isEmpty() || zooNewsDto.getContent().length() > 255) {
+        if (zooNewsDto.getContent().isEmpty() || zooNewsDto.getContent().length() > 255) {
             return "The zoo news' content must not be greater than 256 characters or empty";
         }
 
-        if(zooNewsDto.getDescription().isEmpty() || zooNewsDto.getDescription().length() > 255) {
+        if (zooNewsDto.getDescription().isEmpty() || zooNewsDto.getDescription().length() > 255) {
             return "The zoo news' description must not be greater than 256 characters or empty";
         }
 
-        if(zooNewsDto.getEmpId() == null) {
+        if (zooNewsDto.getEmpId() == null) {
             return "The Employee ID must not be empty or Employee ID hasn't existed";
         }
 
@@ -47,11 +47,11 @@ public class ZooNewsServiceImpl implements ZooNewsService {
 
     @Override
     public String removeNews(ZooNewsDto zooNewsDto) {
-        if(zooNewsDto.getNewsId() == null) {
+        if (zooNewsDto.getNewsId() == null) {
             return "Cannot find news id";
         }
         ZooNews zooNews = zooNewsRepository.findById(zooNewsDto.getNewsId()).orElse(null);
-        if(zooNews == null) {
+        if (zooNews == null) {
             return "This news does not exist";
         }
 
@@ -61,11 +61,11 @@ public class ZooNewsServiceImpl implements ZooNewsService {
 
     @Override
     public String updateNews(ZooNewsDto zooNewsDto) {
-        if(zooNewsDto.getNewsId() == null) {
+        if (zooNewsDto.getNewsId() == null) {
             return "Cannot find news id";
         }
         ZooNews zooNews = zooNewsRepository.findById(zooNewsDto.getNewsId()).orElse(null);
-        if(zooNews == null) {
+        if (zooNews == null) {
             return "This news does not exist";
         }
 

@@ -1,7 +1,5 @@
 package com.thezookaycompany.zookayproject.controller;
 
-import com.thezookaycompany.zookayproject.exception.PaymentNotSuccessfulException;
-import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;

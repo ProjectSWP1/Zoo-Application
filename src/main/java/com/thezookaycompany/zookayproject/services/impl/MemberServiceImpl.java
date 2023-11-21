@@ -3,17 +3,15 @@ package com.thezookaycompany.zookayproject.services.impl;
 import com.thezookaycompany.zookayproject.model.dto.AccountDto;
 import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.Member;
-import com.thezookaycompany.zookayproject.model.entity.ZooArea;
 import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,6 +21,7 @@ public class MemberServiceImpl implements MemberServices {
     private MemberRepository memberRepository;
     @Autowired
     private ZooAreaRepository zooAreRepository;
+
     @Override
     public void addMember(AccountDto accountDto, MemberDto memberDto) {
         Member member = new Member(
@@ -110,9 +109,6 @@ public class MemberServiceImpl implements MemberServices {
                 member.getDob().toString() // Convert Date to String for DTO
         );
     }
-
-
-
 
 
 }

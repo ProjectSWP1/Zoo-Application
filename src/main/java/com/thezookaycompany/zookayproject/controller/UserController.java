@@ -3,9 +3,7 @@ package com.thezookaycompany.zookayproject.controller;
 import com.stripe.exception.StripeException;
 import com.thezookaycompany.zookayproject.model.dto.*;
 import com.thezookaycompany.zookayproject.model.entity.*;
-import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.*;
-import com.thezookaycompany.zookayproject.utils.TicketQRCodeGenerator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,6 +58,7 @@ public class UserController {
     public String userAccess() {
         return "User accessed";
     }
+
     @PostMapping("/findUser")
     public Account getUser(@RequestBody AccountDto accountDto) {
         return accountService.getUserByEmail(accountDto.getEmail());
@@ -89,39 +88,42 @@ public class UserController {
     public ResponseEntity<String> processSendMailWithToken(@RequestBody AccountDto accountDto) throws MessagingException {
 
         //send mail with token
-            Account account = accountService.getUserByEmail(accountDto.getEmail());
-            if(account !=null){
-                emailService.sendVertificationEmail(account);
-            } else {
-               ResponseEntity.status(404);
-            }
+        Account account = accountService.getUserByEmail(accountDto.getEmail());
+        if (account != null) {
+            emailService.sendVertificationEmail(account);
+        } else {
+            ResponseEntity.status(404);
+        }
         return ResponseEntity.ok("Please check your mail to get Verification OTP");
     }
 
     @PutMapping("/verify")
-    public String verifyAccWithToken (@RequestParam String email, @RequestParam String otp){
+    public String verifyAccWithToken(@RequestParam String email, @RequestParam String otp) {
         String message;
         Account account = accountService.getUserByEmail(email);
-        if(account !=null){
-              message = accountService.verifyAccount(account.getEmail(), otp);
+        if (account != null) {
+            message = accountService.verifyAccount(account.getEmail(), otp);
         } else {
-            return "Invalid email - Couldn't find any account with email: "+email;
+            return "Invalid email - Couldn't find any account with email: " + email;
         }
         return message;
     }
+
     @Autowired
     private MemberServices memberServices;
 
     @GetMapping("/member/all")
-    public List<Member> getAllMember(){
+    public List<Member> getAllMember() {
 
         return memberServices.getAllMember();
     }
+
     @GetMapping("/member/{phoneNumber}")
     public Member findMemberByPhoneNumber(@PathVariable("phoneNumber") String phoneNumber) {
 
         return memberServices.findMemberByPhoneNumber(phoneNumber);
     }
+
     @PutMapping("/update/{phoneNumber}")
     public ResponseEntity<MemberDto> updateMemberByPhoneNumber(
             @PathVariable String phoneNumber,
@@ -139,6 +141,7 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
     private Member convertDtoToMember(MemberDto memberDto) {
         Member member = new Member();
         member.setPhoneNumber(memberDto.getPhoneNumber());
@@ -167,13 +170,13 @@ public class UserController {
     }
 
 
-
     @GetMapping("/zoo-area/id/{zooAreaId}")
     ZooArea findZooAreaByZooAreaID(@PathVariable("zooAreaId") String zooAreaId) {
 
         return zooAreaService.findZooAreaByZooAreaID(zooAreaId);
 
     }
+
     @GetMapping("/zoo-area/des/{description}")
     ZooArea findZooAreaByZooAreaDes(@PathVariable("description") String description) {
 
@@ -182,10 +185,9 @@ public class UserController {
     }
 
     @GetMapping("/zoo-area/all")
-    public List <ZooArea> findAllZooArea(){
+    public List<ZooArea> findAllZooArea() {
         return zooAreaService.findAllZooArea();
     }
-
 
 
     //PAYMENT---------------------------------------------------------------------------
@@ -195,31 +197,32 @@ public class UserController {
     }
 
     @GetMapping("/test-send-email-payment")
-    public ResponseEntity<String> sendEmailAfterPayment (@RequestBody OrdersDto ordersDto) throws MessagingException {
+    public ResponseEntity<String> sendEmailAfterPayment(@RequestBody OrdersDto ordersDto) throws MessagingException {
         emailService.sendAfterPaymentEmail(ordersDto);
         return ResponseEntity.ok("ok");
     }
-    @PutMapping("/cancel-payment/{orderID}")
-    public ResponseEntity<String> cancelPayment(@PathVariable("orderID")String orderId) {
 
-        String message= paymentService.handlePaymentFailed(orderId);
+    @PutMapping("/cancel-payment/{orderID}")
+    public ResponseEntity<String> cancelPayment(@PathVariable("orderID") String orderId) {
+
+        String message = paymentService.handlePaymentFailed(orderId);
         return ResponseEntity.ok(message);
     }
 
 
     @PutMapping("/confirm-payment")
-    public ResponseEntity<String> confirmPayment (@RequestBody OrdersDto ordersDto) throws MessagingException, StripeException {
-        String message= "";
-        if (ordersDto.getIntentId()!= null){
+    public ResponseEntity<String> confirmPayment(@RequestBody OrdersDto ordersDto) throws MessagingException, StripeException {
+        String message = "";
+        if (ordersDto.getIntentId() != null) {
 
-                message =paymentService.confirmPayment(ordersDto,ordersDto.getIntentId());
-                if(!paymentService.checkPaymentStatus(ordersDto)){
-                    message= "Purchased failed. Please try again later";
-                } else {
-                    // gui mail neu da pthanh toan
-                    Orders orders = ordersService.findOrdersByOrderID(ordersDto.getOrderID());
-                    emailService.sendAfterPaymentEmail(ordersDto);
-                }
+            message = paymentService.confirmPayment(ordersDto, ordersDto.getIntentId());
+            if (!paymentService.checkPaymentStatus(ordersDto)) {
+                message = "Purchased failed. Please try again later";
+            } else {
+                // gui mail neu da pthanh toan
+                Orders orders = ordersService.findOrdersByOrderID(ordersDto.getOrderID());
+                emailService.sendAfterPaymentEmail(ordersDto);
+            }
 
         } else {
             message = "OrderId has been paid";
@@ -232,11 +235,13 @@ public class UserController {
     //GET ALL VOUCHER
     @Autowired
     private VoucherService voucherService;
+
     @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/get-all-voucher")
-    public List <Voucher> getAllVoucher(){
+    public List<Voucher> getAllVoucher() {
         return voucherService.getAllVoucher();
     }
+
     @GetMapping("/getnews")
     public List<ZooNews> getAllNews() {
         return zooNewsService.getNews();
@@ -267,6 +272,7 @@ public class UserController {
     public List<Ticket> getTicketByDescription(@PathVariable String keyword) {
         return ticketService.getTicketByDescriptionKeyword(keyword);
     }
+
     //Hàm này lấy tất cả Ticket dựa vào Price theo thứ tự TĂNG DẦN//
     @GetMapping("/get-ticket/ascending")
     public List<Ticket> getTicketByTicketPriceAscending() {

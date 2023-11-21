@@ -38,7 +38,7 @@ public class TicketServiceImpl implements TicketService {
         if (expDate != null && expDate.after(new Date(currentDate.getTime() + 24 * 60 * 60 * 1000))) {
             //Find Ticket
             if (ticketRepository.findById(ticketDto.getTicketId()).isPresent()) {
-                return  "This Ticket ID has existed.";
+                return "This Ticket ID has existed.";
             }
 
             // Create a new Ticket entity and populate it with data from the DTO
@@ -57,7 +57,6 @@ public class TicketServiceImpl implements TicketService {
             return "Please give me expDate greater than 1 day to get current date";
         }
     }
-
 
 
     @Override
@@ -90,7 +89,6 @@ public class TicketServiceImpl implements TicketService {
             return "Ticket not found with ID: " + ticketDto.getTicketId();
         }
     }
-
 
 
     @Override
@@ -135,7 +133,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public String genTicket(Integer price, Integer childrenPrice) {
-        if(price == null) {
+        if (price == null) {
             return "You cannot leave empty price";
         }
         try {

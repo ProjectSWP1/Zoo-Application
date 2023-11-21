@@ -2,7 +2,6 @@ package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +35,7 @@ public class DashboardController {
     public ResponseEntity<?> countAnimals() {
         return ResponseEntity.ok(animalService.countAnimals());
     }
+
     // Đếm số employees hiện tại đang làm việc tại Zoo (?active = 1)
     @GetMapping("/employees")
     public ResponseEntity<?> countEmployees() {
@@ -65,38 +65,43 @@ public class DashboardController {
     public ResponseEntity<?> countFeedingSchedules() {
         return ResponseEntity.ok(feedingScheduleServices.countFeedingSchedules());
     }
+
     //Đếm số lượng vé đã được mua
     @GetMapping("/count-sold-tickets")
     public long countSoldTickets() {
         return ordersService.countSoldTickets();
     }
+
     //Đếm số vé đã mua trong ngày hoặc tính số người trong sở thú
     @GetMapping("/count-ticket-ordered-today")
-    private long countSuccessfulTicketsOrderedToday(){
+    private long countSuccessfulTicketsOrderedToday() {
         return ordersService.countSuccessfulTicketsOrderedToday();
     }
+
     //Đếm số vé đã mua trong tuần
     @GetMapping("/count-ticket-ordered-week")
-    private long countSuccessfulTicketsOrderedWeek(){
+    private long countSuccessfulTicketsOrderedWeek() {
         return ordersService.countSuccessfulTicketsOrderedThisWeek();
     }
+
     //Đếm số vé đã mua trong tháng của năm nào
     //http://localhost:8080/dashboard/count-ticket-ordered-month?year=2023&month=10
     @GetMapping("/count-ticket-ordered-month")
     private long countSuccessfulTicketsOrderedMonth(
-        @RequestParam("year") int year,
-        @RequestParam("month") int month
+            @RequestParam("year") int year,
+            @RequestParam("month") int month
     ) {
-            return ordersService.countSuccessfulTicketsOrderedThisMonth(year, Month.of(month));
+        return ordersService.countSuccessfulTicketsOrderedThisMonth(year, Month.of(month));
     }
+
     //Đếm số vé đã mua trong năm
     //http://localhost:8080/dashboard/count-ticket-ordered-year?year=2023
     @GetMapping("/count-ticket-ordered-year")
     private long countSuccessfulTicketsOrderedYear(
-            @RequestParam("year") int year)
-    {
+            @RequestParam("year") int year) {
         return ordersService.countSuccessfulTicketsOrderedThisYear(year);
     }
+
     // TỔNG TIỀN CỦA ZOO KIẾM ĐƯỢC
     @GetMapping("/total-price")
     public double getTotalPriceOfZoo() {

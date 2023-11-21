@@ -2,16 +2,12 @@ package com.thezookaycompany.zookayproject.controller;
 
 import com.thezookaycompany.zookayproject.model.dto.TicketDto;
 import com.thezookaycompany.zookayproject.model.dto.VoucherDto;
-import com.thezookaycompany.zookayproject.model.entity.Employees;
-import com.thezookaycompany.zookayproject.repositories.EmployeesRepository;
 import com.thezookaycompany.zookayproject.services.TicketService;
 import com.thezookaycompany.zookayproject.services.VoucherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @CrossOrigin("*")
@@ -27,6 +23,7 @@ public class MainController {
     public String home() {
         return "hello there";
     }
+
     //Hàm này tạo Ticket mới : CREATE//
     //{
     //    "ticketId": "T023",
@@ -42,11 +39,12 @@ public class MainController {
         }
         return ResponseEntity.badRequest().body(response);
     }
+
     //Create Voucher with Voucher ID generated on FE
     @PostMapping("/create-voucher")
     public ResponseEntity<String> createAnimalVoucher(@RequestBody VoucherDto voucherDto) {
         String response = voucherService.createVoucher(voucherDto);
-        if(response.contains(SUCCESS_RESPONSE)) {
+        if (response.contains(SUCCESS_RESPONSE)) {
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
         return ResponseEntity.badRequest().body(response);

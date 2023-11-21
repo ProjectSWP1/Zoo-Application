@@ -55,9 +55,9 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
 
     @Override
     public String removeFeedingSchedule(Integer feedScheduleId) {
-        if(feedingScheduleRepository.existsById(feedScheduleId)) {
+        if (feedingScheduleRepository.existsById(feedScheduleId)) {
             feedingScheduleRepository.deleteById(feedScheduleId);
-            return "Deleted feeding schedule with ID "+ feedScheduleId + " successfully.";
+            return "Deleted feeding schedule with ID " + feedScheduleId + " successfully.";
         }
         return "Not found feeding schedule ID " + feedScheduleId;
     }
@@ -80,8 +80,8 @@ public class FeedingScheduleServiceImpl implements FeedingScheduleServices {
             return "Invalid input field: speciesId";
         }
 
-        if(feedingScheduleDto.getFeedScheduleId() != null) {
-            if(feedingScheduleRepository.existsById(feedingScheduleDto.getFeedScheduleId())) {
+        if (feedingScheduleDto.getFeedScheduleId() != null) {
+            if (feedingScheduleRepository.existsById(feedingScheduleDto.getFeedScheduleId())) {
                 FeedingSchedule feedingSchedule = new FeedingSchedule();
                 feedingSchedule.setFeedScheduleId(feedingScheduleDto.getFeedScheduleId());
                 feedingSchedule.setDescription(feedingScheduleDto.getDescription());

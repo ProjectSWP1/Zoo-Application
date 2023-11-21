@@ -18,28 +18,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
 
     Animal findAnimalByName(String name);
 
-    @Query("SELECT a FROM Animal a WHERE LOWER(a.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<Animal> findAnimalsByDescriptionContainingKeyword(@Param("keyword") String keyword);
-
     List<Animal> findAnimalsByCage_ZooArea_ZooAreaId(String zooAreaId);
 
-    @Query("SELECT a FROM Animal a ORDER BY a.height ASC")
-    List<Animal> findAllByHeightAsc();
-    @Query("SELECT a FROM Animal a ORDER BY a.height DESC")
-    List<Animal> findAllByHeightDesc();
-
-
-    @Query("SELECT a FROM Animal a ORDER BY a.weight ASC")
-    List<Animal> findAllByWeightAsc();
-    @Query("SELECT a FROM Animal a ORDER BY a.weight DESC")
-    List<Animal> findAllByWeightDesc();
-
-
-    @Query("SELECT a FROM Animal a ORDER BY a.age ASC")
-    List<Animal> findAllByAgeAsc();
-
-    @Query("SELECT a FROM Animal a ORDER BY a.age DESC")
-    List<Animal> findAllByAgeDesc();
 
     @Query("SELECT a.imageAnimal, a.name FROM Animal a WHERE a.species.groups = :groups")
     List<Object[]> findAnimalImageAndNameByGroups(String groups);

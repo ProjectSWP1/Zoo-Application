@@ -9,10 +9,7 @@ import com.thezookaycompany.zookayproject.repositories.AnimalRepository;
 import com.thezookaycompany.zookayproject.repositories.CageRepository;
 import com.thezookaycompany.zookayproject.repositories.ZooAreaRepository;
 import com.thezookaycompany.zookayproject.services.CageService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,16 +32,16 @@ public class CageServiceImpl implements CageService {
 
     @Override
     public Cage createCage(CageDto cageDto) {
-        if(!Pattern.matches(CAGE_ID_REGEX, cageDto.getCageID())) {
+        if (!Pattern.matches(CAGE_ID_REGEX, cageDto.getCageID())) {
             throw new InvalidCageException("Invalid Cage ID format. It should match the pattern Axxxx.");
         }
         //Find cage
-        if(cageRepository.findById(cageDto.getCageID()).isPresent()) {
+        if (cageRepository.findById(cageDto.getCageID()).isPresent()) {
             throw new InvalidCageException("This Cage ID has existed.");
         }
 
         ZooArea zooArea = zooAreaRepository.findById(cageDto.getZoo_AreaID()).orElse(null);
-        if(zooArea == null) {
+        if (zooArea == null) {
             throw new InvalidCageException("Zoo Area not found");
         }
         Cage cage = new Cage();
@@ -60,12 +57,12 @@ public class CageServiceImpl implements CageService {
 
     @Override
     public String updateCage(CageDto cageDto) {
-        if(!Pattern.matches(CAGE_ID_REGEX, cageDto.getCageID())) {
+        if (!Pattern.matches(CAGE_ID_REGEX, cageDto.getCageID())) {
             return "Invalid Cage ID format. It should match the pattern 'Axxxx'.";
         }
         ZooArea zooArea = zooAreaRepository.findById(cageDto.getZoo_AreaID()).orElse(null);
 
-        if(zooArea == null) {
+        if (zooArea == null) {
             return "No Zoo Area included, please input available Zoo Area ID.";
         }
 
@@ -87,8 +84,8 @@ public class CageServiceImpl implements CageService {
     public String removeCage(String id) {
         Cage cage = cageRepository.findById(id).orElseThrow(() -> new InvalidCageException("Not found this Cage ID to delete."));
         Set<Animal> animalCage = cage.getCageAnimals();
-        if(animalCage != null && animalCage.size() != 0) {
-            return "This cage id " + id +  " has a lot of animals, please try to delete these animals and again.";
+        if (animalCage != null && animalCage.size() != 0) {
+            return "This cage id " + id + " has a lot of animals, please try to delete these animals and again.";
         }
         cageRepository.delete(cage);
 

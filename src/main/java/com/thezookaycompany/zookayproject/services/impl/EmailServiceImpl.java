@@ -45,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
                 "        <p style=\"font-size: 16px; margin-bottom: 20px;\">We heard that you lost your ZooKay password. Sorry about that!</p>\n" +
                 "\n" +
                 "        <p style=\"font-size: 16px; margin-bottom: 20px;\">But don't worry! You can use the following button to reset your password:</p>\n" +
-                "        <a href=\""+resetPwdLink+"\" style=\"text-decoration: none;\"><button style=\"background-color: #22a168; color: #fff; border: none; padding: 10px 20px; text-align: center; font-size: 16px; margin: 10px 0; cursor: pointer;\">Reset your password</button></a>\n" +
+                "        <a href=\"" + resetPwdLink + "\" style=\"text-decoration: none;\"><button style=\"background-color: #22a168; color: #fff; border: none; padding: 10px 20px; text-align: center; font-size: 16px; margin: 10px 0; cursor: pointer;\">Reset your password</button></a>\n" +
                 "\n" +
                 "        <p style=\"font-size: 16px; margin-bottom: 20px;\">If you don't use this link within 3 hours, it will expire. To get a new password reset link, visit:</p>\n" +
                 "        <p><a href=\"https://zookay-web.vercel.app/forgotpassword\" style=\"color: #007BFF; text-decoration: none;\">Reset my password</a></p>\n" +
@@ -54,7 +54,6 @@ public class EmailServiceImpl implements EmailService {
                 "    </div>\n" +
                 "</body>\n" +
                 "</html>\n";
-
 
 
         mimeMessageHelper.setText(content, true);
@@ -87,33 +86,33 @@ Sincerely,
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
         String name = orders.getEmail().trim().split("@")[0];
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(orders.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Ticket Purchase Confirmation");
         String visitDate = DateFormatToSimpleDateFormat.formatDateToSimpleDate(orders.getTicket().getVisitDate());
 
-        String mailContent = "Hello "+name+"<br/>" +
+        String mailContent = "Hello " + name + "<br/>" +
                 "Thank you for purchasing tickets to visit our zoo. Below are the details of your order:<br/>";
-        mailContent += "<p><b> Order ID: </b>"+orders.getOrderID()+"</p>";
-        mailContent += "<p><b> Ticket ID: </b>"+orders.getTicket().getTicketId()+"</p>";
-        mailContent += "<p><b> Quantity: </b>"+orders.getQuantity()+"</p>";
-        mailContent += "<p><b> Visit Date: </b>"+visitDate+"</p>";
-        mailContent += "<p><b> Total price paid: </b>"+orders.getTicket().getTicketPrice() * orders.getQuantity()+" VND</p>";
+        mailContent += "<p><b> Order ID: </b>" + orders.getOrderID() + "</p>";
+        mailContent += "<p><b> Ticket ID: </b>" + orders.getTicket().getTicketId() + "</p>";
+        mailContent += "<p><b> Quantity: </b>" + orders.getQuantity() + "</p>";
+        mailContent += "<p><b> Visit Date: </b>" + visitDate + "</p>";
+        mailContent += "<p><b> Total price paid: </b>" + orders.getTicket().getTicketPrice() * orders.getQuantity() + " VND</p>";
         mailContent += "<p><b> Location: </b>Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi Minh City </p>";
-        mailContent +="\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use it to verify and validate your entry.\n" +
+        mailContent += "\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use it to verify and validate your entry.\n" +
                 "<br/>" +
                 "We look forward to welcoming you to our zoo and hope you have an enjoyable experience.<br/>" +
                 "<br/>" +
                 "Sincerely,<br/>" +
                 "ZOOKAY <br/>";
-       // mailContent += "<hr> <img src='cid:icon' style='max-width: 100px; display: block; margin: 0 auto;'/><br/>";
+        // mailContent += "<hr> <img src='cid:icon' style='max-width: 100px; display: block; margin: 0 auto;'/><br/>";
 
 
-        mimeMessageHelper.setText(mailContent,true);
+        mimeMessageHelper.setText(mailContent, true);
 
 //        FileSystemResource fileSystemResource =
 //                new FileSystemResource(new File(QR_CODE_IMAGE_PATH+orders.getOrderID()+"-QRCODE.png"));
-       // mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
+        // mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
         javaMailSender.send(mimeMessage);
     }
 
@@ -146,7 +145,7 @@ Sincerely,
                 "\n" +
                 "        <div>\n" +
                 "            <p style=\"font-size: 16px; margin-bottom: 20px; color: black;\">Here is your verification OTP:</p>\n" +
-                "            <h3 style=\"color: #122316; margin: 0; color: black;\">"+otp+"</h3>\n" +
+                "            <h3 style=\"color: #122316; margin: 0; color: black;\">" + otp + "</h3>\n" +
                 "            <p style=\"font-size: 14px; margin-bottom: 20px; font-weight: bold; color: black;\">This OTP will expire in 2 minutes.</p>\n" +
                 "        </div>\n" +
                 "\n" +

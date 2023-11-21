@@ -9,13 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -436,9 +436,6 @@ public class ManageController {
     }
 
 
-
-
-
     //**Get Qualification Image by id**//
     @GetMapping("/{employeeId}/qualification-image")
     public ResponseEntity<byte[]> getQualificationImage(@PathVariable int employeeId, String format) {
@@ -526,6 +523,7 @@ public class ManageController {
                     .body("Error deleting animal image: " + e.getMessage());
         }
     }
+
     //find animal by groups
     @GetMapping("/byGroups/{groups}")
     public List<Object[]> getAnimalImageAndNameByGroups(@PathVariable String groups) {
@@ -560,11 +558,6 @@ public class ManageController {
 
         return new ResponseEntity<>(animalList, HttpStatus.OK);
     }
-
-
-
-
-
 
 
 }

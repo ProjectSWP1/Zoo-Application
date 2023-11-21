@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Service
 
@@ -28,13 +26,13 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public String createVoucher(VoucherDto voucherDto) {
-        if(voucherDto.getVoucherId() == null || voucherDto.getVoucherId().length() >= 6) {
+        if (voucherDto.getVoucherId() == null || voucherDto.getVoucherId().length() >= 6) {
             return "Voucher ID field is empty or the length is greater than 5 characters";
         }
-        if(voucherRepository.existsById(voucherDto.getVoucherId())) {
+        if (voucherRepository.existsById(voucherDto.getVoucherId())) {
             return "This voucher id has already existed";
         }
-        if(!ordersRepository.existsById(voucherDto.getOrderId())) {
+        if (!ordersRepository.existsById(voucherDto.getOrderId())) {
             return "This order id does not existed";
         }
         Voucher newVoucher = new Voucher();
@@ -55,18 +53,18 @@ public class VoucherServiceImpl implements VoucherService {
         }
         Voucher existingVoucher = voucherRepository.findById(voucherDto.getVoucherId()).orElse(null);
         Orders order1 = ordersRepository.getReferenceById(voucherDto.getOrderId());
-        if (existingVoucher != null){
+        if (existingVoucher != null) {
             //update
-        existingVoucher.setVoucherId(voucherDto.getVoucherId());
-        existingVoucher.setOrdersVoucher((List<Orders>) order1);
-        existingVoucher.setCoupon(voucherDto.getCoupon());
-        existingVoucher.setDescription(voucherDto.getDescription());
-        existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
-        voucherRepository.save(existingVoucher);
-        return "Voucher updated successfully";
-    }else{
-        return "Voucher not found with Id" + voucherDto.getVoucherId();
-    }
+            existingVoucher.setVoucherId(voucherDto.getVoucherId());
+            existingVoucher.setOrdersVoucher((List<Orders>) order1);
+            existingVoucher.setCoupon(voucherDto.getCoupon());
+            existingVoucher.setDescription(voucherDto.getDescription());
+            existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
+            voucherRepository.save(existingVoucher);
+            return "Voucher updated successfully";
+        } else {
+            return "Voucher not found with Id" + voucherDto.getVoucherId();
+        }
     }
 
     @Override
@@ -109,7 +107,7 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public String genVoucher(Double coupon) {
-        if(coupon == null || coupon > 1 || coupon < 0) {
+        if (coupon == null || coupon > 1 || coupon < 0) {
             return "The coupon of voucher must be above zero and below one";
         }
         try {

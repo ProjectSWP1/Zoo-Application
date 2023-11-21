@@ -48,13 +48,12 @@ public class ForgotPasswordController {
     }
 
     @PostMapping("/check-token")
-    public ResponseEntity<String> checkResetPwdToken(@RequestParam String token){
+    public ResponseEntity<String> checkResetPwdToken(@RequestParam String token) {
         Account account = accountService.getAccByPwdToken(token);
         if (account != null) {
-            if(accountService.isExpiredToken(account)){
+            if (accountService.isExpiredToken(account)) {
                 return ResponseEntity.status(404).body("Invalid token or Your link has expired!");
-            }
-            else return ResponseEntity.status(200).body(account.getUsername());
+            } else return ResponseEntity.status(200).body(account.getUsername());
         } else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid token or Your link has expired!");
     }
@@ -64,7 +63,7 @@ public class ForgotPasswordController {
     public ResponseEntity<String> setPwd(@RequestParam String token, @RequestBody PasswordDto passwordDto) {
 
         Account account = accountService.getAccByPwdToken(token);
-        if(account == null ){
+        if (account == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid token or Your link has expired!");
         }
 

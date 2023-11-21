@@ -4,18 +4,17 @@ import com.thezookaycompany.zookayproject.exception.InvalidAnimalException;
 import com.thezookaycompany.zookayproject.model.dto.AnimalDto;
 import com.thezookaycompany.zookayproject.model.dto.AnimalResponse;
 import com.thezookaycompany.zookayproject.model.dto.AnimalSpeciesDto;
-import com.thezookaycompany.zookayproject.model.entity.*;
+import com.thezookaycompany.zookayproject.model.entity.Animal;
+import com.thezookaycompany.zookayproject.model.entity.AnimalSpecies;
+import com.thezookaycompany.zookayproject.model.entity.Cage;
+import com.thezookaycompany.zookayproject.model.entity.FeedingSchedule;
 import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.AnimalService;
-import com.thezookaycompany.zookayproject.services.ZooAreaService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,55 +38,56 @@ public class AnimalServiceImpl implements AnimalService {
     public Animal findAnimalByAnimalID(Integer animalId) {
         return animalRepository.findAnimalsByAnimalId(animalId);
     }
+
     @Override //chua test duoc
     public String createAnimal(AnimalDto animalDto) {
         // Check validate
-        if(animalDto.getAge() <= 0) {
+        if (animalDto.getAge() <= 0) {
             return "The age cannot be empty or less than zero";
         }
 
-        if(animalDto.getWeight() <= 0.0) {
+        if (animalDto.getWeight() <= 0.0) {
             return "The weight field must be above 0";
         }
 
-        if(animalDto.getHeight() <= 0.0) {
+        if (animalDto.getHeight() <= 0.0) {
             return "The height field must be above 0";
         }
 
-        if(animalDto.getDescription() == null || animalDto.getDescription().isEmpty() || animalDto.getDescription().length() >= 256) {
+        if (animalDto.getDescription() == null || animalDto.getDescription().isEmpty() || animalDto.getDescription().length() >= 256) {
             return "The description cannot be empty or greater than 256 characters";
         }
 
-        if(animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
+        if (animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
             return "The name cannot be empty or greater than 21 characters";
         }
 
         Animal animal = animalRepository.findAnimalByName(animalDto.getName());
-        if(animal != null) {
+        if (animal != null) {
             return "This animal's name has already existed.";
         }
 
-        if(animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
+        if (animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
             return "The cage id field cannot be empty, please fill it by format Axxxx";
         }
 
-        if(animalDto.getSpeciesId() == null) {
+        if (animalDto.getSpeciesId() == null) {
             return "The species id field cannot be empty";
         }
 
         //Create
         Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
-        if(cage == null) {
+        if (cage == null) {
             return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
         }
 
-        if(cage.getCageAnimals().size() >= cage.getCapacity()) {
+        if (cage.getCageAnimals().size() >= cage.getCapacity()) {
             return "This cage has already been at maximum capacity";
         }
 
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
-        if(animalSpecies == null) {
-            return "The animal species " + animalDto.getSpeciesId() +  " cannot be found, please try other";
+        if (animalSpecies == null) {
+            return "The animal species " + animalDto.getSpeciesId() + " cannot be found, please try other";
         }
         Animal newAnimal = new Animal();
         newAnimal.setAnimalId(animalDto.getAnimalId());
@@ -105,53 +105,52 @@ public class AnimalServiceImpl implements AnimalService {
     }
 
 
-
     @Override
     public String updateAnimal(AnimalDto animalDto) {
-        if(animalDto.getAnimalId() == null) {
+        if (animalDto.getAnimalId() == null) {
             return "Animal ID is empty, failed to update";
         }
-        if(animalDto.getAge() <= 0) {
+        if (animalDto.getAge() <= 0) {
             return "The age cannot be empty or less than zero";
         }
 
-        if(animalDto.getWeight() <= 0.0) {
+        if (animalDto.getWeight() <= 0.0) {
             return "The weight field must be above 0";
         }
 
-        if(animalDto.getHeight() <= 0.0) {
+        if (animalDto.getHeight() <= 0.0) {
             return "The height field must be above 0";
         }
 
-        if(animalDto.getDescription() == null || animalDto.getDescription().isEmpty() || animalDto.getDescription().length() >= 256) {
+        if (animalDto.getDescription() == null || animalDto.getDescription().isEmpty() || animalDto.getDescription().length() >= 256) {
             return "The description cannot be empty or greater than 256 characters";
         }
 
-        if(animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
+        if (animalDto.getName() == null || animalDto.getName().isEmpty() || animalDto.getName().length() >= 21) {
             return "The name cannot be empty or greater than 21 characters";
         }
 
-        if(animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
+        if (animalDto.getCageId() == null || animalDto.getCageId().isEmpty() || !Pattern.matches(CAGE_ID_REGEX, animalDto.getCageId())) {
             return "The cage id field cannot be empty, please fill it by format Axxxx";
         }
 
-        if(animalDto.getSpeciesId() == null) {
+        if (animalDto.getSpeciesId() == null) {
             return "The species id field cannot be empty";
         }
 
         //Create
         Cage cage = cageRepository.findById(animalDto.getCageId()).orElse(null);
-        if(cage == null) {
+        if (cage == null) {
             return "The cage id " + animalDto.getCageId() + " cannot be found, please try other";
         }
 
-        if(cage.getCageAnimals().size() >= cage.getCapacity()) {
+        if (cage.getCageAnimals().size() >= cage.getCapacity()) {
             return "This cage has already been at maximum capacity";
         }
 
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(animalDto.getSpeciesId()).orElse(null);
-        if(animalSpecies == null) {
-            return "The animal species " + animalDto.getSpeciesId() +  " cannot be found, please try other";
+        if (animalSpecies == null) {
+            return "The animal species " + animalDto.getSpeciesId() + " cannot be found, please try other";
         }
         Animal existingAnimal = animalRepository.findById(animalDto.getAnimalId()).orElse(null);
         if (existingAnimal != null) {
@@ -209,17 +208,17 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public String createAnimalSpecies(AnimalSpeciesDto animalSpeciesDto) {
-        if( animalSpeciesDto.getGroups() == null || animalSpeciesDto.getGroups().isEmpty() || animalSpeciesDto.getGroups().length() > 100) {
+        if (animalSpeciesDto.getGroups() == null || animalSpeciesDto.getGroups().isEmpty() || animalSpeciesDto.getGroups().length() > 100) {
             return "Invalid data in group field";
         }
 
-        if(animalSpeciesDto.getName() == null || animalSpeciesDto.getName().isEmpty() || animalSpeciesDto.getName().length() > 30) {
+        if (animalSpeciesDto.getName() == null || animalSpeciesDto.getName().isEmpty() || animalSpeciesDto.getName().length() > 30) {
             return "Invalid data in name field";
         }
         AnimalSpecies animalSpecies = new AnimalSpecies();
-        if(animalSpeciesDto.getSpeciesId() != null) {
+        if (animalSpeciesDto.getSpeciesId() != null) {
             AnimalSpecies temp = animalSpeciesRepository.findById(animalSpeciesDto.getSpeciesId()).orElse(null);
-            if(temp != null) {
+            if (temp != null) {
                 return "This ID has already existed";
             }
             animalSpecies.setSpeciesId(animalSpeciesDto.getSpeciesId());
@@ -234,14 +233,14 @@ public class AnimalServiceImpl implements AnimalService {
 
     @Override
     public String updateAnimalSpecies(AnimalSpeciesDto animalSpeciesDto) {
-        if(animalSpeciesDto.getSpeciesId() == null) {
+        if (animalSpeciesDto.getSpeciesId() == null) {
             return "Please input Species ID field";
         }
-        if( animalSpeciesDto.getGroups() == null || animalSpeciesDto.getGroups().isEmpty() || animalSpeciesDto.getGroups().length() > 100) {
+        if (animalSpeciesDto.getGroups() == null || animalSpeciesDto.getGroups().isEmpty() || animalSpeciesDto.getGroups().length() > 100) {
             return "Invalid data in group field";
         }
 
-        if(animalSpeciesDto.getName() == null || animalSpeciesDto.getName().isEmpty() || animalSpeciesDto.getName().length() > 30) {
+        if (animalSpeciesDto.getName() == null || animalSpeciesDto.getName().isEmpty() || animalSpeciesDto.getName().length() > 30) {
             return "Invalid data in name field";
         }
         AnimalSpecies existingAnimalSpecies = animalSpeciesRepository.findById(animalSpeciesDto.getSpeciesId()).orElse(null);
@@ -263,11 +262,11 @@ public class AnimalServiceImpl implements AnimalService {
     public String removeAnimalSpecies(Integer id) {
         AnimalSpecies animalSpecies = animalSpeciesRepository.findById(id).orElseThrow(() -> new InvalidAnimalException("Not found this Animal ID to delete."));
         List<Animal> animals = animalRepository.findAnimalsBySpecies_SpeciesId(animalSpecies.getSpeciesId());
-        if(!animals.isEmpty()) {
+        if (!animals.isEmpty()) {
             return "You cannot remove this species because it was constrained by animals. You may consider to remove animals first.";
         }
         List<FeedingSchedule> feedingSchedules = feedingScheduleRepository.findBySpecies_SpeciesId(animalSpecies.getSpeciesId());
-        if(!feedingSchedules.isEmpty()) {
+        if (!feedingSchedules.isEmpty()) {
             return "You cannot remove this species because it was constrained by feeding schedules. You may consider to remove feeding schedules first.";
         }
         animalSpeciesRepository.delete(animalSpecies);

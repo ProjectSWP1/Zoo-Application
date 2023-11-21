@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
 @Service
 public class AnimalFoodServiceImpl implements AnimalFoodServices {
 
@@ -83,8 +84,8 @@ public class AnimalFoodServiceImpl implements AnimalFoodServices {
         } catch (ParseException e) {
             return "Invalid input field: date field";
         }
-        if(animalFoodDto.getFoodId() != null) {
-            if(animalFoodRepository.existsById(animalFoodDto.getFoodId())) {
+        if (animalFoodDto.getFoodId() != null) {
+            if (animalFoodRepository.existsById(animalFoodDto.getFoodId())) {
                 // Map AnimalFoodDto to AnimalFood entity
                 AnimalFood animalFood = new AnimalFood();
                 animalFood.setFoodId(animalFoodDto.getFoodId());
@@ -105,7 +106,7 @@ public class AnimalFoodServiceImpl implements AnimalFoodServices {
 
     @Override
     public AnimalFood getAnimalFood(Integer foodId) {
-        if(foodId == null) {
+        if (foodId == null) {
             return null;
         }
         return animalFoodRepository.findById(foodId).orElse(null);

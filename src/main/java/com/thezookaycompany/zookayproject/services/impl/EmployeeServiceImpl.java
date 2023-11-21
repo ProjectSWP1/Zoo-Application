@@ -130,7 +130,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
             employees.setActive(false);
 
-            if(!trainerScheduleRepository.findTrainerScheduleById(empID).isEmpty()) {
+            if (!trainerScheduleRepository.findTrainerScheduleById(empID).isEmpty()) {
                 return "This employees still have their job schedules. Would you like to remove all his/her schedules?";
             }
 
@@ -144,7 +144,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employees getEmployeeByEmail(String email) {
         Account account = accountRepository.findById(email).orElse(null);
         Employees employees = null;
-        if(account != null) {
+        if (account != null) {
             employees = employeesRepository.findEmployeesByEmail(account);
         }
         return employees;
@@ -152,7 +152,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public String updateEmployees(EmployeesDto employeesDto) {
-        if(employeesDto.getEmpID() == null) {
+        if (employeesDto.getEmpID() == null) {
             return "The employee ID must not be null";
         }
         // Tìm employees hiện tại bằng ID
@@ -171,7 +171,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 return "Not found Employee ID manager";
             }
 
-            if(employeesDto.getManagedByEmpID() == employeesDto.getEmpID()) {
+            if (employeesDto.getManagedByEmpID() == employeesDto.getEmpID()) {
                 return "You cannot update self-managing employees";
             }
         }
@@ -184,7 +184,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         Set<Employees> employeesSet = new HashSet<>();
-        if(employeesDto.getManagedByEmpID() != null) {
+        if (employeesDto.getManagedByEmpID() != null) {
             employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
         }
 
@@ -212,7 +212,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employees.setPhoneNumber(employeesDto.getPhone_number()); // Phone number này ko ràng buộc với Member, employees vẫn có thể có số dt khác với cột member
         //Thay đổi luôn Member
         Member member = memberRepository.findMemberByEmail(employeesDto.getEmail());
-        if(member == null) {
+        if (member == null) {
             employeesRepository.save(employees);
             return "Employee " + employeesDto.getEmail() + " has been updated successfully. We found that this employee do not have membership yet. So we don't need to update them in Member";
         } else {
@@ -249,10 +249,6 @@ public class EmployeeServiceImpl implements EmployeeService {
             throw new IllegalArgumentException("Image is missing or empty.");
         }
     }
-
-
-
-
 
 
     @Override
@@ -301,7 +297,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             return false;
         }
 
-        if (employeesDto.getAddress() == null || employeesDto.getAddress().isEmpty() ||  employeesDto.getAddress().length() > 255) {
+        if (employeesDto.getAddress() == null || employeesDto.getAddress().isEmpty() || employeesDto.getAddress().length() > 255) {
             return false;
         }
 

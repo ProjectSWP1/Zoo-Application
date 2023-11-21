@@ -7,7 +7,6 @@ import com.thezookaycompany.zookayproject.model.dto.MemberDto;
 import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.repositories.*;
 import com.thezookaycompany.zookayproject.services.AccountService;
-import com.thezookaycompany.zookayproject.services.EmployeeService;
 import com.thezookaycompany.zookayproject.services.MemberServices;
 import com.thezookaycompany.zookayproject.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.security.auth.login.AccountNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -66,19 +64,18 @@ public class AccountServiceImpl implements AccountService {
     private TrainerScheduleRepository trainerScheduleRepository;
 
 
-
     @Override
     public String addAccount(AccountDto accountDto, MemberDto memberDto) {
-        if(accountDto.getEmail() == null || accountDto.getEmail().isEmpty()) {
+        if (accountDto.getEmail() == null || accountDto.getEmail().isEmpty()) {
             return "Email field is empty";
         }
         memberDto.setPhoneNumber(accountDto.getPhoneNumber());
 
-        if(accountDto.getPhoneNumber() == null || accountDto.getPhoneNumber().isEmpty() || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
+        if (accountDto.getPhoneNumber() == null || accountDto.getPhoneNumber().isEmpty() || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
             return "Invalid phone number, please try again";
         }
 
-        if(memberDto.getDob() == null || memberDto.getDob().isEmpty()) {
+        if (memberDto.getDob() == null || memberDto.getDob().isEmpty()) {
             return "You cannot leave empty date of birth field";
         }
 
@@ -132,19 +129,19 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String admin_addAccount(AccountDto accountDto, MemberDto memberDto, String role_id, String zoo_area_id) {
-        if(role_id == null || role_id.isEmpty()) {
+        if (role_id == null || role_id.isEmpty()) {
             return "You have not yet chose role you want to assign";
         }
-        if(accountDto.getEmail() == null || accountDto.getEmail().isEmpty()) {
+        if (accountDto.getEmail() == null || accountDto.getEmail().isEmpty()) {
             return "Email field is empty";
         }
         memberDto.setPhoneNumber(accountDto.getPhoneNumber());
 
-        if(accountDto.getPhoneNumber() == null || accountDto.getPhoneNumber().isEmpty() || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
+        if (accountDto.getPhoneNumber() == null || accountDto.getPhoneNumber().isEmpty() || !isValidPhoneNumber(accountDto.getPhoneNumber())) {
             return "Invalid phone number, please try again";
         }
 
-        if(memberDto.getDob() == null || memberDto.getDob().isEmpty()) {
+        if (memberDto.getDob() == null || memberDto.getDob().isEmpty()) {
             return "You cannot leave empty date of birth field";
         }
 
@@ -157,7 +154,7 @@ public class AccountServiceImpl implements AccountService {
         accountDto.setUsername(accountDto.getEmail().trim().split("@")[0]);
         String encodedPassword = passwordEncoder.encode(accountDto.getPassword());
         Role userRole = roleRepository.findById(role_id).orElse(null);
-        if(userRole == null) {
+        if (userRole == null) {
             return "This role does not exist";
         }
         // Add member trước rồi mới add account
@@ -175,7 +172,8 @@ public class AccountServiceImpl implements AccountService {
 
         Employees employees = new Employees();
         switch (role_id) {
-            case "AD": return "You cannot assign this role Admin";
+            case "AD":
+                return "You cannot assign this role Admin";
             case "ST":
                 employees.setName(memberDto.getName());
                 employees.setPhoneNumber(accountDto.getPhoneNumber());
@@ -186,11 +184,11 @@ public class AccountServiceImpl implements AccountService {
                 employeesRepository.save(employees);
                 break;
             case "ZT":
-                if(zoo_area_id == null || zoo_area_id.isEmpty()) {
+                if (zoo_area_id == null || zoo_area_id.isEmpty()) {
                     return "You must fill the Zoo Area because this employee is Trainer";
                 }
                 ZooArea zooArea = zooAreaRepository.findById(zoo_area_id).orElse(null);
-                if(zooArea == null) {
+                if (zooArea == null) {
                     return "Zoo Area is not found";
                 }
                 employees.setName(memberDto.getName());
@@ -211,22 +209,22 @@ public class AccountServiceImpl implements AccountService {
     public String deactivateAccount(String email) {
         Account acc = accountRepository.findById(email).orElse(null);
         Employees employees = employeesRepository.findEmployeesByEmail(acc);
-        if(employees == null) {
+        if (employees == null) {
             return "This account has never been as an employee!";
         }
-        Set<TrainerSchedule> workList= new HashSet<>();
-        if(acc != null) {
-            if(!acc.isActive()) {
+        Set<TrainerSchedule> workList = new HashSet<>();
+        if (acc != null) {
+            if (!acc.isActive()) {
                 return "This account has already deactivated.";
             }
 
             // neu account nay la cua trainer thi xoa tat ca lich cua trainer do
-            if(acc.getRole().getRoleID().equals("ZT")){
+            if (acc.getRole().getRoleID().equals("ZT")) {
                 workList = trainerScheduleRepository.findTrainerScheduleById(employees.getEmpId());
 
                 // neu co lich thi xoa het lich
-                if(workList !=null && workList.size() >0){
-                    for(TrainerSchedule ts : workList) {
+                if (workList != null && workList.size() > 0) {
+                    for (TrainerSchedule ts : workList) {
                         trainerScheduleRepository.deleteById(ts.getTrainerScheduleId());
                     }
                 }
@@ -243,14 +241,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String removeAccount(String email) {
-        if(email == null || !email.contains("@")) {
+        if (email == null || !email.contains("@")) {
             return "Failed to check this email or invalid input";
         }
         Account acc = accountRepository.findById(email).orElse(null);
-        if(acc != null) {
+        if (acc != null) {
             // Tìm thằng Employee và xóa trước rồi xóa Account vì ràng buộc
             Employees employees = employeesRepository.findEmployeesByEmail(acc);
-            if(employees == null) {
+            if (employees == null) {
                 return "Cannot remove account because some constraints in Employee";
             }
             employeesRepository.delete(employees);
@@ -287,14 +285,14 @@ public class AccountServiceImpl implements AccountService {
     // Hàm assign role tới account (chỉ khi đã có thằng Employee active = 1)
     @Override
     public boolean assignRoleToAccount(AccountDto accountDto, String role_id) {
-        if(!roleRepository.existsById(role_id)) {
+        if (!roleRepository.existsById(role_id)) {
             return false;
         }
-        if(accountRepository.existsById(accountDto.getEmail())) {
+        if (accountRepository.existsById(accountDto.getEmail())) {
             Account acc = accountRepository.findById(accountDto.getEmail()).get();
             // Nếu employee ko có -> nghĩa chưa thêm employee trước khi assign role account này
-            if(!role_id.contains("MB")) {
-                if(!employeesRepository.existsEmployeesByEmailAndActiveIsTrue(acc)) {
+            if (!role_id.contains("MB")) {
+                if (!employeesRepository.existsEmployeesByEmailAndActiveIsTrue(acc)) {
                     return false;
                 }
             }
@@ -308,7 +306,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public LoginResponse loginAccount(LoginDto loginDto) {
         String username = loginDto.getEmail();
-        if(username.contains("@")) {
+        if (username.contains("@")) {
             username = loginDto.getEmail().trim().split("@")[0];
         }
         try {
@@ -317,7 +315,7 @@ public class AccountServiceImpl implements AccountService {
             );
             Account acc = accountRepository.findByUsername(username).get();
             boolean active = acc.isActive();
-            if (!active){
+            if (!active) {
                 return new LoginResponse(null, "");
             }
             String token = tokenService.generateJwt(auth);
@@ -325,21 +323,21 @@ public class AccountServiceImpl implements AccountService {
             return new LoginResponse(acc, token);
 
 
-        } catch(AuthenticationException e) {
+        } catch (AuthenticationException e) {
             return new LoginResponse(null, "");
         }
     }
 
     @Override
-    public void updateResetPwdToken(String token, Account account)  {
+    public void updateResetPwdToken(String token, Account account) {
 
-            // nếu tồn tại thì set account new Token
-            if (account !=null){
-                account.setResetPwdToken(token);
-                account.setOtpGeneratedTime(LocalDateTime.now());
-                accountRepository.save(account);
+        // nếu tồn tại thì set account new Token
+        if (account != null) {
+            account.setResetPwdToken(token);
+            account.setOtpGeneratedTime(LocalDateTime.now());
+            accountRepository.save(account);
 
-            }
+        }
 
     }
 
@@ -361,10 +359,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateVerifyToken(String token, Account account)  {
+    public void updateVerifyToken(String token, Account account) {
 
         // nếu tồn tại thì set verify Token
-        if (account !=null){
+        if (account != null) {
             account.setVerificationToken(token);
             account.setOtpGeneratedTime(LocalDateTime.now());
             accountRepository.save(account);
@@ -375,16 +373,17 @@ public class AccountServiceImpl implements AccountService {
     public String verifyAccount(String email, String otp) {
 
         Account account = accountRepository.findAccountByEmail(email);
-        if(account == null){
-            return "Could not find any account with email "+email;
+        if (account == null) {
+            return "Could not find any account with email " + email;
         }
         // otp expired (2')
-        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (2 *60)){
+        if (Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds() > (2 * 60)) {
             account.setVerificationToken(null);
         }
         // check trùng otp
-        if(account.getVerificationToken() == null) { return "OTP has expired";}
-        else if(account.getVerificationToken().equals(otp)){
+        if (account.getVerificationToken() == null) {
+            return "OTP has expired";
+        } else if (account.getVerificationToken().equals(otp)) {
             account.setActive(true);
             accountRepository.save(account);
             return "Verify account successfully";
@@ -394,7 +393,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean isExpiredToken(Account account) {
-        if(Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds()> (3 *60 *60)){
+        if (Duration.between(account.getOtpGeneratedTime(), LocalDateTime.now()).getSeconds() > (3 * 60 * 60)) {
             account.setResetPwdToken(null);
             accountRepository.save(account);
             return true;

@@ -12,6 +12,7 @@ import java.util.List;
 public class ZooAreaServiceImpl implements ZooAreaService {
     @Autowired
     private ZooAreaRepository zooAreaRepository;
+
     @Override
     public List<ZooArea> findAllZooArea() {
         return zooAreaRepository.findAll();
