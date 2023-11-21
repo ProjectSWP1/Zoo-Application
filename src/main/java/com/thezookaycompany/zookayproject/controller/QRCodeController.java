@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @RequestMapping("/qrcode")
 public class QRCodeController {
-    private static final String QR_CODE_IMAGE_PATH = System.getProperty("user.dir") + "/qrcodes/";
 
     @Autowired
     private OrdersService ordersService;
@@ -27,21 +26,7 @@ public class QRCodeController {
         TicketQRCodeGenerator ticketQRCodeGenerator = new TicketQRCodeGenerator();
         Orders orders = ordersService.findOrdersByOrderID(ordersDto.getOrderID());
         if(orders != null) {
-            ticketQRCodeGenerator.generateQRCodeImage(orders, width, height, QR_CODE_IMAGE_PATH);
+            ticketQRCodeGenerator.generateAndUploadQRCodeImage(orders, width, height);
         }
-    }
-
-    @PostMapping(value = "/generateQRCode/{width}/{height}")
-    public ResponseEntity<byte[]> generateQRCode(
-            @RequestBody OrdersDto ordersDto,
-            @PathVariable("width") Integer width,
-            @PathVariable("height") Integer height)
-            throws Exception {
-        TicketQRCodeGenerator ticketQRCodeGenerator = new TicketQRCodeGenerator();
-        Orders orders = ordersService.findOrdersByOrderID(ordersDto.getOrderID());
-        if(orders != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(ticketQRCodeGenerator.getQRCodeImage(orders, width, height));
-        }
-        return null;
     }
 }

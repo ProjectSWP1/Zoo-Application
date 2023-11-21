@@ -1,5 +1,8 @@
 package com.thezookaycompany.zookayproject.services.impl;
 
+import com.azure.storage.blob.BlobContainerClient;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
@@ -12,9 +15,12 @@ import com.thezookaycompany.zookayproject.utils.RandomTokenGenerator;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import java.io.ByteArrayOutputStream;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -25,7 +31,8 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender javaMailSender;
     @Autowired
     private AccountService accountService;
-    private static final String QR_CODE_IMAGE_PATH = System.getProperty("user.dir") + "/qrcodes/";
+    private static final String connectionString = "DefaultEndpointsProtocol=https;AccountName=cs110032002f9d9b454;AccountKey=oNT2cJxNjZ9QBPeAYe0sRYKOV54vN8zGaxpy8LemIM96nWfCdBzxahLB3V2l8AgE+loUEI2sr5Dk+AStzvPigg==;EndpointSuffix=core.windows.net";
+    private static final String containerName = "qrcode";
 
     @Override
     public void sendEmailResetPwd(Account account, String resetPwdLink) throws MessagingException {
@@ -110,10 +117,34 @@ Sincerely,
 
         mimeMessageHelper.setText(mailContent, true);
 
-//        FileSystemResource fileSystemResource =
-//                new FileSystemResource(new File(QR_CODE_IMAGE_PATH+orders.getOrderID()+"-QRCODE.png"));
-        // mimeMessageHelper.addAttachment(fileSystemResource.getFilename(), fileSystemResource);
+
+        // Attach the QR code image
+        String blobName = orders.getOrderID() + "-QRCODE.png";
+        byte[] qrCodeData = getQRCodeFromBlob(blobName);
+        if (qrCodeData != null) {
+            mimeMessageHelper.addAttachment(blobName, new ByteArrayResource(qrCodeData));
+        }
         javaMailSender.send(mimeMessage);
+    }
+
+    private byte[] getQRCodeFromBlob(String blobName) {
+        try {
+            // Create BlobServiceClient
+            var blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString).buildClient();
+
+            // Create BlobContainerClient
+            BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
+
+            BlockBlobClient blockBlobClient = blobContainerClient.getBlobClient(blobName).getBlockBlobClient();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            blockBlobClient.download(outputStream);
+
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

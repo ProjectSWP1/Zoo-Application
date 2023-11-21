@@ -1,7 +1,8 @@
 package com.thezookaycompany.zookayproject.utils;
 
 import com.azure.storage.blob.BlobContainerClient;
-import com.azure.storage.blob.BlobContainerClientBuilder;
+import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -12,74 +13,51 @@ import com.thezookaycompany.zookayproject.model.entity.Orders;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
-// For Ticket QR Generators after Payment Receipt Sent
 public class TicketQRCodeGenerator {
-    private String url = "https://zookay-web.vercel.app";
-    private String azureStorageConnectionString = "BlobEndpoint=https://cs110032002f9d9b454.blob.core.windows.net/;QueueEndpoint=https://cs110032002f9d9b454.queue.core.windows.net/;FileEndpoint=https://cs110032002f9d9b454.file.core.windows.net/;TableEndpoint=https://cs110032002f9d9b454.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2023-11-16T02:32:58Z&st=2023-11-15T18:32:58Z&spr=https&sig=OEte5R%2FyOSg9zzfl3LeLUmfcxqNc5qnev8lYF8noHOE%3D";
-    private String containerName = "qrcode";
+    private static final String connectionString = "DefaultEndpointsProtocol=https;AccountName=cs110032002f9d9b454;AccountKey=oNT2cJxNjZ9QBPeAYe0sRYKOV54vN8zGaxpy8LemIM96nWfCdBzxahLB3V2l8AgE+loUEI2sr5Dk+AStzvPigg==;EndpointSuffix=core.windows.net";
+    private static final String containerName = "qrcode";
 
-    public void generateQRCodeImage(Orders orders, int width, int height, String filePath) throws WriterException, IOException {
+    public void generateAndUploadQRCodeImage(Orders orders, int width, int height) throws WriterException, IOException {
+        // Generate QR code
+        byte[] qrCodeData = generateQRCodeImage(orders, width, height);
+
+        uploadQRCodeToBlob(orders.getOrderID() + "-QRCODE.png", qrCodeData);
+    }
+
+    private byte[] generateQRCodeImage(Orders orders, int width, int height) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(url+"/scan-ticket?orderID="+ orders.getOrderID() +"&email="+ orders.getEmail(), BarcodeFormat.QR_CODE, width, height);
-
-        Path path = FileSystems.getDefault().getPath(filePath+orders.getOrderID()+"-QRCODE.png");
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-        BlobContainerClient containerClient = new BlobContainerClientBuilder()
-                .connectionString(azureStorageConnectionString)
-                .containerName(containerName)
-                .buildClient();
+        BitMatrix bitMatrix = qrCodeWriter.encode(
+                orders.getEmail() + orders.getOrderID(),
+                BarcodeFormat.QR_CODE, width, height);
 
         ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
         MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-        byte[] pngData = pngOutputStream.toByteArray();
 
-        containerClient.getBlobClient(orders.getOrderID() + "-QRCODE.png").upload(new ByteArrayInputStream(pngData), pngData.length, true);
+        return pngOutputStream.toByteArray();
     }
 
-    public byte[] getQRCodeImage(Orders orders, int width, int height) throws WriterException, IOException {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(url + "/scan-ticket?orderID=" + orders.getOrderID() + "&email=" + orders.getEmail(), BarcodeFormat.QR_CODE, width, height);
+    private void uploadQRCodeToBlob(String blobName, byte[] qrCodeData) {
+        try {
+            var blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString).buildClient();
 
-        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-        byte[] pngData = pngOutputStream.toByteArray();
+            BlobContainerClient blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
 
-        // Upload to Azure Storage
-        BlobContainerClient containerClient = new BlobContainerClientBuilder()
-                .connectionString(azureStorageConnectionString)
-                .containerName(containerName)
-                .buildClient();
+            // Check if the blob already exists
+            if (blobContainerClient.getBlobClient(blobName).exists()) {
+                // Handle the case where the blob already exists
+                System.out.println("Blob with name " + blobName + " already exists.");
+                return;
+            }
+            BlockBlobClient blockBlobClient = blobContainerClient.getBlobClient(blobName).getBlockBlobClient();
 
-        containerClient.getBlobClient(orders.getOrderID() + "-QRCODE.png").upload(new ByteArrayInputStream(pngData), pngData.length, true);
-
-        return pngData;
+            try (ByteArrayInputStream dataStream = new ByteArrayInputStream(qrCodeData)) {
+                blockBlobClient.upload(dataStream, qrCodeData.length);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-//    public static String generateQRCode(Orders orders, int width, int height) {
-//        StringBuilder result = new StringBuilder();
-//
-//        if (orders != null) {
-//            ByteArrayOutputStream os = new ByteArrayOutputStream();
-//            try {
-//                QRCodeWriter writer = new QRCodeWriter();
-//                BitMatrix bitMatrix = writer.encode(frontEndUrl+"/scan-ticket?orderID=&"+ orders.getOrderID() +"email="+ orders.getEmail(), BarcodeFormat.QR_CODE, width, height);
-//
-//                BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
-//                ImageIO.write(bufferedImage, "png", os);
-//
-//                result.append("data:image/png;base64,");
-//                result.append(new String(Base64.getEncoder().encode(os.toByteArray())));
-//
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        return result.toString();
-//
-//    }
 }
