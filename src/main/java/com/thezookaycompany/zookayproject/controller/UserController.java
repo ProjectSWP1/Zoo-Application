@@ -196,6 +196,7 @@ public class UserController {
         return paymentService.createPaymentIntent(ordersDto);
     }
 
+    @PreAuthorize("hasRole('ROLE_MEMBER')")
     @GetMapping("/test-send-email-payment")
     public ResponseEntity<String> sendEmailAfterPayment(@RequestBody OrdersDto ordersDto) throws MessagingException {
         emailService.sendAfterPaymentEmail(ordersDto);

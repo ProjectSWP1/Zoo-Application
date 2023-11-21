@@ -6,7 +6,10 @@ import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.thezookaycompany.zookayproject.model.dto.EmailTokenResponse;
 import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
+import com.thezookaycompany.zookayproject.model.entity.Member;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
+import com.thezookaycompany.zookayproject.repositories.AccountRepository;
+import com.thezookaycompany.zookayproject.repositories.MemberRepository;
 import com.thezookaycompany.zookayproject.repositories.OrdersRepository;
 import com.thezookaycompany.zookayproject.services.AccountService;
 import com.thezookaycompany.zookayproject.services.EmailService;
@@ -21,6 +24,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -29,6 +34,8 @@ public class EmailServiceImpl implements EmailService {
     private OrdersRepository ordersRepository;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private MemberRepository memberRepository;
     @Autowired
     private AccountService accountService;
     private static final String connectionString = "DefaultEndpointsProtocol=https;AccountName=cs110032002f9d9b454;AccountKey=oNT2cJxNjZ9QBPeAYe0sRYKOV54vN8zGaxpy8LemIM96nWfCdBzxahLB3V2l8AgE+loUEI2sr5Dk+AStzvPigg==;EndpointSuffix=core.windows.net";
@@ -58,6 +65,13 @@ public class EmailServiceImpl implements EmailService {
                 "        <p><a href=\"https://zookay-web.vercel.app/forgotpassword\" style=\"color: #007BFF; text-decoration: none;\">Reset my password</a></p>\n" +
                 "\n" +
                 "        <p>Thanks,<br>The ZooKay Devs Team</p>\n" +
+                " <p style=\" \n" +
+                "            color: #938d8d;\n" +
+                "            font-size: .31cm;\n" +
+                "            padding: 0 0 5px 10px;\n" +
+                "            text-align: center;\n" +
+                "            margin: 0 auto;\n" +
+                "        \">Copyright © 2023 The ZooKay Park - TP.HCM . All Rights Reserved.</p>"+
                 "    </div>\n" +
                 "</body>\n" +
                 "</html>\n";
@@ -67,52 +81,117 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(mimeMessage);
 
     }
-    /*
-    Subject: Ticket Purchase Confirmation
 
-Hello [User's Name],
-
-Thank you for purchasing tickets to visit our zoo. Below are the details of your tickets:
-
-Ticket ID: [Ticket ID]
-Visit Date: [Visit Date]
-Location: [Zoo Location]
-
-Please note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use the ticket ID to verify and validate your entry.
-
-We look forward to welcoming you to our zoo and hope you have an enjoyable experience.
-
-Sincerely,
-[Your Name]
-[Your Zoo Name]
-
-     */
 
     @Override
     public void sendAfterPaymentEmail(OrdersDto ordersDto) throws MessagingException {
         Orders orders = ordersRepository.findOrdersByOrderID(ordersDto.getOrderID());
-        String name = orders.getEmail().trim().split("@")[0];
+        Member mem = memberRepository.findMemberByEmail(orders.getEmail());
+        //get name
+        String name = mem.getName();
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
         mimeMessageHelper.setTo(orders.getEmail());
         mimeMessageHelper.setSubject("[ZooKay] Ticket Purchase Confirmation");
-        String visitDate = DateFormatToSimpleDateFormat.formatDateToSimpleDate(orders.getTicket().getVisitDate());
 
-        String mailContent = "Hello " + name + "<br/>" +
-                "Thank you for purchasing tickets to visit our zoo. Below are the details of your order:<br/>";
-        mailContent += "<p><b> Order ID: </b>" + orders.getOrderID() + "</p>";
-        mailContent += "<p><b> Ticket ID: </b>" + orders.getTicket().getTicketId() + "</p>";
-        mailContent += "<p><b> Quantity: </b>" + orders.getQuantity() + "</p>";
-        mailContent += "<p><b> Visit Date: </b>" + visitDate + "</p>";
-        mailContent += "<p><b> Total price paid: </b>" + orders.getTicket().getTicketPrice() * orders.getQuantity() + " VND</p>";
-        mailContent += "<p><b> Location: </b>Lot E2a-7, Street D1, D. D1, Long Thanh My, Thu Duc City, Ho Chi Minh City </p>";
-        mailContent += "\nPlease note that this email serves as confirmation of your ticket purchase. Please keep this email as it will represent your tickets when you visit our zoo. We will use it to verify and validate your entry.\n" +
-                "<br/>" +
-                "We look forward to welcoming you to our zoo and hope you have an enjoyable experience.<br/>" +
-                "<br/>" +
-                "Sincerely,<br/>" +
-                "ZOOKAY <br/>";
-        // mailContent += "<hr> <img src='cid:icon' style='max-width: 100px; display: block; margin: 0 auto;'/><br/>";
+        // format visitDate
+        String visitDate = DateFormatToSimpleDateFormat.formatDateToSimpleDate(orders.getTicket().getVisitDate());
+        double subTotal = (orders.getQuantity()* orders.getTicket().getTicketPrice())+(orders.getChildrenQuantity()*orders.getTicket().getChildrenTicketPrice());
+        int totalQuantity = orders.getQuantity()+ orders.getChildrenQuantity();
+
+        double voucherD ;
+        double totalPrice ;
+        if (orders.getOrderVoucher() != null) {
+            voucherD =  orders.getOrderVoucher().getCoupon() * 100;
+            totalPrice =subTotal -(subTotal * orders.getOrderVoucher().getCoupon());
+        }else {
+            voucherD =0;
+            totalPrice = subTotal;
+        }
+        int voucher = (int) voucherD;
+        // format currency
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+
+        // fformat subtotal
+        String formattedSubTotal =currencyFormatter.format(subTotal);
+
+        // format voucher discount
+        String formattedVoucherDiscount = voucher + "%";
+
+        // rceate a separate formatter for totalPrice
+        NumberFormat totalPriceFormatter = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+        String formattedTotalPrice = totalPriceFormatter.format(Double.valueOf(totalPrice));
+
+
+        String mailContent ="<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "\n" +
+                "<head>\n" +
+                "  <meta charset=\"UTF-8\">\n" +
+                "  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+                "</head>\n" +
+                "\n" +
+                "<body style=\"margin: 0; padding: 0; font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh;\">\n" +
+                "\n" +
+                "  <div style=\"margin: auto; max-width: 1200px; width: 100%; padding: 50px 20px; display: flex; flex-direction: column; align-items: center; box-sizing: border-box;\" class=\"completed-order-container\">\n" +
+                "\n" +
+                "    <div style=\"width: 60%; background-color: #f1f8e9; border: 1px solid #000; border-radius: 15px;\" class=\"completed-order-thank-you\">\n" +
+                "\n" +
+                "      <div style=\"text-align: center; margin-top: 10px;\" class=\"completed-order-thank-you-header\">\n" +
+                "        <h1 style=\"font-weight: 700; font-size: 50px;\">THANK YOU</h1>\n" +
+                "        <h3 style=\"font-weight: 500; font-size: 35px;\">FOR BUYING TICKETS</h1>\n" +
+                "        <p style=\"font-size: 25px;\">"+name+"</p>\n" +
+                "      </div>\n" +
+                "\n" +
+                "      <div style=\"width: 70%; background-color: #f1f8e9;  margin-top: 5px; margin: 0 auto;margin-bottom: 50px;\" class=\"completed-order-your-order\">\n" +
+                "        <h1 style=\"font-weight: 700; font-size: 40px; text-align: center; padding-top: 0;\">Your Order</h1>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-bottom: 10px;\" class=\"order-item\">\n" +
+                "          <span style=\"font-size: 16px;\">Your Visit Date:</span>\n" +
+                "          <span style=\"font-size: 16px;\">"+visitDate+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-bottom: 10px;\" class=\"order-item\">\n" +
+                "          <span style=\"font-size: 16px;\">Ticket Quantity (1 ticket/person):</span>\n" +
+                "          <span style=\"font-size: 16px;\">"+totalQuantity+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-bottom: 10px;\" class=\"order-item\">\n" +
+                "          <span style=\"font-size: 16px;\">Adult Ticket:</span>\n" +
+                "          <span style=\"font-size: 16px;\">"+orders.getQuantity()+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-bottom: 10px;\" class=\"order-item\">\n" +
+                "          <span style=\"font-size: 16px;\">Children Ticket:</span>\n" +
+                "          <span style=\"font-size: 16px;\">"+orders.getChildrenQuantity()+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div style=\"border-top: 4px solid black; margin-bottom: 20px;\"></div>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-top: 20px; font-size: 20px;\" class=\"order-total\">\n" +
+                "          <span style=\"font-size: 16px;\">Subtotal:</span>\n" +
+                "          <span style=\"font-size: 16px;\"> "+formattedSubTotal+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-top: 20px; font-size: 20px;\" class=\"order-total\">\n" +
+                "          <span style=\"font-size: 16px;\">Voucher Discount:</span>\n" +
+                "          <span style=\"font-size: 16px;\">-"+formattedVoucherDiscount+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <div style=\"display: flex; justify-content: space-between; margin-top: 20px; font-size: 30px;\" class=\"order-total\">\n" +
+                "          <span style=\"font-size: 30px;\">Total Price:</span>\n" +
+                "          <span style=\"font-size: 30px;\">"+formattedTotalPrice+"</span>\n" +
+                "        </div>\n" +
+                "\n" +
+                "        <p style=\"color: #938d8d; font-size: .31cm; padding: 0 0 5px 10px; text-align: center; margin-top: 20px;\">\n" +
+                "          Copyright © 2023 The ZooKay Park - TP.HCM. All Rights Reserved.\n" +
+                "        </p>\n" +
+                "      </div>\n" +
+                "    </div>\n" +
+                "  </div>\n" +
+                "</body>\n" +
+                "\n" +
+                "</html>\n";
 
 
         mimeMessageHelper.setText(mailContent, true);
@@ -188,7 +267,13 @@ Sincerely,
                 "\n" +
                 "        <p style=\"margin: 0; color: black;\">Best regards,<br>The ZooKay Devs Team</p>\n" +
                 "    </div>\n" +
-                "\n" +
+                " <p style=\" \n" +
+                "            color: #938d8d;\n" +
+                "            font-size: .31cm;\n" +
+                "            padding: 0 0 5px 10px;\n" +
+                "            text-align: center;\n" +
+                "            margin: 0 auto;\n" +
+                "        \">Copyright © 2023 The ZooKay Park - TP.HCM . All Rights Reserved.</p>" +
                 "</body>\n" +
                 "</html>\n";
 
