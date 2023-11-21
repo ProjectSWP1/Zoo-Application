@@ -187,8 +187,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeesDto.getManagedByEmpID() != null) {
             employeesSet.add(employeesRepository.findById(employeesDto.getManagedByEmpID()).get());
         }
-
-        Employees managedByEmp = employeesRepository.findById(employeesDto.getManagedByEmpID()).orElse(null);
+        Employees managedByEmp = null;
+        if(employeesDto.getManagedByEmpID() != null) {
+            managedByEmp = employeesRepository.findById(employeesDto.getManagedByEmpID()).orElse(null);
+        }
 
         Date doB;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
