@@ -31,7 +31,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public String createTicket(TicketDto ticketDto) {
-        Date expDate = ticketDto.getExpDate();
+        Date expDate = ticketDto.getVisitDate();
         Date currentDate = new Date();
 
         // Check Date
@@ -46,7 +46,7 @@ public class TicketServiceImpl implements TicketService {
             newTicket.setTicketId(ticketDto.getTicketId());
             newTicket.setTicketPrice(ticketDto.getTicketPrice());
             newTicket.setDescription(ticketDto.getDescription());
-            newTicket.setVisitDate(ticketDto.getExpDate());
+            newTicket.setVisitDate(ticketDto.getVisitDate());
             newTicket.setChildrenTicketPrice(ticketDto.getChildrenTicketPrice());
 
             // Save the new ticket to the database
@@ -61,21 +61,22 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public String updateTicket(TicketDto ticketDto) {
-        // Retrieve the existing Ticket entity by its ID
-        Ticket existingTicket = ticketRepository.findById(ticketDto.getTicketId())
-                .orElse(null);
+        Optional<Ticket> optionalExistingTicket = ticketRepository.findById(ticketDto.getTicketId());
 
-        // Check if the ticket exists
-        if (existingTicket != null) {
-            Date expDate = ticketDto.getExpDate();
-            Date currentDate = new Date();
+        if (optionalExistingTicket.isPresent()) {
+            Ticket existingTicket = optionalExistingTicket.get();
 
-            // Check Date
-            if (expDate != null && expDate.after(new Date(currentDate.getTime() + 24 * 60 * 60 * 1000))) {
+            // Truncate both newVisitDate and currentDate to remove time information
+            Date currentDate = truncateTime(new Date());
+            Date newVisitDate = ticketDto.getVisitDate() != null ? truncateTime(ticketDto.getVisitDate()) : null;
+
+            // Check if the new visitDate is not earlier than the current date
+            if (newVisitDate == null || !newVisitDate.before(currentDate)) {
                 // Update the ticket properties with data from the DTO
                 existingTicket.setTicketPrice(ticketDto.getTicketPrice());
                 existingTicket.setDescription(ticketDto.getDescription());
-                existingTicket.setVisitDate(expDate);
+                existingTicket.setVisitDate(newVisitDate);
+                existingTicket.setChildrenTicketPrice(ticketDto.getChildrenTicketPrice());
                 // Update other properties as needed
 
                 // Save the updated ticket to the database
@@ -83,11 +84,24 @@ public class TicketServiceImpl implements TicketService {
 
                 return "Ticket updated successfully";
             } else {
-                return "Please give me expDate greater than 1 day to get current date";
+                return "VisitDate must be null or equal to or later than the current date";
             }
         } else {
             return "Ticket not found with ID: " + ticketDto.getTicketId();
         }
+    }
+
+    private Date truncateTime(Date date) {
+        if (date != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            return calendar.getTime();
+        }
+        return null;
     }
 
 

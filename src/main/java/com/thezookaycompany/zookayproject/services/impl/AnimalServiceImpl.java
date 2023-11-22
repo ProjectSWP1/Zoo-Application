@@ -367,4 +367,10 @@ public class AnimalServiceImpl implements AnimalService {
         return animalRepository.findAnimalsBySpeciesGroups(groups);
     }
 
+    @Override
+    public List<Animal> getAnimalsByName(String name) {
+        return animalRepository.findAnimalsByName(name);
+    }
+
+
 }

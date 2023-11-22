@@ -6,12 +6,6 @@ public class TicketDto {
     private String ticketId;
     private double ticketPrice;
 
-    public TicketDto(String ticketId, double ticketPrice, double childrenTicketPrice, Date bookDate) {
-        this.ticketId = ticketId;
-        this.ticketPrice = ticketPrice;
-        this.childrenTicketPrice = childrenTicketPrice;
-        this.expDate = bookDate;
-    }
 
     public double getChildrenTicketPrice() {
         return childrenTicketPrice;
@@ -23,18 +17,14 @@ public class TicketDto {
 
     private double childrenTicketPrice;
 
-    private Date expDate;
+    private Date visitDate;
 
     private String description;
-    public  TicketDto(){
+
+    public TicketDto() {
 
     }
 
-    public TicketDto(String ticketId, double ticketPrice, Date bookDate) {
-        this.ticketId = ticketId;
-        this.ticketPrice = ticketPrice;
-        this.expDate = bookDate;
-    }
 
     public String getTicketId() {
         return ticketId;
@@ -52,13 +42,6 @@ public class TicketDto {
         this.ticketPrice = ticketPrice;
     }
 
-    public Date getBookDate() {
-        return expDate;
-    }
-
-    public void setBookDate(Date bookDate) {
-        this.expDate = bookDate;
-    }
 
     public String getDescription() {
         return description;
@@ -68,11 +51,11 @@ public class TicketDto {
         this.description = description;
     }
 
-    public Date getExpDate() {
-        return expDate;
+    public Date getVisitDate() {
+        return visitDate;
     }
 
-    public void setExpDate(Date expDate) {
-        this.expDate = expDate;
+    public void setVisitDate(Date visitDate) {
+        this.visitDate = visitDate;
     }
 }

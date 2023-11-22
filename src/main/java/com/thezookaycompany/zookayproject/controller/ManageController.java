@@ -558,6 +558,11 @@ public class ManageController {
 
         return new ResponseEntity<>(animalList, HttpStatus.OK);
     }
+    //Search Animal by Name//
+    @GetMapping("/animal/{name}")
+    public List<Animal> getAnimalsByName(@PathVariable String name) {
+        return animalService.getAnimalsByName(name);
+    }
 
 
 }

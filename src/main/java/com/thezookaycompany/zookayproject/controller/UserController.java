@@ -6,13 +6,16 @@ import com.thezookaycompany.zookayproject.model.entity.*;
 import com.thezookaycompany.zookayproject.services.*;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -296,5 +299,11 @@ public class UserController {
     public ResponseEntity<List<Ticket>> getTicketsByVisitDateDesc() {
         List<Ticket> tickets = ticketService.getAllTicketsOrderByVisitDateDesc();
         return new ResponseEntity<>(tickets, HttpStatus.OK);
+    }
+
+    @GetMapping("/find-orders/byOrderDate")
+    public List<Orders> findOrdersByOrderDate(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchDate) {
+        return ordersService.findOrdersByOrderDate(searchDate);
     }
 }

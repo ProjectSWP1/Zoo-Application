@@ -38,4 +38,7 @@ public interface AnimalRepository extends JpaRepository<Animal, Integer> {
     List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByAgeAsc(String zooAreaId);
     List<Animal> findAllByCage_ZooArea_ZooAreaIdOrderByAgeDesc(String zooAreaId);
 
+    @Query("SELECT a FROM Animal a WHERE lower(a.name) LIKE lower(concat('%', :name, '%'))")
+    List<Animal> findAnimalsByName(@Param("name") String name);
+
 }

@@ -43,5 +43,6 @@ public interface AnimalService {
 
     List<Object[]> findAnimalImageAndNameByGroups(String groups);
     List<Animal> getAnimalsBySpeciesGroups(String groups);
+    List<Animal> getAnimalsByName(String name);
 
 }

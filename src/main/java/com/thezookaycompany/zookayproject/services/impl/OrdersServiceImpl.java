@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -282,6 +283,15 @@ public class OrdersServiceImpl implements OrdersService {
 
         return totalPrice;
     }
+    @Override
+    public List<Orders> findOrdersByOrderDate(LocalDate searchDate) {
+        return ordersRepository.findByOrderDate(searchDate);
+    }
+    @Override
+    public List<Orders> findOrdersByVisitDate(Date visitDate) {
+        return ordersRepository.findByTicket_VisitDate(visitDate);
+    }
+
 }
 
 

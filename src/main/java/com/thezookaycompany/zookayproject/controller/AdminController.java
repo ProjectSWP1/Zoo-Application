@@ -12,10 +12,16 @@ import com.thezookaycompany.zookayproject.model.entity.Orders;
 import com.thezookaycompany.zookayproject.model.entity.Ticket;
 import com.thezookaycompany.zookayproject.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -158,12 +164,20 @@ public class AdminController {
     public ResponseEntity<String> updateTicket(@RequestBody TicketDto ticketDto) {
         String updateResponse = ticketService.updateTicket(ticketDto);
 
-        if (updateResponse.startsWith("Ticket updated successfully.")) {
+        if (updateResponse.startsWith("Ticket updated successfully")) {
             return ResponseEntity.ok(updateResponse);
+        } else if (updateResponse.startsWith("VisitDate must be null or equal to or later than the current date")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
+        } else if (updateResponse.startsWith("Ticket not found with ID")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(updateResponse);
         } else {
+            // Handle other error cases with a generic 400 status code
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(updateResponse);
         }
     }
+
+
+
 
     //Hàm này xóa Ticket : REMOVE//
     @DeleteMapping("/remove-ticket/{ticketId}")
@@ -304,4 +318,18 @@ public class AdminController {
         }
         return ResponseEntity.badRequest().body(response);
     }
+    //byOrderDate
+    // http://localhost:8080/admin/byOrderDate?searchDate=2023-11-22
+    @GetMapping("/find-orders/byOrderDate")
+    public List<Orders> findOrdersByOrderDate(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate searchDate) {
+        return ordersService.findOrdersByOrderDate(searchDate);
+    }
+    //byVisitDate
+    @GetMapping("/byVisitDate")
+    public List<Orders> findOrdersByVisitDate(
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date visitDate) {
+        return ordersService.findOrdersByVisitDate(visitDate);
+    }
+
 }

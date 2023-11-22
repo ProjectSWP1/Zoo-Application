@@ -5,7 +5,10 @@ import com.thezookaycompany.zookayproject.model.dto.OrdersDto;
 import com.thezookaycompany.zookayproject.model.entity.Account;
 import com.thezookaycompany.zookayproject.model.entity.Orders;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,4 +46,11 @@ public interface OrdersService {
 
 
     double calculateTotalPriceOfZoo();
+
+
+
+
+    List<Orders> findOrdersByOrderDate(LocalDate searchDate);
+
+    List<Orders> findOrdersByVisitDate(Date visitDate);
 }

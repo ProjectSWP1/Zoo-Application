@@ -7,14 +7,18 @@ import jakarta.persistence.criteria.Order;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.thezookaycompany.zookayproject.model.entity.Payment;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository
+@EnableJpaRepositories
 public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
      Orders findOrdersByOrderID (Integer orderID);
      @Query("SELECT o FROM Orders o WHERE LOWER(o.description) LIKE LOWER(CONCAT('%', :keyword, '%'))")
@@ -62,4 +66,8 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
      );
 
      List<Orders> findOrdersByEmailAndOrderPayments_IsSuccess(String email, Boolean isSuccess);
+
+     @Query("SELECT o FROM Orders o WHERE CAST(o.orderDate AS date) = :searchDate")
+     List<Orders> findByOrderDate(@Param("searchDate") LocalDate searchDate);
+     List<Orders> findByTicket_VisitDate(Date visitDate);
 }

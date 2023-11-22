@@ -52,11 +52,9 @@ public class VoucherServiceImpl implements VoucherService {
             return "Voucher ID field is empty or the length is greater than 5 characters";
         }
         Voucher existingVoucher = voucherRepository.findById(voucherDto.getVoucherId()).orElse(null);
-        Orders order1 = ordersRepository.getReferenceById(voucherDto.getOrderId());
         if (existingVoucher != null) {
             //update
             existingVoucher.setVoucherId(voucherDto.getVoucherId());
-            existingVoucher.setOrdersVoucher((List<Orders>) order1);
             existingVoucher.setCoupon(voucherDto.getCoupon());
             existingVoucher.setDescription(voucherDto.getDescription());
             existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
