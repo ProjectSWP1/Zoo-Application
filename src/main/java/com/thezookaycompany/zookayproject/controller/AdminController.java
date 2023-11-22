@@ -326,7 +326,7 @@ public class AdminController {
         return ordersService.findOrdersByOrderDate(searchDate);
     }
     //byVisitDate
-    @GetMapping("/byVisitDate")
+    @GetMapping("/find-orders/byVisitDate")
     public List<Orders> findOrdersByVisitDate(
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date visitDate) {
         return ordersService.findOrdersByVisitDate(visitDate);
