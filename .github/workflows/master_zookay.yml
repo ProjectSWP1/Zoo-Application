@@ -24,6 +24,11 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
+      - name: Delete old artifacts
+        uses: actions/delete-artifact@v2
+        with:
+          name: java-app
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
