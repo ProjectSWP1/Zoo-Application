@@ -59,7 +59,7 @@ public class VoucherServiceImpl implements VoucherService {
             existingVoucher.setDescription(voucherDto.getDescription());
             existingVoucher.setExpirationDate(voucherDto.getExpirationDate());
             voucherRepository.save(existingVoucher);
-            return "Voucher updated successfully";
+            return "Voucher updated successfully.";
         } else {
             return "Voucher not found with Id" + voucherDto.getVoucherId();
         }
