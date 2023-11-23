@@ -38,6 +38,13 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: java-app
+          path: '${{ github.workspace }}/target/*.jar'
+          retention-days: 7
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
