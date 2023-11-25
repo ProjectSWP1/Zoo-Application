@@ -71,4 +71,10 @@ public interface OrdersRepository extends JpaRepository<Orders ,Integer> {
     List<Orders> findByOrderVoucher(Voucher voucher);
 
      List<Orders> findByTicket(Ticket ticket);
+
+     @Query("SELECT SUM(o.quantity) FROM Orders o WHERE o.orderPayments.isSuccess = true")
+     Integer getTotalAdultTicketsSold();
+
+     @Query("SELECT SUM(o.childrenQuantity) FROM Orders o WHERE o.orderPayments.isSuccess = true")
+     Integer getTotalChildrenTicketsSold();
 }
