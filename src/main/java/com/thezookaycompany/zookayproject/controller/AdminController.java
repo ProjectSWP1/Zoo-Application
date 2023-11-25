@@ -181,12 +181,15 @@ public class AdminController {
 
     //Hàm này xóa Ticket : REMOVE//
     @DeleteMapping("/remove-ticket/{ticketId}")
-    public ResponseEntity<String> removeTicket(@PathVariable("ticketId") String ticketId) {
-        try {
-            String deletedTicketId = ticketService.removeTicket(ticketId);
-            return ResponseEntity.ok("Deleted Ticket id: " + deletedTicketId);
-        } catch (InvalidTicketException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ticket not found with ID: " + ticketId);
+    public ResponseEntity<String> removeTicket(@PathVariable String ticketId) {
+        String response = ticketService.removeTicket(ticketId);
+
+        if (response.equals("Ticket deleted successfully.")) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else if (response.startsWith("Ticket not found with Id")) {
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -281,12 +284,15 @@ public class AdminController {
     }
 
     @DeleteMapping("/delete-voucher/{voucherId}")
-    public ResponseEntity<String> removeVoucher(@PathVariable("voucherId") String voucherId) {
-        try {
-            String deletedVoucherId = voucherService.deleteVoucher(voucherId);
-            return ResponseEntity.ok("Voucher removed successfully with id: " + deletedVoucherId);
-        } catch (InvalidVoucherException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Voucher not found with ID: " + voucherId);
+    public ResponseEntity<String> deleteVoucher(@PathVariable String voucherId) {
+        String response = voucherService.deleteVoucher(voucherId);
+
+        if (response.equals("Voucher deleted successfully")) {
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else if (response.equals("Voucher not found")) {
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
     }
 
