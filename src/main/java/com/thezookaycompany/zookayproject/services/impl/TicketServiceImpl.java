@@ -184,10 +184,11 @@ public class TicketServiceImpl implements TicketService {
                 newTicket.setTicketPrice(Double.valueOf(price)); // Assuming price is in Integer
                 newTicket.setChildrenTicketPrice(Double.valueOf((childrenPrice)));
                 newTicket.setVisitDate(calendar.getTime());
-                // Set other ticket properties if needed
-
-                // Save the new ticket to the database
-                ticketRepository.save(newTicket);
+                // Skip the ticket that visit date created (duplicate on visit-date)
+                if(!ticketRepository.existsByVisitDate(calendar.getTime())) {
+                    // Save the new ticket to the database
+                    ticketRepository.save(newTicket);
+                }
 
                 // Print or log the generated ticket
                 System.out.println("Generated Ticket: " + newTicket.toString());
