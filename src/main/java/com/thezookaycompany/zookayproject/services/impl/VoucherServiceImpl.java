@@ -144,9 +144,10 @@ public class VoucherServiceImpl implements VoucherService {
                 newVoucher.setCoupon(coupon);
                 newVoucher.setExpirationDate(calendar.getTime());
                 // Set other voucher properties if needed
-
-                // Save the new voucher to the database
-                voucherRepository.save(newVoucher);
+                if(!voucherRepository.existsByExpirationDate(calendar.getTime())) {
+                    // Save the new voucher to the database
+                    voucherRepository.save(newVoucher);
+                }
 
                 // Print or log the generated voucher
                 System.out.println("Generated Voucher: " + newVoucher.toString());
