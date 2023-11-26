@@ -191,9 +191,9 @@ public class ManageController {
     }
 
     @DeleteMapping("/remove-animal-species/{speciesId}")
-    public ResponseEntity<String> removeAnimalSpecies(@PathVariable Integer id) {
+    public ResponseEntity<String> removeAnimalSpecies(@PathVariable Integer speciesId) {
         try {
-            String result = animalService.removeAnimalSpecies(id);
+            String result = animalService.removeAnimalSpecies(speciesId);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (InvalidAnimalException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
